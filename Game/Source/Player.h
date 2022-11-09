@@ -29,12 +29,12 @@ public:
 public:
 
 private:
-	SDL_Texture* texture;
-	const char* texturePath;
+	SDL_Texture *texture = nullptr;
+	const char* texturePath = nullptr;
 
-	PhysBody* pbody;
+	PhysBody* pbody = nullptr;
 
-	int pickCoinFxId;
+	int pickCoinFxId = 0;
 
 };
 

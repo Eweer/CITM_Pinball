@@ -23,10 +23,7 @@ Physics::Physics() : Module()
 }
 
 // Destructor
-Physics::~Physics()
-{
-	// You should do some memory cleaning here, if required
-}
+Physics::~Physics() = default;
 
 bool Physics::Start()
 {
@@ -236,7 +233,7 @@ bool Physics::PostUpdate()
 					// Draw circles ------------------------------------------------
 				case b2Shape::e_circle:
 				{
-					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
+					const auto* shape = (b2CircleShape*)f->GetShape();
 					uint width, height;
 					app->win->GetWindowSize(width, height);
 					b2Vec2 pos = f->GetBody()->GetPosition();
@@ -247,7 +244,7 @@ bool Physics::PostUpdate()
 				// Draw polygons ------------------------------------------------
 				case b2Shape::e_polygon:
 				{
-					b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
+					const auto* polygonShape = (b2PolygonShape*)f->GetShape();
 					int32 count = polygonShape->GetVertexCount();
 					b2Vec2 prev, v;
 
@@ -311,7 +308,7 @@ bool Physics::CleanUp()
 	LOG("Destroying physics world");
 
 	// Delete the whole physics world!
-	delete world;
+	RELEASE(world)
 
 	return true;
 }
@@ -320,13 +317,13 @@ bool Physics::CleanUp()
 void Physics::BeginContact(b2Contact* contact)
 {
 	// Call the OnCollision listener function to bodies A and B, passing as inputs our custom PhysBody classes
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	auto* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	auto* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if (physA && physA->listener != NULL)
+	if (physA && physA->listener)
 		physA->listener->OnCollision(physA, physB);
 
-	if (physB && physB->listener != NULL)
+	if (physB && physB->listener)
 		physB->listener->OnCollision(physB, physA);
 }
 
@@ -335,8 +332,8 @@ void Physics::BeginContact(b2Contact* contact)
 void PhysBody::GetPosition(int& x, int& y) const
 {
 	b2Vec2 pos = body->GetPosition();
-	x = METERS_TO_PIXELS(pos.x) - (width);
-	y = METERS_TO_PIXELS(pos.y) - (height);
+	x = METERS_TO_PIXELS(pos.x) - width;
+	y = METERS_TO_PIXELS(pos.y) - height;
 }
 
 float PhysBody::GetRotation() const
@@ -348,13 +345,10 @@ bool PhysBody::Contains(int x, int y) const
 {
 	b2Vec2 p(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
-	const b2Fixture* fixture = body->GetFixtureList();
-
-	while (fixture != NULL)
+	for(const b2Fixture *fixture = body->GetFixtureList(); fixture; fixture = fixture->GetNext())
 	{
-		if (fixture->GetShape()->TestPoint(body->GetTransform(), p) == true)
-			return true;
-		fixture = fixture->GetNext();
+		//if point P is inside the fixture shape
+		if(fixture->GetShape()->TestPoint(body->GetTransform(), p)) return true;
 	}
 
 	return false;
@@ -362,8 +356,6 @@ bool PhysBody::Contains(int x, int y) const
 
 int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const
 {
-	int ret = -1;
-
 	b2RayCastInput input;
 	b2RayCastOutput output;
 
@@ -371,14 +363,12 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	input.p2.Set(PIXEL_TO_METERS(x2), PIXEL_TO_METERS(y2));
 	input.maxFraction = 1.0f;
 
-	const b2Fixture* fixture = body->GetFixtureList();
 
-	while (fixture != NULL)
+	for(const b2Fixture *fixture = body->GetFixtureList(); fixture; fixture = fixture->GetNext())
 	{
-		if (fixture->GetShape()->RayCast(&output, input, body->GetTransform(), 0) == true)
+		if (fixture->GetShape()->RayCast(&output, input, body->GetTransform(), 0))
 		{
 			// do we want the normal ?
-
 			float fx = x2 - x1;
 			float fy = y2 - y1;
 			float dist = sqrtf((fx * fx) + (fy * fy));
@@ -388,8 +378,6 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 			return output.fraction * dist;
 		}
-		fixture = fixture->GetNext();
 	}
-
-	return ret;
+	return -1;
 }
