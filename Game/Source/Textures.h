@@ -18,13 +18,13 @@ public:
 	virtual ~Textures();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node&);
+	bool Awake(pugi::xml_node&) final;
 
 	// Called before the first frame
-	bool Start();
+	bool Start() final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
 	// Load Texture
 	SDL_Texture* const Load(const char* path);

@@ -16,10 +16,10 @@ public:
 	virtual ~Window();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node&);
+	bool Awake(pugi::xml_node&) final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
 	// Changae title
 	void SetTitle(const char* title);
@@ -30,7 +30,6 @@ public:
 	// Retrieve window scale
 	uint GetScale() const;
 
-public:
 	// The window we'll be rendering to
 	SDL_Window* window;
 
