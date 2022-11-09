@@ -31,16 +31,16 @@ public:
 	uint GetScale() const;
 
 	// The window we'll be rendering to
-	SDL_Window* window;
+	SDL_Window* window = nullptr;
 
 	// The surface contained by the window
-	SDL_Surface* screenSurface;
+	SDL_Surface* screenSurface = nullptr;
 
 private:
-	SString title;
-	uint width;
-	uint height;
-	uint scale;
+	SString title = nullptr;
+	uint width = 0;
+	uint height = 0;
+	uint scale = 1;
 };
 
 #endif // __WINDOW_H__

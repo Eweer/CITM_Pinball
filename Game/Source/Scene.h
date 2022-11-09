@@ -34,10 +34,10 @@ public:
 	// Called before quitting
 	bool CleanUp() final;
 
-	Player* player;
+	Player* player = nullptr;
 
 private:
-	SDL_Texture* img;
+	SDL_Texture* img = nullptr;
 
 };
 
