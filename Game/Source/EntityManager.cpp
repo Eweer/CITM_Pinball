@@ -14,77 +14,60 @@ EntityManager::EntityManager() : Module()
 }
 
 // Destructor
-EntityManager::~EntityManager()
-{}
+EntityManager::~EntityManager() = default;
 
 // Called before render is available
 bool EntityManager::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Entity Manager");
-	bool ret = true;
 
 	//Iterates over the entities and calls the Awake
-	ListItem<Entity*>* item;
-	Entity* pEntity = NULL;
-
-	for (item = entities.start; item != NULL && ret == true; item = item->next)
+	for (ListItem<Entity*>* item = entities.start; item; item = item->next)
 	{
-		pEntity = item->data;
-
-		if (pEntity->active == false) continue;
-		ret = item->data->Awake();
+		const Entity* pEntity = item->data;
+		if(!pEntity->active) continue;
+		if(!item->data->Awake()) return false;
 	}
 
-	return ret;
+	return true;
 
 }
 
-bool EntityManager::Start() {
-
-	bool ret = true; 
-
+bool EntityManager::Start() 
+{
 	//Iterates over the entities and calls Start
-	ListItem<Entity*>* item;
-	Entity* pEntity = NULL;
-
-	for (item = entities.start; item != NULL && ret == true; item = item->next)
+	for(ListItem<Entity *>*item = entities.start; item; item = item->next)
 	{
-		pEntity = item->data;
-
-		if (pEntity->active == false) continue;
-		ret = item->data->Start();
+		const Entity *pEntity = item->data;
+		if(!pEntity->active) continue;
+		if(!item->data->Start()) return false;
 	}
 
-	return ret;
+	return true;
 }
 
 // Called before quitting
 bool EntityManager::CleanUp()
 {
-	bool ret = true;
-	ListItem<Entity*>* item;
-	item = entities.end;
+	ListItem<Entity*>* item = entities.end;
 
-	while (item != NULL && ret == true)
+	while (item)
 	{
-		ret = item->data->CleanUp();
+		if(!item->data->CleanUp()) return false;
 		item = item->prev;
 	}
 
 	entities.Clear();
 
-	return ret;
+	return true;
 }
 
 Entity* EntityManager::CreateEntity(EntityType type)
 {
 	Entity* entity = nullptr; 
 
-	//L02: DONE 2: Instantiate entity according to the type and add the new entoty it to the list of Entities
-
 	switch (type)
 	{
-
 	case EntityType::PLAYER:
 		entity = new Player();
 		break;
@@ -104,32 +87,30 @@ Entity* EntityManager::CreateEntity(EntityType type)
 
 void EntityManager::DestroyEntity(Entity* entity)
 {
-	ListItem<Entity*>* item;
-
-	for (item = entities.start; item != NULL; item = item->next)
+	for(ListItem<Entity*>* item = entities.start; item; item = item->next)
 	{
-		if (item->data == entity) entities.Del(item);
+		if(item->data == entity)
+		{
+			entities.Del(item);
+			return;
+		}
 	}
 }
 
 void EntityManager::AddEntity(Entity* entity)
 {
-	if ( entity != nullptr) entities.Add(entity);
+	if(entity != nullptr) entities.Add(entity);
 }
 
 bool EntityManager::Update(float dt)
 {
-	bool ret = true;
-	ListItem<Entity*>* item;
-	Entity* pEntity = NULL;
-
-	for (item = entities.start; item != NULL && ret == true; item = item->next)
+	//Iterates over the entities and calls Update
+	for(ListItem<Entity *> *item = entities.start; item; item = item->next)
 	{
-		pEntity = item->data;
-
-		if (pEntity->active == false) continue;
-		ret = item->data->Update();
+		const Entity *pEntity = item->data;
+		if(!pEntity->active) continue;
+		if(!item->data->Update()) return false;
 	}
 
-	return ret;
+	return true;
 }

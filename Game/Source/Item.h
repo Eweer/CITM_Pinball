@@ -26,10 +26,10 @@ public:
 
 private:
 
-	SDL_Texture* texture;
-	const char* texturePath;
+	PhysBody *pBody = nullptr;
 
-	PhysBody* pbody;
+	SDL_Texture *texture = nullptr;
+	const char* texturePath = nullptr;
 };
 
 #endif // __ITEM_H__

@@ -14,13 +14,11 @@
 
 Audio::Audio() : Module()
 {
-	music = NULL;
 	name.Create("audio");
 }
 
 // Destructor
-Audio::~Audio()
-{}
+Audio::~Audio() = default;
 
 // Called before render is available
 bool Audio::Awake(pugi::xml_node& config)
@@ -61,18 +59,13 @@ bool Audio::Awake(pugi::xml_node& config)
 // Called before quitting
 bool Audio::CleanUp()
 {
-	if(!active)
-		return true;
+	if(!active) return true;
 
 	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
 
-	if(music != NULL)
-	{
-		Mix_FreeMusic(music);
-	}
+	if(music) Mix_FreeMusic(music);
 
-	ListItem<Mix_Chunk*>* item;
-	for(item = fx.start; item != NULL; item = item->next)
+	for(ListItem<Mix_Chunk*>* item = fx.start; item; item = item->next) 
 		Mix_FreeChunk(item->data);
 
 	fx.Clear();
@@ -89,10 +82,9 @@ bool Audio::PlayMusic(const char* path, float fadeTime)
 {
 	bool ret = true;
 
-	if(!active)
-		return false;
+	if(!active) return false;
 
-	if(music != NULL)
+	if(music)
 	{
 		if(fadeTime > 0.0f)
 		{
@@ -109,29 +101,22 @@ bool Audio::PlayMusic(const char* path, float fadeTime)
 
 	music = Mix_LoadMUS(path);
 
-	if(music == NULL)
+	if(music == nullptr)
 	{
 		LOG("Cannot load music %s. Mix_GetError(): %s\n", path, Mix_GetError());
-		ret = false;
+		return false;
 	}
-	else
+
+	if(fadeTime > 0.0f && (Mix_FadeInMusic(music, -1, (int) (fadeTime * 1000.0f)) < 0))
 	{
-		if(fadeTime > 0.0f)
-		{
-			if(Mix_FadeInMusic(music, -1, (int) (fadeTime * 1000.0f)) < 0)
-			{
-				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
-			}
-		}
-		else
-		{
-			if(Mix_PlayMusic(music, -1) < 0)
-			{
-				LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
-				ret = false;
-			}
-		}
+		LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
+		return false;
+	}
+
+	if(Mix_PlayMusic(music, -1) < 0)
+	{
+		LOG("Cannot play in music %s. Mix_GetError(): %s", path, Mix_GetError());
+		return false;
 	}
 
 	LOG("Successfully playing %s", path);
@@ -141,38 +126,27 @@ bool Audio::PlayMusic(const char* path, float fadeTime)
 // Load WAV
 unsigned int Audio::LoadFx(const char* path)
 {
-	unsigned int ret = 0;
-
-	if(!active)
-		return 0;
+	if(!active) return 0;
 
 	Mix_Chunk* chunk = Mix_LoadWAV(path);
 
-	if(chunk == NULL)
-	{
-		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
-	}
-	else
+	if(chunk)
 	{
 		fx.Add(chunk);
-		ret = fx.Count();
+		return fx.Count();
 	}
+	else LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 
-	return ret;
+	return 0;
 }
 
 // Play WAV
 bool Audio::PlayFx(unsigned int id, int repeat)
 {
-	bool ret = false;
+	if(!active) return false;
 
-	if(!active)
-		return false;
-
-	if(id > 0 && id <= fx.Count())
-	{
+	if(id > 0 && id <= fx.Count()) 
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
-	}
 
-	return ret;
+	return true;
 }

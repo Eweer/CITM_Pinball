@@ -37,46 +37,33 @@ struct Properties
 {
 	struct Property
 	{
-		SString name;
-		bool value;
+		SString name = nullptr;
+		bool value = false;
 	};
 
 	~Properties()
 	{
-		//...
-		ListItem<Property*>* item;
-		item = list.start;
-
-		while (item != NULL)
-		{
-			RELEASE(item->data);
-			item = item->next;
-		}
-
 		list.Clear();
 	}
 
-	Property* GetProperty(const char* name);
+	Property* GetProperty(const char* name) const;
 
 	List<Property*> list;
 };
 
 struct MapLayer
 {
-	SString	name;
-	int id; 
-	int width;
-	int height;
-	uint* data;
+	SString	name = nullptr;
+	int id = -1;
+	int width = 0;
+	int height = 0;
+	uint *data = nullptr;
 
 	Properties properties;
 
-	MapLayer() : data(NULL)
-	{}
-
 	~MapLayer()
 	{
-		RELEASE(data);
+		RELEASE(data)
 	}
 
 	inline uint Get(int x, int y) const
@@ -122,7 +109,7 @@ public:
 	iPoint MapToWorld(int x, int y) const;
 
 	// WorldToMap to obtain  
-	iPoint Map::WorldToMap(int x, int y);
+	iPoint Map::WorldToMap(int x, int y) const;
 
 private:
 
@@ -135,7 +122,7 @@ private:
 
 	TileSet* GetTilesetFromTileId(int gid) const;
 
-	bool LoadProperties(pugi::xml_node& node, Properties& properties);
+	bool LoadProperties(const pugi::xml_node& node, Properties& properties) const;
 
 public: 
 
@@ -145,7 +132,7 @@ private:
 
     SString mapFileName;
 	SString mapFolder;
-    bool mapLoaded;
+    bool mapLoaded = false;
 };
 
 #endif // __MAP_H__
