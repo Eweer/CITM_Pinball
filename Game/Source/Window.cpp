@@ -25,7 +25,7 @@ bool Window::Awake(pugi::xml_node& config)
 	LOG("Init SDL window & surface");
 	bool ret = true;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
@@ -34,24 +34,25 @@ bool Window::Awake(pugi::xml_node& config)
 	{
 		// Create window
 		// L01: DONE 6: Load all required configurations from config.xml
+		// Tip: get the name of the child and the attribute value
 		Uint32 flags = SDL_WINDOW_SHOWN;
-		bool fullscreen = config.child("fullscreen").attribute("value").as_bool(false);
-		bool borderless = config.child("borderless").attribute("value").as_bool(false);
-		bool resizable = config.child("resizable").attribute("value").as_bool(false);
-		bool fullscreen_window = config.child("fullscreen_window").attribute("value").as_bool(false);
+		bool fullscreen = config.child("fullscreen").attribute("value").as_bool(); // get from config
+		bool borderless = config.child("bordeless").attribute("value").as_bool(); // get from config
+		bool resizable = config.child("resizable").attribute("value").as_bool(); // get from config
+		bool fullscreen_window = config.child("fullscreen_window").attribute("value").as_bool(); // get from config
 
-		width = config.child("resolution").attribute("width").as_int(640);
-		height = config.child("resolution").attribute("height").as_int(480);
-		scale = config.child("resolution").attribute("scale").as_int(1);
+		width = config.child("resolution").attribute("width").as_int(); //get from config 
+		height = config.child("resolution").attribute("height").as_int();; //get from config 
+		scale = config.child("resolution").attribute("scale").as_int();; //get from config 
 
-		if(fullscreen == true) flags |= SDL_WINDOW_FULLSCREEN;
-		if(borderless == true) flags |= SDL_WINDOW_BORDERLESS;
-		if(resizable == true) flags |= SDL_WINDOW_RESIZABLE;
-		if(fullscreen_window == true) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		if (fullscreen == true) flags |= SDL_WINDOW_FULLSCREEN;
+		if (borderless == true) flags |= SDL_WINDOW_BORDERLESS;
+		if (resizable == true) flags |= SDL_WINDOW_RESIZABLE;
+		if (fullscreen_window == true) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 		window = SDL_CreateWindow(app->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
-		if(window == NULL)
+		if (window == NULL)
 		{
 			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			ret = false;
@@ -72,7 +73,7 @@ bool Window::CleanUp()
 	LOG("Destroying SDL window and quitting all SDL systems");
 
 	// Destroy window
-	if(window != NULL)
+	if (window != NULL)
 	{
 		SDL_DestroyWindow(window);
 	}

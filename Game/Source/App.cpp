@@ -5,6 +5,9 @@
 #include "Textures.h"
 #include "Audio.h"
 #include "Scene.h"
+#include "EntityManager.h"
+#include "Map.h"
+#include "Physics.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -17,20 +20,28 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 {
 	frames = 0;
 
-	win = new Window();
 	input = new Input();
+	win = new Window();
 	render = new Render();
 	tex = new Textures();
 	audio = new Audio();
+	//L07 DONE 2: Add Physics module
+	physics = new Physics();
 	scene = new Scene();
+	entityManager = new EntityManager();
+	map = new Map();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
-	AddModule(win);
 	AddModule(input);
+	AddModule(win);
 	AddModule(tex);
 	AddModule(audio);
+	//L07 DONE 2: Add Physics module
+	AddModule(physics);
 	AddModule(scene);
+	AddModule(entityManager);
+	AddModule(map);
 
 	// Render last to swap buffer
 	AddModule(render);
@@ -42,7 +53,7 @@ App::~App()
 	// Release modules
 	ListItem<Module*>* item = modules.end;
 
-	while(item != NULL)
+	while (item != NULL)
 	{
 		RELEASE(item->data);
 		item = item->prev;
@@ -60,25 +71,26 @@ void App::AddModule(Module* module)
 // Called before render is available
 bool App::Awake()
 {
-	// TODO 3: Load config from XML
-	bool ret = LoadConfig();
+	bool ret = false;
 
-	if(ret == true)
+	// L01: DONE 3: Load config from XML
+	ret = LoadConfig();
+
+	if (ret == true)
 	{
-		// TODO 4: Read the title from the config file
-		title.Create(configApp.child("title").child_value());
-		win->SetTitle(title.GetString());
+		title = configNode.child("app").child("title").child_value(); // L01: DONE 4: Read the title from the config file
 
 		ListItem<Module*>* item;
 		item = modules.start;
 
-		while(item != NULL && ret == true)
+		while (item != NULL && ret == true)
 		{
-			// TODO 5: Add a new argument to the Awake method to receive a pointer to an xml node.
+			// L01: DONE 5: Add a new argument to the Awake method to receive a pointer to an xml node.
 			// If the section with the module name exists in config.xml, fill the pointer with the valid xml_node
 			// that can be used to read all variables for that module.
 			// Send nullptr if the node does not exist in config.xml
-			ret = item->data->Awake(config.child(item->data->name.GetString()));
+			pugi::xml_node node = configNode.child(item->data->name.GetString());
+			ret = item->data->Awake(node);
 			item = item->next;
 		}
 	}
@@ -93,7 +105,7 @@ bool App::Start()
 	ListItem<Module*>* item;
 	item = modules.start;
 
-	while(item != NULL && ret == true)
+	while (item != NULL && ret == true)
 	{
 		ret = item->data->Start();
 		item = item->next;
@@ -108,16 +120,16 @@ bool App::Update()
 	bool ret = true;
 	PrepareUpdate();
 
-	if(input->GetWindowEvent(WE_QUIT) == true)
+	if (input->GetWindowEvent(WE_QUIT) == true)
 		ret = false;
 
-	if(ret == true)
+	if (ret == true)
 		ret = PreUpdate();
 
-	if(ret == true)
+	if (ret == true)
 		ret = DoUpdate();
 
-	if(ret == true)
+	if (ret == true)
 		ret = PostUpdate();
 
 	FinishUpdate();
@@ -127,21 +139,18 @@ bool App::Update()
 // Load config from XML file
 bool App::LoadConfig()
 {
-	bool ret = true;
+	bool ret = false;
 
-	// TODO 3: Load config.xml file using load_file() method from the xml_document class
-	pugi::xml_parse_result result = configFile.load_file("config.xml");
+	// L01: DONE 3: Load config.xml file using load_file() method from the xml_document class
+	pugi::xml_parse_result parseResult = configFile.load_file("config.xml");
 
-	// TODO 3: Check result for loading errors
-	if(result == NULL)
-	{
-		LOG("Could not load map xml file config.xml. pugi error: %s", result.description());
-		ret = false;
+	// L01: DONE 3: Check result for loading errors
+	if (parseResult) {
+		ret = true;
+		configNode = configFile.child("config");
 	}
-	else
-	{
-		config = configFile.child("config");
-		configApp = config.child("app");
+	else {
+		LOG("Error in App::LoadConfig(): %s", parseResult.description());
 	}
 
 	return ret;
@@ -155,22 +164,24 @@ void App::PrepareUpdate()
 // ---------------------------------------------
 void App::FinishUpdate()
 {
-	// This is a good place to call Load / Save functions
+	// L03: DONE 1: This is a good place to call Load / Save methods
+	if (loadGameRequested == true) LoadFromFile();
+	if (saveGameRequested == true) SaveToFile();
 }
 
 // Call modules before each loop iteration
 bool App::PreUpdate()
 {
 	bool ret = true;
-
 	ListItem<Module*>* item;
+	item = modules.start;
 	Module* pModule = NULL;
 
-	for(item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if (pModule->active == false) {
 			continue;
 		}
 
@@ -188,11 +199,11 @@ bool App::DoUpdate()
 	item = modules.start;
 	Module* pModule = NULL;
 
-	for(item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if (pModule->active == false) {
 			continue;
 		}
 
@@ -209,11 +220,11 @@ bool App::PostUpdate()
 	ListItem<Module*>* item;
 	Module* pModule = NULL;
 
-	for(item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if (pModule->active == false) {
 			continue;
 		}
 
@@ -230,7 +241,7 @@ bool App::CleanUp()
 	ListItem<Module*>* item;
 	item = modules.end;
 
-	while(item != NULL && ret == true)
+	while (item != NULL && ret == true)
 	{
 		ret = item->data->CleanUp();
 		item = item->prev;
@@ -248,7 +259,7 @@ int App::GetArgc() const
 // ---------------------------------------
 const char* App::GetArgv(int index) const
 {
-	if(index < argc)
+	if (index < argc)
 		return args[index];
 	else
 		return NULL;
@@ -266,4 +277,74 @@ const char* App::GetOrganization() const
 	return organization.GetString();
 }
 
+// L02: DONE 1: Implement methods to request load / save and methods 
+// for the real execution of load / save (to be implemented in TODO 5 and 7)
+void App::LoadGameRequest()
+{
+	// NOTE: We should check if SAVE_STATE_FILENAME actually exist
+	loadGameRequested = true;
+}
 
+// ---------------------------------------
+void App::SaveGameRequest() 
+{
+	// NOTE: We should check if SAVE_STATE_FILENAME actually exist and... should we overwriten
+	saveGameRequested = true;
+}
+
+
+// L02: DONE 5: Implement the method LoadFromFile() to actually load a xml file
+// then call all the modules to load themselves
+bool App::LoadFromFile()
+{
+	bool ret = true;
+
+	pugi::xml_document gameStateFile;
+	pugi::xml_parse_result result = gameStateFile.load_file("save_game.xml");
+
+	if (result == NULL)
+	{
+		LOG("Could not load xml file savegame.xml. pugi error: %s", result.description());
+		ret = false;
+	}
+	else
+	{
+		ListItem<Module*>* item;
+		item = modules.start;
+
+		while (item != NULL && ret == true)
+		{
+			ret = item->data->LoadState(gameStateFile.child("save_state").child(item->data->name.GetString()));
+			item = item->next;
+		}
+	}
+
+	loadGameRequested = false;
+
+	return ret;
+}
+
+// L02: DONE 7: Implement the xml save method SaveToFile() for current state
+// check https://pugixml.org/docs/quickstart.html#modify
+bool App::SaveToFile() 
+{
+	bool ret = false;
+
+	pugi::xml_document* saveDoc = new pugi::xml_document();
+	pugi::xml_node saveStateNode = saveDoc->append_child("save_state");
+
+	ListItem<Module*>* item;
+	item = modules.start;
+
+	while (item != NULL)
+	{
+		ret = item->data->SaveState(saveStateNode.append_child(item->data->name.GetString()));
+		item = item->next;
+	}
+
+	ret = saveDoc->save_file("save_game.xml");
+
+	saveGameRequested = false;
+
+	return ret;
+}

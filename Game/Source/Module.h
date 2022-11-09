@@ -6,6 +6,7 @@
 #include "PugiXml/src/pugixml.hpp"
 
 class App;
+class PhysBody;
 
 class Module
 {
@@ -20,7 +21,6 @@ public:
 	}
 
 	// Called before render is available
-	// L01: DONE 5: Sending config file to all modules
 	virtual bool Awake(pugi::xml_node&)
 	{
 		return true;
@@ -54,6 +54,22 @@ public:
 	virtual bool CleanUp()
 	{
 		return true;
+	}
+
+	// L03: DONE 2: Create new virtual methods to LoadState / SaveState
+	virtual bool LoadState(pugi::xml_node&)
+	{
+		return true;
+	}
+
+	virtual bool SaveState(pugi::xml_node&)
+	{
+		return true;
+	}
+
+	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+	{
+
 	}
 
 public:

@@ -2,6 +2,8 @@
 #define __SCENE_H__
 
 #include "Module.h"
+#include "Player.h"
+#include "Item.h"
 
 struct SDL_Texture;
 
@@ -15,7 +17,7 @@ public:
 	virtual ~Scene();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -32,8 +34,14 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+public:
+
+	//L02: DONE 3: Declare a Player attribute 
+	Player* player;
+
 private:
 	SDL_Texture* img;
+
 };
 
 #endif // __SCENE_H__
