@@ -14,15 +14,13 @@ public:
 	Item();
 	virtual ~Item();
 
-	bool Awake();
+	bool Awake() final;
 
-	bool Start();
+	bool Start() final;
 
-	bool Update();
+	bool Update() final;
 
-	bool CleanUp();
-
-public:
+	bool CleanUp() final;
 
 	bool isPicked = false;
 
@@ -31,7 +29,6 @@ private:
 	SDL_Texture* texture;
 	const char* texturePath;
 
-	//DONE 4: Add a physics to an item
 	PhysBody* pbody;
 };
 

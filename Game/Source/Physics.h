@@ -17,7 +17,7 @@
 #define RADTODEG 57.295779513082320876f
 
 // types of bodies
-enum bodyType {
+enum class bodyType {
 	DYNAMIC,
 	STATIC,
 	KINEMATIC
@@ -35,37 +35,36 @@ enum class ColliderType {
 class PhysBody
 {
 public:
-	PhysBody() : listener(NULL), body(NULL), ctype(ColliderType::UNKNOWN)
-	{}
+	PhysBody() = default;
 
-	~PhysBody() {}
+	~PhysBody() = default;
 
 	void GetPosition(int& x, int& y) const;
 	float GetRotation() const;
 	bool Contains(int x, int y) const;
 	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 
-public:
-	int width, height;
-	b2Body* body;
-	Entity* listener;
-	ColliderType ctype;
+	int width= 0;
+	int height = 0;
+	b2Body* body = nullptr;
+	Entity* listener = nullptr;
+	ColliderType ctype = ColliderType::UNKNOWN;
 };
 
 // Module --------------------------------------
-class Physics : public Module, public b2ContactListener // TODO
+class Physics : public Module, public b2ContactListener
 {
 public:
 
 	// Constructors & Destructors
 	Physics();
-	~Physics();
+	~Physics() final;
 
 	// Main module steps
-	bool Start();
-	bool PreUpdate();
-	bool PostUpdate();
-	bool CleanUp();
+	bool Start() final;
+	bool PreUpdate() final;
+	bool PostUpdate() final;
+	bool CleanUp() final;
 
 	// Create basic physics objects
 	PhysBody* CreateRectangle(int x, int y, int width, int height, bodyType type);
@@ -74,13 +73,13 @@ public:
 	PhysBody* CreateChain(int x, int y, int* points, int size, bodyType type);
 	
 	// b2ContactListener ---
-	void BeginContact(b2Contact* contact);
+	void BeginContact(b2Contact* contact) final;
 
 private:
 
 	// Debug mode
-	bool debug;
+	bool debug = false;
 
 	// Box2D World
-	b2World* world;
+	b2World* world = nullptr;
 };

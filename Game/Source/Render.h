@@ -17,18 +17,18 @@ public:
 	virtual ~Render();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node&);
+	bool Awake(pugi::xml_node&) final;
 
 	// Called before the first frame
-	bool Start();
+	bool Start() final;
 
 	// Called each loop iteration
-	bool PreUpdate();
-	bool Update(float dt);
-	bool PostUpdate();
+	bool PreUpdate() final;
+	bool Update(float dt) final;
+	bool PostUpdate() final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
 	void SetViewPort(const SDL_Rect& rect);
 	void ResetViewPort();
@@ -42,11 +42,8 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 
-	// L03: DONE 6: Declare Load / Save methods
-	bool LoadState(pugi::xml_node&);
-	bool SaveState(pugi::xml_node&);
-
-public:
+	bool LoadState(pugi::xml_node&) final;
+	bool SaveState(pugi::xml_node&) final;
 
 	SDL_Renderer* renderer;
 	SDL_Rect camera;

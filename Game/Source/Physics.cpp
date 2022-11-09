@@ -20,9 +20,6 @@
 
 Physics::Physics() : Module()
 {
-	// Initialise all the internal class variables, at least to NULL pointer
-	world = NULL;
-	debug = true;
 }
 
 // Destructor
@@ -61,8 +58,8 @@ bool Physics::PreUpdate()
 		if (c->IsTouching() && c->GetFixtureA()->IsSensor())
 		{
 			// If so, we call the OnCollision listener function (only of the sensor), passing as inputs our custom PhysBody classes
-			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			PhysBody* pb2 = (PhysBody*)c->GetFixtureB()->GetBody()->GetUserData();
+			auto* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			auto* pb2 = (PhysBody*)c->GetFixtureB()->GetBody()->GetUserData();
 			
 			if (pb1 && pb2 && pb1->listener)
 				pb1->listener->OnCollision(pb1, pb2);
@@ -76,9 +73,9 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, bodyType
 {
 	b2BodyDef body;
 
-	if (type == DYNAMIC) body.type = b2_dynamicBody;
-	if (type == STATIC) body.type = b2_staticBody;
-	if (type == KINEMATIC) body.type = b2_kinematicBody;
+	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
+	if(type == bodyType::STATIC) body.type = b2_staticBody;
+	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
 
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -93,7 +90,7 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, bodyType
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
+	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width * 0.5f;
@@ -107,9 +104,9 @@ PhysBody* Physics::CreateCircle(int x, int y, int radious, bodyType type)
 	// Create BODY at position x,y
 	b2BodyDef body;
 
-	if (type == DYNAMIC) body.type = b2_dynamicBody;
-	if (type == STATIC) body.type = b2_staticBody;
-	if (type == KINEMATIC) body.type = b2_kinematicBody;
+	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
+	if(type == bodyType::STATIC) body.type = b2_staticBody;
+	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
 
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -130,7 +127,7 @@ PhysBody* Physics::CreateCircle(int x, int y, int radious, bodyType type)
 	b->CreateFixture(&fixture);
 
 	// Create our custom PhysBody class
-	PhysBody* pbody = new PhysBody();
+	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = radious * 0.5f;
@@ -144,9 +141,9 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bo
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
-	if (type == DYNAMIC) body.type = b2_dynamicBody;
-	if (type == STATIC) body.type = b2_staticBody;
-	if (type == KINEMATIC) body.type = b2_kinematicBody;
+	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
+	if(type == bodyType::STATIC) body.type = b2_staticBody;
+	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
@@ -166,7 +163,7 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bo
 	b->CreateFixture(&fixture);
 
 	// Create our custom PhysBody class
-	PhysBody* pbody = new PhysBody();
+	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width;
@@ -180,9 +177,9 @@ PhysBody* Physics::CreateChain(int x, int y, int* points, int size, bodyType typ
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
-	if (type == DYNAMIC) body.type = b2_dynamicBody;
-	if (type == STATIC) body.type = b2_staticBody;
-	if (type == KINEMATIC) body.type = b2_kinematicBody;
+	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
+	if(type == bodyType::STATIC) body.type = b2_staticBody;
+	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world

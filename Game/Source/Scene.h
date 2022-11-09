@@ -17,26 +17,23 @@ public:
 	virtual ~Scene();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& config);
+	bool Awake(pugi::xml_node& config) final;
 
 	// Called before the first frame
-	bool Start();
+	bool Start() final;
 
 	// Called before all Updates
-	bool PreUpdate();
+	bool PreUpdate() final;
 
 	// Called each loop iteration
-	bool Update(float dt);
+	bool Update(float dt) final;
 
 	// Called before all Updates
-	bool PostUpdate();
+	bool PostUpdate() final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
-public:
-
-	//L02: DONE 3: Declare a Player attribute 
 	Player* player;
 
 private:

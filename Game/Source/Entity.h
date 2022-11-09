@@ -19,7 +19,9 @@ class Entity
 {
 public:
 
-	Entity(EntityType type) : type(type), active(true) {}
+	explicit Entity(EntityType type) : type(type) {}
+
+	virtual ~Entity() = default;
 
 	virtual bool Awake()
 	{
@@ -69,7 +71,8 @@ public:
 		}
 	}
 
-	virtual void OnCollision(PhysBody* physA, PhysBody* physB) {
+	virtual void OnCollision(PhysBody* physA, PhysBody* physB) 
+	{
 	
 	};
 
@@ -80,8 +83,6 @@ public:
 	bool active = true;
 	pugi::xml_node parameters;
 
-	// Possible properties, it depends on how generic we
-	// want our Entity class, maybe it's not renderable...
 	iPoint position;       
 	bool renderable = true;
 };

@@ -15,16 +15,16 @@ public:
 	virtual ~EntityManager();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node&);
+	bool Awake(pugi::xml_node&) final;
 
 	// Called after Awake
-	bool Start();
+	bool Start() final;
 
 	// Called every frame
-	bool Update(float dt);
+	bool Update(float dt) final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
 	// Additional methods
 	Entity* CreateEntity(EntityType type);

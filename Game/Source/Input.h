@@ -4,7 +4,7 @@
 #include "Module.h"
 
 //#define NUM_KEYS 352
-#define NUM_MOUSE_BUTTONS 5
+#define NUM_MOUSE_BUTTONS 3
 //#define LAST_KEYS_PRESSED_BUFFER 50
 
 struct SDL_Rect;
@@ -12,8 +12,8 @@ struct SDL_Rect;
 enum EventWindow
 {
 	WE_QUIT = 0,
-	WE_HIDE = 1,
-	WE_SHOW = 2,
+	WE_HIDE,
+	WE_SHOW,
 	WE_COUNT
 };
 
@@ -36,16 +36,16 @@ public:
 	virtual ~Input();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node&);
+	bool Awake(pugi::xml_node&) final;
 
 	// Called before the first frame
-	bool Start();
+	bool Start() final;
 
 	// Called each loop iteration
-	bool PreUpdate();
+	bool PreUpdate() final;
 
 	// Called before quitting
-	bool CleanUp();
+	bool CleanUp() final;
 
 	// Check key states (includes mouse and joy buttons)
 	KeyState GetKey(int id) const

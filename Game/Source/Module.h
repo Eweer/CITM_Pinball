@@ -12,8 +12,7 @@ class Module
 {
 public:
 
-	Module() : active(false)
-	{}
+	Module() = default;
 
 	void Init()
 	{
@@ -56,7 +55,6 @@ public:
 		return true;
 	}
 
-	// L03: DONE 2: Create new virtual methods to LoadState / SaveState
 	virtual bool LoadState(pugi::xml_node&)
 	{
 		return true;
@@ -67,15 +65,13 @@ public:
 		return true;
 	}
 
-	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB) 
 	{
-
+		//Need to be overwritten by each module
 	}
 
-public:
-
 	SString name;
-	bool active;
+	bool active = false;
 
 };
 
