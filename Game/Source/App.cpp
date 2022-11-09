@@ -53,7 +53,7 @@ App::~App()
 
 	while (item)
 	{
-		RELEASE(item->data);
+		RELEASE(item->data)
 		item = item->prev;
 	}
 

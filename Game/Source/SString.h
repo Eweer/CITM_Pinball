@@ -26,7 +26,7 @@ public:
 		Clear();
 	}
 
-	SString(unsigned int size)
+	explicit SString(unsigned int size)
 	{
 		if (size > 0)
 			Alloc(size);
@@ -153,7 +153,7 @@ public:
 		(*this) = t;
 		return *this;
 
-		if (string != NULL)
+		if (string != nullptr)
 		{
 			if (strlen(string) + 1 > size)
 			{

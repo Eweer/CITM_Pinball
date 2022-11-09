@@ -170,7 +170,7 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bo
 	return pbody;
 }
 
-PhysBody* Physics::CreateChain(int x, int y, int* points, int size, bodyType type)
+PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, bodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -184,7 +184,7 @@ PhysBody* Physics::CreateChain(int x, int y, int* points, int size, bodyType typ
 
 	// Create SHAPE
 	b2ChainShape shape;
-	b2Vec2* p = new b2Vec2[size / 2];
+	auto* p = new b2Vec2[size / 2];
 	for (uint i = 0; i < size / 2; ++i)
 	{
 		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
@@ -200,10 +200,10 @@ PhysBody* Physics::CreateChain(int x, int y, int* points, int size, bodyType typ
 	b->CreateFixture(&fixture);
 
 	// Clean-up temp array
-	delete p;
+	delete[] p;
 
 	// Create our custom PhysBody class
-	PhysBody* pbody = new PhysBody();
+	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;

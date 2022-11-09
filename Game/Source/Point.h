@@ -10,9 +10,10 @@ class Point
 {
 public:
 
-	TYPE x, y;
+	TYPE x;
+	TYPE y;
 
-	Point()
+	Point() : x(0), y(0)
 	{}
 
 	Point(const Point<TYPE>& v)
@@ -27,6 +28,8 @@ public:
 		this->y = y;
 	}
 
+	~Point() = default;
+
 	Point& Create(const TYPE& x, const TYPE& y)
 	{
 		this->x = x;
@@ -36,6 +39,13 @@ public:
 	}
 
 	// Math ------------------------------------------------
+
+	Point& operator=(const Point &p)
+	{
+		this->x = p.x;
+		this->y = p.y;
+		return *this
+	}
 	Point operator -(const Point &v) const
 	{
 		p2Vector2 r;
@@ -125,7 +135,7 @@ public:
 	}
 };
 
-typedef Point<int> iPoint;
-typedef Point<float> fPoint;
+using iPoint = Point<int>;
+using fPoint = Point<float>;
 
 #endif // __POINT_H__
