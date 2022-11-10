@@ -13,7 +13,7 @@ public:
 
 	Player();
 	
-	virtual ~Player();
+	~Player() final;
 
 	bool Awake() final;
 
@@ -25,10 +25,8 @@ public:
 
 	void OnCollision(PhysBody* physA, PhysBody* physB) final;
 
-
-public:
-
 private:
+
 	SDL_Texture *texture = nullptr;
 	const char* texturePath = nullptr;
 

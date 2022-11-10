@@ -9,6 +9,8 @@
 #include "Point.h"
 #include "Physics.h"
 
+#define BALL_SIZE 40
+
 Player::Player() : Entity(EntityType::PLAYER)
 {
 	name.Create("Player");
@@ -18,8 +20,7 @@ Player::~Player() = default;
 
 bool Player::Awake() 
 {
-	//pos = position;
-	//texturePath = "Assets/Textures/player/idle1.png";
+	texturePath = "Assets/Textures/pinball.png";
 
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
@@ -34,7 +35,7 @@ bool Player::Start() {
 	texture = app->tex->Load(texturePath);
 
 	//initialize physics body
-	pbody = app->physics->CreateCircle(position.x+16, position.y+16, 16, bodyType::DYNAMIC);
+	pbody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);
 
 	//This makes the Physics module to call the OnCollision method
 	pbody->listener = this; 
@@ -51,7 +52,7 @@ bool Player::Start() {
 bool Player::Update()
 {
 	int speed = 10; 
-	auto vel = b2Vec2(0, -GRAVITY_Y); 
+	auto vel = b2Vec2(0,0); 
 
 	if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
 		//
@@ -72,8 +73,8 @@ bool Player::Update()
 	pbody->body->SetLinearVelocity(vel);
 
 	//Update player position in pixels
-	position.x = METERS_TO_PIXELS(pbody->body->GetTransform().p.x) - 16;
-	position.y = METERS_TO_PIXELS(pbody->body->GetTransform().p.y) - 16;
+	position.x = METERS_TO_PIXELS(pbody->body->GetTransform().p.x) - BALL_SIZE/2;
+	position.y = METERS_TO_PIXELS(pbody->body->GetTransform().p.y) - BALL_SIZE/2;
 
 	app->render->DrawTexture(texture, position.x , position.y);
 

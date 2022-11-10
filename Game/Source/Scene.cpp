@@ -49,13 +49,7 @@ bool Scene::Start()
 	
 	app->map->Load();
 
-	SString title(
-		"Map:%dx%d Tiles:%dx%d Tilesets:%d",
-		app->map->mapData.width,
-		app->map->mapData.height,
-		app->map->mapData.tileWidth,
-		app->map->mapData.tileHeight,
-		app->map->mapData.tilesets.Count()
+	SString title("Pinball"
 	);
 
 	app->win->SetTitle(title.GetString());

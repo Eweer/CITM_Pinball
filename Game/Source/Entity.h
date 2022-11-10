@@ -76,8 +76,6 @@ public:
 	
 	};
 
-public:
-
 	SString name;
 	EntityType type;
 	bool active = true;
