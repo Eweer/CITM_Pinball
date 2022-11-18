@@ -26,7 +26,7 @@ enum class bodyType {
 };
 
 enum class ColliderType {
-	PLAYER, 
+	BALL, 
 	ITEM,
 	PLATFORM, 
 	UNKNOWN

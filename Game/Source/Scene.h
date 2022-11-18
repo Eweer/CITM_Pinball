@@ -2,7 +2,7 @@
 #define __SCENE_H__
 
 #include "Module.h"
-#include "Player.h"
+#include "Ball.h"
 #include "Item.h"
 
 struct SDL_Texture;
@@ -34,7 +34,7 @@ public:
 	// Called before quitting
 	bool CleanUp() final;
 
-	Player* player = nullptr;
+	Ball* ball = nullptr;
 
 private:
 	SDL_Texture* img = nullptr;

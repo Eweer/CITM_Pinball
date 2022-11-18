@@ -1,5 +1,5 @@
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __BALL_H__
+#define __BALL_H__
 
 #include "Entity.h"
 #include "Point.h"
@@ -7,13 +7,13 @@
 
 struct SDL_Texture;
 
-class Player : public Entity
+class Ball : public Entity
 {
 public:
 
-	Player();
+	Ball();
 	
-	~Player() final;
+	~Ball() final;
 
 	bool Awake() final;
 
@@ -27,4 +27,4 @@ public:
 
 };
 
-#endif // __PLAYER_H__
+#endif // __BALL_H__

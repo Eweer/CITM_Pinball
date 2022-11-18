@@ -24,7 +24,7 @@
   <!-- L02: DONE: Add an element for the entity manager and add the player parameters -->
   <scene>
 
-    <player x="647" y="672" texturepath="Assets/Textures/pinball.png"/>
+    <ball x="647" y="672" texturepath="Assets/Textures/pinball.png"/>
     <!--    
     <item x="256" y="515" texturepath="Assets/Textures/goldCoin.png"/>
     <item x="416" y="512" texturepath="Assets/Textures/goldCoin.png"/>

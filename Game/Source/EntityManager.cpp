@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "Player.h"
+#include "Ball.h"
 #include "Item.h"
 #include "App.h"
 #include "Textures.h"
@@ -68,8 +68,8 @@ Entity* EntityManager::CreateEntity(EntityType type)
 
 	switch (type)
 	{
-	case EntityType::PLAYER:
-		entity = new Player();
+	case EntityType::BALL:
+		entity = new Ball();
 		break;
 
 	case EntityType::ITEM:

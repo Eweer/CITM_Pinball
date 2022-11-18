@@ -31,7 +31,7 @@
     <ClCompile Include="Source\Physics.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Player.cpp">
+    <ClCompile Include="Source\Ball.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Render.cpp">
@@ -102,7 +102,7 @@
     <ClInclude Include="Source\Physics.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Player.h">
+    <ClInclude Include="Source\Ball.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Render.h">
@@ -117,7 +117,7 @@
     <ClInclude Include="Source\Window.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
+    <ClInclude Include="Source\Animation.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>

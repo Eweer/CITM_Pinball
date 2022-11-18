@@ -32,10 +32,10 @@ bool Scene::Awake(pugi::xml_node& config)
 		item->parameters = itemNode;
 	}
 
-	if (config.child("player")) 
+	if (config.child("ball")) 
 	{
-		player = (Player*)app->entityManager->CreateEntity(EntityType::PLAYER);
-		player->parameters = config.child("player");
+		ball = (Ball*)app->entityManager->CreateEntity(EntityType::BALL);
+		ball->parameters = config.child("ball");
 	}
 
 	return true;

@@ -10,7 +10,7 @@ class PhysBody;
 
 enum class EntityType
 {
-	PLAYER,
+	BALL,
 	ITEM,
 	UNKNOWN
 };

@@ -7,7 +7,7 @@
 #include "Defs.h"
 #include "Log.h"
 #include "Render.h"
-#include "Player.h"
+#include "Ball.h"
 #include "Window.h"
 #include "Box2D/Box2D/Box2D.h"
 
