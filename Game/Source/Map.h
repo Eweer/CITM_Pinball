@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "List.h"
 #include "Point.h"
+#include "Physics.h"
 
 #include "PugiXml\src\pugixml.hpp"
 
@@ -30,7 +31,9 @@ public:
 
 private:
 
-    void CreateChainColliders(const std::string &xyStr);
+    void CreateCollidersBasedOnName(const pugi::xml_node &colliderAttributes, bodyType typeOfChildren);
+    void CreateChainColliders(const std::string &xyStr, bodyType bodyT);
+
 
     pugi::xml_document collidersFile;
 	SDL_Texture *background = nullptr;

@@ -3,7 +3,6 @@
 #include "Render.h"
 #include "Textures.h"
 #include "Map.h"
-#include "Physics.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -68,11 +67,16 @@ bool Map::Load()
 
 	try
 	{
-		pugi::xml_node staticColliders = collidersFile.child("collider_info").child("static");
-		for(pugi::xml_node collidersNode = staticColliders.child("chain"); collidersNode; collidersNode = collidersNode.next_sibling("chain"))
+		pugi::xml_node infoColliders = collidersFile.child("collider_info");
+
+		for(pugi::xml_node colliderBodyType : infoColliders.children())
 		{
-			const std::string xyStr = collidersNode.attribute("xy").as_string();
-			CreateChainColliders(xyStr);
+			const char *bodyTypeChar = colliderBodyType.name();
+			bodyType typeOfChildren = app->physics->GetEnumFromStr(std::string(bodyTypeChar));
+			for(pugi::xml_node colliderAttributes : colliderBodyType.children())
+			{
+				CreateCollidersBasedOnName(colliderAttributes, typeOfChildren);
+			}
 		}
 	} catch(const std::regex_error &rerr)
 	{
@@ -88,7 +92,29 @@ bool Map::Load()
 	return true;
 }
 
-void Map::CreateChainColliders(const std::string &xyStr)
+void Map::CreateCollidersBasedOnName(const pugi::xml_node &colliderAttributes, bodyType typeOfChildren)
+{
+	std::string colliderName(colliderAttributes.name());
+	if(colliderName == "chain")
+	{
+		const std::string xyStr = colliderAttributes.attribute("xy").as_string();
+		CreateChainColliders(xyStr, typeOfChildren);
+	}
+	else if(colliderName == "circle")
+	{
+		//Attributes: name | x | y | radius
+		const int posX = colliderAttributes.attribute("x").as_int();
+		const int posY = colliderAttributes.attribute("y").as_int();
+		const int radius = colliderAttributes.attribute("radius").as_int();
+		app->physics->CreateCircle(posX, posY, radius, typeOfChildren);
+	}
+	else
+	{
+		LOG("Attribute name %s not recognized in Map::Load()", colliderAttributes.name());
+	}
+}
+
+void Map::CreateChainColliders(const std::string &xyStr, bodyType bodyT)
 {
 	static const std::regex r("\\d{1,3}");
 	auto xyStrBegin = std::sregex_iterator(xyStr.begin(), xyStr.end(), r);
@@ -104,7 +130,7 @@ void Map::CreateChainColliders(const std::string &xyStr)
 		pointsEnd++;
 	}
 
-	PhysBody *border = app->physics->CreateChain(0, 0, points, pointsEnd, bodyType::STATIC);
+	PhysBody *border = app->physics->CreateChain(0, 0, points, pointsEnd, bodyT);
 	border->ctype = ColliderType::PLATFORM;
 
 	delete[] points;

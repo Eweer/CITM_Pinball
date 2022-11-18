@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Entity.h"
 
+#include <unordered_map>
+
 #include "Box2D/Box2D/Box2D.h"
 
 #define GRAVITY_X 0.0f
@@ -68,12 +70,14 @@ public:
 
 	// Create basic physics objects
 	PhysBody* CreateRectangle(int x, int y, int width, int height, bodyType type);
-	PhysBody* CreateCircle(int x, int y, int radious, bodyType type);
+	PhysBody* CreateCircle(int x, int y, int radius, bodyType type);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, bodyType type);
 	PhysBody* CreateChain(int x, int y, const int* const points, int size, bodyType type);
 	
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact) final;
+
+	bodyType GetEnumFromStr(const std::string &s) const;
 
 private:
 
@@ -82,4 +86,6 @@ private:
 
 	// Box2D World
 	b2World* world = nullptr;
+
+	static const std::unordered_map<std::string, bodyType> bodyTypeStrToEnum;
 };

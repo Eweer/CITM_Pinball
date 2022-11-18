@@ -18,6 +18,12 @@
 #pragma comment( lib, "../Game/Source/External/Box2D/libx86/ReleaseLib/Box2D.lib" )
 #endif
 
+const std::unordered_map<std::string, bodyType> Physics::bodyTypeStrToEnum{
+		{"dynamic", bodyType::DYNAMIC},
+		{"static", bodyType::STATIC},
+		{"kinematic", bodyType::KINEMATIC}
+};
+
 Physics::Physics() : Module()
 {
 }
@@ -41,8 +47,6 @@ bool Physics::Start()
 // 
 bool Physics::PreUpdate()
 {
-	bool ret = true;
-
 	// Step (update) the World
 	// WARNING: WE ARE STEPPING BY CONSTANT 1/60 SECONDS!
 	world->Step(1.0f / 60.0f, 6, 2);
@@ -63,7 +67,7 @@ bool Physics::PreUpdate()
 		}
 	}
 
-	return ret;
+	return true;
 }
 
 PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, bodyType type)
@@ -96,7 +100,7 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, bodyType
 	return pbody;
 }
 
-PhysBody* Physics::CreateCircle(int x, int y, int radious, bodyType type)
+PhysBody* Physics::CreateCircle(int x, int y, int radius, bodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -112,7 +116,7 @@ PhysBody* Physics::CreateCircle(int x, int y, int radious, bodyType type)
 
 	// Create SHAPE
 	b2CircleShape circle;
-	circle.m_radius = PIXEL_TO_METERS(radious);
+	circle.m_radius = PIXEL_TO_METERS(radius);
 
 	// Create FIXTURE
 	b2FixtureDef fixture;
@@ -127,8 +131,8 @@ PhysBody* Physics::CreateCircle(int x, int y, int radious, bodyType type)
 	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
-	pbody->width = radious * 0.5f;
-	pbody->height = radious * 0.5f;
+	pbody->width = radius * 0.5f;
+	pbody->height = radius * 0.5f;
 
 	// Return our PhysBody class
 	return pbody;
@@ -325,6 +329,11 @@ void Physics::BeginContact(b2Contact* contact)
 
 	if (physB && physB->listener)
 		physB->listener->OnCollision(physB, physA);
+}
+
+bodyType Physics::GetEnumFromStr(const std::string &s) const
+{
+	return bodyTypeStrToEnum.at(s);
 }
 
 //--------------- PhysBody
