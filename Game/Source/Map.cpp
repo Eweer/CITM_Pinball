@@ -68,11 +68,12 @@ bool Map::Load()
 
 	try
 	{
-		pugi::xml_node collidersNode = collidersFile.child("collider_info").child("outter");
-		const std::string xyStr = collidersNode.attribute("xy").as_string();
-
-		CreateChainColliders(xyStr);
-
+		pugi::xml_node staticColliders = collidersFile.child("collider_info").child("static");
+		for(pugi::xml_node collidersNode = staticColliders.child("chain"); collidersNode; collidersNode = collidersNode.next_sibling("chain"))
+		{
+			const std::string xyStr = collidersNode.attribute("xy").as_string();
+			CreateChainColliders(xyStr);
+		}
 
 	} catch(const std::regex_error &rerr)
 	{
