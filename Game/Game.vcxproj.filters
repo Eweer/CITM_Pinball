@@ -19,7 +19,7 @@
     <ClCompile Include="Source\Input.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Item.cpp">
+    <ClCompile Include="Source\InteractiveParts.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Main.cpp">
@@ -90,7 +90,7 @@
     <ClInclude Include="Source\Input.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Item.h">
+    <ClInclude Include="Source\InteractiveParts.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Map.h">

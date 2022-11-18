@@ -11,7 +11,7 @@ class PhysBody;
 enum class EntityType
 {
 	BALL,
-	ITEM,
+	INTERACTIVE_PARTS,
 	UNKNOWN
 };
 

@@ -1,4 +1,4 @@
-#include "Item.h"
+#include "InteractiveParts.h"
 #include "App.h"
 #include "Textures.h"
 #include "Audio.h"
@@ -9,14 +9,14 @@
 #include "Point.h"
 #include "Physics.h"
 
-Item::Item() : Entity(EntityType::ITEM)
+InteractiveParts::InteractiveParts() : Entity(EntityType::INTERACTIVE_PARTS)
 {
 	name.Create("item");
 }
 
-Item::~Item() = default;
+InteractiveParts::~InteractiveParts() = default;
 
-bool Item::Awake() 
+bool InteractiveParts::Awake() 
 {
 	//position.x = parameters.attribute("x").as_int();
 	//position.y = parameters.attribute("y").as_int();
@@ -25,18 +25,18 @@ bool Item::Awake()
 	return true;
 }
 
-bool Item::Start() 
+bool InteractiveParts::Start() 
 {
 	//texture = app->tex->Load(texturePath);
 	
 	//pBody = app->physics->CreateCircle(position.x + 16, position.y + 16, 16, bodyType::DYNAMIC);
 
-	//pBody->ctype = ColliderType::ITEM;
+	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
 
 	return true;
 }
 
-bool Item::Update()
+bool InteractiveParts::Update()
 {
 	//position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - 16;
 	//position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - 16;
@@ -46,7 +46,7 @@ bool Item::Update()
 	return true;
 }
 
-bool Item::CleanUp()
+bool InteractiveParts::CleanUp()
 {
 	return true;
 }

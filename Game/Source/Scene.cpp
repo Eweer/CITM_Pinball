@@ -28,7 +28,7 @@ bool Scene::Awake(pugi::xml_node& config)
 	// Check https://pugixml.org/docs/quickstart.html#access
 	for (pugi::xml_node itemNode = config.child("item"); itemNode; itemNode = itemNode.next_sibling("item"))
 	{
-		auto* item = (Item*)app->entityManager->CreateEntity(EntityType::ITEM);
+		auto* item = (InteractiveParts*)app->entityManager->CreateEntity(EntityType::INTERACTIVE_PARTS);
 		item->parameters = itemNode;
 	}
 

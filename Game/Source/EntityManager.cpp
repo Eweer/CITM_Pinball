@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include "Ball.h"
-#include "Item.h"
+#include "InteractiveParts.h"
 #include "App.h"
 #include "Textures.h"
 #include "Scene.h"
@@ -72,11 +72,12 @@ Entity* EntityManager::CreateEntity(EntityType type)
 		entity = new Ball();
 		break;
 
-	case EntityType::ITEM:
-		entity = new Item();
+	case EntityType::INTERACTIVE_PARTS:
+		entity = new InteractiveParts();
 		break;
 
-	default: break;
+	default: 
+		break;
 	}
 
 	// Created entities are added to the list

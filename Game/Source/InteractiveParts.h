@@ -7,13 +7,13 @@
 
 struct SDL_Texture;
 
-class Item : public Entity
+class InteractiveParts : public Entity
 {
 public:
 
-	Item();
+	InteractiveParts();
 
-	~Item() final;
+	~InteractiveParts() final;
 
 	bool Awake() final;
 
