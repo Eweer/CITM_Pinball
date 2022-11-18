@@ -178,9 +178,18 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
-	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
-	if(type == bodyType::STATIC) body.type = b2_staticBody;
-	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
+	switch(type)
+	{
+		case bodyType::DYNAMIC:
+			body.type = b2_dynamicBody;
+			break;
+		case bodyType::STATIC:
+			body.type = b2_staticBody;
+			break;
+		case bodyType::KINEMATIC:
+			body.type = b2_kinematicBody;
+			break;
+	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
