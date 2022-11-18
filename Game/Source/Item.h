@@ -12,7 +12,8 @@ class Item : public Entity
 public:
 
 	Item();
-	virtual ~Item();
+
+	~Item() final;
 
 	bool Awake() final;
 
@@ -22,14 +23,6 @@ public:
 
 	bool CleanUp() final;
 
-	bool isPicked = false;
-
-private:
-
-	PhysBody *pBody = nullptr;
-
-	SDL_Texture *texture = nullptr;
-	const char* texturePath = nullptr;
 };
 
 #endif // __ITEM_H__

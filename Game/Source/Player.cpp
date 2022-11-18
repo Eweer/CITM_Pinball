@@ -9,7 +9,7 @@
 #include "Point.h"
 #include "Physics.h"
 
-#define BALL_SIZE 40
+constexpr uint BALL_SIZE = 40;
 
 Player::Player() : Entity(EntityType::PLAYER)
 {
@@ -35,16 +35,16 @@ bool Player::Start() {
 	texture = app->tex->Load(texturePath);
 
 	//initialize physics body
-	pbody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);
+	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);
 
 	//This makes the Physics module to call the OnCollision method
-	pbody->listener = this; 
+	pBody->listener = this; 
 
 	//Assign collider type
-	pbody->ctype = ColliderType::PLAYER;
+	pBody->ctype = ColliderType::PLAYER;
 
 	//initialize audio effect - !! Path is hardcoded, should be loaded from config.xml
-	pickCoinFxId = app->audio->LoadFx("Assets/Audio/Fx/retro-video-game-coin-pickup-38299.ogg");
+	//pickCoinFxId = app->audio->LoadFx("Assets/Audio/Fx/retro-video-game-coin-pickup-38299.ogg");
 
 	return true;
 }
@@ -70,11 +70,11 @@ bool Player::Update()
 	}
 
 	//Set the velocity of the pbody of the player
-	pbody->body->SetLinearVelocity(vel);
+	pBody->body->SetLinearVelocity(vel);
 
 	//Update player position in pixels
-	position.x = METERS_TO_PIXELS(pbody->body->GetTransform().p.x) - BALL_SIZE/2;
-	position.y = METERS_TO_PIXELS(pbody->body->GetTransform().p.y) - BALL_SIZE/2;
+	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
+	position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - BALL_SIZE/2;
 
 	app->render->DrawTexture(texture, position.x , position.y);
 
@@ -91,7 +91,7 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 	{
 		case ColliderType::ITEM:
 			LOG("Collision ITEM");
-			app->audio->PlayFx(pickCoinFxId);
+			//app->audio->PlayFx(pickCoinFxId);
 			break;
 		case ColliderType::PLATFORM:
 			LOG("Collision PLATFORM");

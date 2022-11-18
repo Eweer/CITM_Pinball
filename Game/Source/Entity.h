@@ -73,7 +73,7 @@ public:
 
 	virtual void OnCollision(PhysBody* physA, PhysBody* physB) 
 	{
-	
+		//To override
 	};
 
 	SString name;
@@ -83,6 +83,11 @@ public:
 
 	iPoint position;       
 	bool renderable = true;
+
+	SDL_Texture *texture = nullptr;
+	const char *texturePath = nullptr;
+
+	PhysBody *pBody = nullptr;
 };
 
 #endif // __ENTITY_H__

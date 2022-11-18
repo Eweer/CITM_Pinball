@@ -25,15 +25,6 @@ public:
 
 	void OnCollision(PhysBody* physA, PhysBody* physB) final;
 
-private:
-
-	SDL_Texture *texture = nullptr;
-	const char* texturePath = nullptr;
-
-	PhysBody* pbody = nullptr;
-
-	int pickCoinFxId = 0;
-
 };
 
 #endif // __PLAYER_H__

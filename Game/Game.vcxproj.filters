@@ -76,46 +76,49 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\App.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Audio.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entity.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\EntityManager.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Input.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Item.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Map.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Module.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Physics.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Render.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Textures.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Window.h">
-      <Filter>Filter</Filter>
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,7 +134,7 @@
     <Filter Include="Source">
       <UniqueIdentifier>{6bfe4328-93e7-4eb3-8f00-909a7b06cdb3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Filter">
+    <Filter Include="Headers">
       <UniqueIdentifier>{0e9301da-4b8c-400d-9568-8b833d136e28}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
