@@ -74,7 +74,6 @@ bool Map::Load()
 			const std::string xyStr = collidersNode.attribute("xy").as_string();
 			CreateChainColliders(xyStr);
 		}
-
 	} catch(const std::regex_error &rerr)
 	{
 		if(rerr.code())

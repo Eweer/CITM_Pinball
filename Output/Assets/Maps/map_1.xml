@@ -185,5 +185,12 @@
 			214,943
 		"/>
 		<chain xy =""/>
+		<cirlce x = "" y = "" radius = ""/>
 	</static>
+
+	<kinematic>
+	</kinematic>
+
+	<dynamic>
+	</dynamic>
 </collider_info>
