@@ -30,6 +30,9 @@ public:
 
 private:
 
+    void CreateChainColliders(const std::string &xyStr);
+
+    pugi::xml_document collidersFile;
 	SDL_Texture *background = nullptr;
 	std::string mapFolder;
 	uint levelNumber = 1;
