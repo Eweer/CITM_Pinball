@@ -31,8 +31,17 @@
     <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0"/>
     <ramp_left  x="115" y="728" renderable = "true" speed = "0.2" animstyle = "0"/>
     <ramp_right x="452" y="538" renderable = "true" speed = "0.2" animstyle = "0"/>
-    <flipper_left x = "237" y = "882" renderable = "true" speed = "0.2" animstyle = "0"/>
-    <flipper_right x = "368" y = "882" renderable = "true" speed = "0.2" animstyle = "0"/>
+
+    <flipper_left x = "237" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
+      <revolute_joint enable_limit = "true" max_angle = "45" min_angle = "-5" enable_motor = "true" motor_speed = "30" max_torque = "40"/>
+      <anchor x = "251" y = "900" radius = "10"/>
+    </flipper_left>
+
+    <flipper_right x = "368" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
+      <revolute_joint enable_limit = "true" max_angle = "45" min_angle = "-5" enable_motor = "true" motor_speed = "30" max_torque = "40"/>
+      <anchor x = "435" y = "900" radius = "10"/>
+    </flipper_right>
+    
 
     <border x = "0" y = "0" renderable = "false"/>
 

@@ -25,6 +25,17 @@ const std::unordered_map<std::string, BodyType> Physics::bodyTypeStrToEnum {
 	{"unknown", BodyType::UNKNOWN}
 };
 
+const std::unordered_map<std::string, RevoluteJoinTypes> Physics::propertyToType{
+	{"anchor_offset", RevoluteJoinTypes::IPOINT},
+	{"body_offset", RevoluteJoinTypes::IPOINT},
+	{"enable_limit", RevoluteJoinTypes::BOOL},
+	{"max_angle", RevoluteJoinTypes::FLOAT},
+	{"min_angle", RevoluteJoinTypes::FLOAT},
+	{"enable_motor", RevoluteJoinTypes::BOOL},
+	{"motor_speed", RevoluteJoinTypes::INT},
+	{"max_torque", RevoluteJoinTypes::INT}
+};
+
 Physics::Physics() : Module()
 {
 }
@@ -268,6 +279,31 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 	return pbody;
 }
 
+b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties)
+{
+	b2RevoluteJointDef rJoint;
+	rJoint.bodyA = anchor->body;
+	rJoint.bodyB = body->body;
+	rJoint.collideConnected = false;
+	rJoint.type = e_revoluteJoint;
+
+	rJoint.localAnchorA = b2Vec2(PIXEL_TO_METERS(anchorOffset.x), PIXEL_TO_METERS(anchorOffset.y));
+	rJoint.localAnchorB = b2Vec2(PIXEL_TO_METERS(bodyOffset.x), PIXEL_TO_METERS(bodyOffset.y));
+
+	if((rJoint.enableLimit = properties[0].b))
+	{
+		rJoint.upperAngle = DEGTORAD * (properties[1].f);
+		rJoint.lowerAngle = DEGTORAD * (properties[2].f);
+	}
+	if((rJoint.enableMotor = properties[3].b))
+	{
+		rJoint.motorSpeed = (float)properties[4].i;
+		rJoint.maxMotorTorque = (float)properties[5].i;
+	}
+
+	return ((b2RevoluteJoint *)world->CreateJoint(&rJoint));
+}
+
 // 
 bool Physics::PostUpdate()
 {
@@ -383,6 +419,16 @@ BodyType Physics::GetEnumFromStr(const std::string &s) const
 		return BodyType::UNKNOWN;
 	}
 	return bodyTypeStrToEnum.at(s);
+}
+
+RevoluteJoinTypes Physics::GetTypeFromProperty(const std::string &s) const
+{
+	if(!propertyToType.count(s))
+	{
+		LOG("Physics::GetTypeFromProperty didn't find %s attribute.", s);
+		return RevoluteJoinTypes::UNKNOWN;
+	}
+	return propertyToType.at(s);
 }
 
 //--------------- PhysBody

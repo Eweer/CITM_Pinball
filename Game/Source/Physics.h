@@ -34,6 +34,31 @@ enum class ColliderType {
 	// ..
 };
 
+enum class RevoluteJoinTypes
+{
+	 IPOINT,
+	 BOOL,
+	 FLOAT,
+	 INT,
+	 UNKNOWN
+};
+
+struct RevoluteJointSingleProperty
+{
+	RevoluteJoinTypes type = RevoluteJoinTypes::UNKNOWN;
+	union
+	{
+		iPoint p;
+		bool b;
+		float f;
+		int i;
+	};
+
+	RevoluteJointSingleProperty::RevoluteJointSingleProperty() {};
+	RevoluteJointSingleProperty::RevoluteJointSingleProperty(const RevoluteJointSingleProperty &r) {};
+	RevoluteJointSingleProperty::~RevoluteJointSingleProperty() {};
+};
+
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
 {
@@ -74,11 +99,15 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius, BodyType type);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
 	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type);
+
+	//Create basic joints
+	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
 	
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact) final;
 
 	BodyType GetEnumFromStr(const std::string &s) const;
+	RevoluteJoinTypes GetTypeFromProperty(const std::string &s) const;
 
 private:
 
@@ -90,4 +119,5 @@ private:
 	b2World* world = nullptr;
 
 	static const std::unordered_map<std::string, BodyType> bodyTypeStrToEnum;
+	static const std::unordered_map<std::string, RevoluteJoinTypes> propertyToType;
 };

@@ -15,6 +15,7 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <array>
 
 #include <functional>
 
@@ -64,6 +65,44 @@ bool InteractiveParts::Start()
 	if(name == "flipper")
 	{
 		flipper = std::make_unique<FlipperInfo>();
+
+		flipper->anchor = app->physics->CreateCircle(
+			parameters.child("anchor").attribute("x").as_int(),
+			parameters.child("anchor").attribute("y").as_int(),
+			parameters.child("anchor").attribute("radius").as_int(),
+			BodyType::STATIC
+		);
+
+		pugi::xml_node flipperNode = parameters.child("revolute_joint");
+		std::vector<RevoluteJointSingleProperty> revoluteProperties;
+		for(pugi::xml_attribute attr : flipperNode.attributes())
+		{
+			std::string attrName(attr.name());
+			RevoluteJointSingleProperty propertyToAdd;
+			propertyToAdd.type = app->physics->GetTypeFromProperty(attrName);
+
+			switch(propertyToAdd.type)
+			{
+				case RevoluteJoinTypes::BOOL:
+					propertyToAdd.b = attr.as_bool();
+					break;
+
+				case RevoluteJoinTypes::FLOAT:
+					propertyToAdd.f = attr.as_float();
+					break;
+
+				case RevoluteJoinTypes::INT:
+					propertyToAdd.i = attr.as_int();
+					break;
+
+				case RevoluteJoinTypes::IPOINT:
+				case RevoluteJoinTypes::UNKNOWN:
+					LOG("Something went wrong in InteractiveParts doing the revolute joint");
+					break;
+			}
+			revoluteProperties.push_back(propertyToAdd);
+		}
+		flipper->joint = app->physics->CreateRevoluteJoint(flipper->anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 	}
 
 	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
@@ -119,6 +158,7 @@ bool InteractiveParts::CreateColliders()
 			return CreateCollidersBasedOnShape(colliderNode);
 		}
 	}
+	return true;
 }
 
 bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &colliderNode)
