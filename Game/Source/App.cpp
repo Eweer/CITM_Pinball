@@ -213,6 +213,11 @@ const char* App::GetOrganization() const
 	return organization.GetString();
 }
 
+uint App::GetLevelNumber() const
+{
+	return levelNumber;
+}
+
 void App::LoadGameRequest()
 {
 	// NOTE: We should check if SAVE_STATE_FILENAME actually exist

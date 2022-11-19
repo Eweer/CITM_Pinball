@@ -2,8 +2,15 @@
 #define __ITEM_H__
 
 #include "Entity.h"
+
 #include "Point.h"
+
+#include <regex>
+#include <string>
+#include "Physics.h"
+
 #include "SDL/include/SDL.h"
+#include "PugiXml/src/pugixml.hpp"
 
 struct SDL_Texture;
 
@@ -11,7 +18,9 @@ class InteractiveParts : public Entity
 {
 public:
 
-	InteractiveParts();
+	explicit InteractiveParts();
+
+	explicit InteractiveParts(const pugi::xml_node &itemNode);
 
 	~InteractiveParts() final;
 
@@ -23,6 +32,14 @@ public:
 
 	bool CleanUp() final;
 
+private:
+
+	void CreateCollidersBasedOnName(const pugi::xml_node &colliderAttributes, bodyType typeOfChildren);
+	PhysBody *CreateChainColliders(const std::string &xyStr, bodyType bodyT);
+
+
+	std::string interactiveCollidersFolder;
+	pugi::xml_document collidersFile;
 };
 
 #endif // __ITEM_H__

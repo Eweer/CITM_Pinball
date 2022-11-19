@@ -44,7 +44,7 @@ public:
 	{
 		this->x = p.x;
 		this->y = p.y;
-		return *this
+		return *this;
 	}
 	Point operator -(const Point &v) const
 	{

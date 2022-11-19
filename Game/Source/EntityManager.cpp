@@ -62,23 +62,12 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-Entity* EntityManager::CreateEntity(EntityType type)
+Entity* EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_node())
 {
-	Entity* entity = nullptr; 
+	Entity *entity = nullptr;
 
-	switch (type)
-	{
-	case EntityType::BALL:
-		entity = new Ball();
-		break;
-
-	case EntityType::INTERACTIVE_PARTS:
-		entity = new InteractiveParts();
-		break;
-
-	default: 
-		break;
-	}
+	if(std::string(itemNode.name()) == "ball") entity = new Ball(itemNode);
+	else entity = new InteractiveParts(itemNode);
 
 	// Created entities are added to the list
 	AddEntity(entity);

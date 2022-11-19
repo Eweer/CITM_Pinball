@@ -25,17 +25,9 @@ bool Scene::Awake(pugi::xml_node& config)
 	LOG("Loading Scene");
 
 	// iterate all objects in the scene
-	// Check https://pugixml.org/docs/quickstart.html#access
-	for (pugi::xml_node itemNode = config.child("item"); itemNode; itemNode = itemNode.next_sibling("item"))
+	for(auto const &itemNode : config.children())
 	{
-		auto* item = (InteractiveParts*)app->entityManager->CreateEntity(EntityType::INTERACTIVE_PARTS);
-		item->parameters = itemNode;
-	}
-
-	if (config.child("ball")) 
-	{
-		ball = (Ball*)app->entityManager->CreateEntity(EntityType::BALL);
-		ball->parameters = config.child("ball");
+		app->entityManager->CreateEntity(itemNode);
 	}
 
 	return true;
@@ -49,8 +41,7 @@ bool Scene::Start()
 	
 	app->map->Load();
 
-	SString title("Pinball"
-	);
+	SString title("Pinball");
 
 	app->win->SetTitle(title.GetString());
 

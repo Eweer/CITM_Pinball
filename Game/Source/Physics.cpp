@@ -1,6 +1,6 @@
 #include "Physics.h"
 #include "Input.h"
-#include "app.h"
+#include "App.h"
 #include "Log.h"
 #include "math.h"
 #include "SDL/include/SDL_keycode.h"
@@ -19,9 +19,9 @@
 #endif
 
 const std::unordered_map<std::string, bodyType> Physics::bodyTypeStrToEnum{
-		{"dynamic", bodyType::DYNAMIC},
-		{"static", bodyType::STATIC},
-		{"kinematic", bodyType::KINEMATIC}
+	{"dynamic", bodyType::DYNAMIC},
+	{"static", bodyType::STATIC},
+	{"kinematic", bodyType::KINEMATIC}
 };
 
 Physics::Physics() : Module()
@@ -330,14 +330,14 @@ bool Physics::CleanUp()
 void Physics::BeginContact(b2Contact* contact)
 {
 	// Call the OnCollision listener function to bodies A and B, passing as inputs our custom PhysBody classes
-	auto* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	auto* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	auto* pBodyA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	auto* pBodyB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if (physA && physA->listener)
-		physA->listener->OnCollision(physA, physB);
+	if (pBodyA && pBodyA->listener)
+		pBodyA->listener->OnCollision(pBodyA, pBodyB);
 
-	if (physB && physB->listener)
-		physB->listener->OnCollision(physB, physA);
+	if (pBodyB && pBodyB->listener)
+		pBodyB->listener->OnCollision(pBodyB, pBodyA);
 }
 
 bodyType Physics::GetEnumFromStr(const std::string &s) const

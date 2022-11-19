@@ -50,6 +50,7 @@ public:
 	const char* GetArgv(int index) const;
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
+	uint GetLevelNumber() const;
 
 	void LoadGameRequest();
 	void SaveGameRequest() ;
@@ -106,6 +107,8 @@ private:
 
     bool saveGameRequested;
 	bool loadGameRequested;
+
+	uint levelNumber = 1;
 };
 
 extern App* app;

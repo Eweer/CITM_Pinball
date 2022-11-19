@@ -34,8 +34,6 @@ public:
 	// Called before quitting
 	bool CleanUp() final;
 
-	Ball* ball = nullptr;
-
 private:
 	SDL_Texture* img = nullptr;
 

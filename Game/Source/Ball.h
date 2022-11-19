@@ -11,7 +11,9 @@ class Ball : public Entity
 {
 public:
 
-	Ball();
+	explicit Ball();
+
+	explicit Ball(const pugi::xml_node &itemNode);
 	
 	~Ball() final;
 

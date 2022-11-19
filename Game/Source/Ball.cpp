@@ -11,16 +11,15 @@
 
 constexpr uint BALL_SIZE = 40;
 
-Ball::Ball() : Entity(EntityType::BALL)
-{
-	name.Create("Ball");
-}
+Ball::Ball() : Entity(EntityType::UNKNOWN) {}
+
+Ball::Ball(pugi::xml_node const &itemNode = pugi::xml_node()) : Entity(itemNode) {}
 
 Ball::~Ball() = default;
 
 bool Ball::Awake() 
 {
-	texturePath = "Assets/Textures/pinball.png";
+	texturePath = parameters.attribute("texturepath").as_string();
 
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
@@ -32,7 +31,7 @@ bool Ball::Awake()
 bool Ball::Start() {
 
 	//initilize textures
-	texture = app->tex->Load(texturePath);
+	texture = app->tex->Load(texturePath.c_str());
 
 	//initialize physics body
 	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);

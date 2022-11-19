@@ -5,13 +5,24 @@
 #include "SString.h"
 #include "Input.h"
 #include "Render.h"
+#include "Log.h"
+
+#include <regex>
+#include <string>
+#include <unordered_map>
 
 class PhysBody;
 
 enum class EntityType
 {
-	BALL,
-	INTERACTIVE_PARTS,
+	BALL = 0,
+	CIRCLE_COMBO,
+	TREES,
+	PLUNGER,
+	FLIPPER,
+	RAMP,
+	TRIANGLE,
+	BORDER,
 	UNKNOWN
 };
 
@@ -19,7 +30,48 @@ class Entity
 {
 public:
 
+	explicit Entity() = default;
+
 	explicit Entity(EntityType type) : type(type) {}
+
+	explicit Entity(pugi::xml_node const &itemNode) : parameters(itemNode)
+	{
+		const std::unordered_map<std::string, EntityType> entityTypeStrToEnum{
+			{"ball", EntityType::BALL},
+			{"circle", EntityType::CIRCLE_COMBO},
+			{"trees", EntityType::TREES},
+			{"plunger", EntityType::PLUNGER},
+			{"flipper", EntityType::FLIPPER},
+			{"ramp", EntityType::RAMP},
+			{"triangle", EntityType::TRIANGLE},
+			{"border", EntityType::BORDER},
+			{"unknown", EntityType::UNKNOWN}
+		};
+
+		std::smatch m;
+		std::string itemName(itemNode.name());
+		if(!std::regex_search(itemName, m, std::regex(R"([A-Za-z]+)")))
+		{
+			LOG("XML %s name is not correct. [A-Za-z]+", itemNode.name());
+			return;
+		}
+
+		if(!entityTypeStrToEnum.count(m[0]))
+		{
+			LOG("%s string does not have a mapped enum", m[0]);
+			return;
+		}
+
+		if(static_cast<uint>(entityTypeStrToEnum.at(m[0])) >= static_cast<uint>(EntityType::UNKNOWN)) 
+		{
+			LOG("%s does not have a valid EntityType", m[0]);
+			return;
+		}
+		this->name = m[0];
+		this->type = entityTypeStrToEnum.at(name);
+
+		
+	}
 
 	virtual ~Entity() = default;
 
@@ -76,18 +128,20 @@ public:
 		//To override
 	};
 
-	SString name;
-	EntityType type;
-	bool active = true;
 	pugi::xml_node parameters;
+	bool active = true;
 
-	iPoint position;       
+	std::string name = "unknown";
+	EntityType type = EntityType::UNKNOWN;
+	iPoint position;
+
 	bool renderable = true;
-
+	std::string texturePath;
 	SDL_Texture *texture = nullptr;
-	const char *texturePath = nullptr;
 
 	PhysBody *pBody = nullptr;
 };
+
+
 
 #endif // __ENTITY_H__

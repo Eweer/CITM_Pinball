@@ -1,6 +1,6 @@
 <config>
   <app>
-    <title>Game Development Testbed</title>
+    <title>Physics II - Pinball</title>
     <organization>UPC</organization>
   </app>
 
@@ -21,14 +21,13 @@
     <fx volume="128"/>
   </audio>
 
-  <!-- L02: DONE: Add an element for the entity manager and add the player parameters -->
-  <scene>
+  <scene assetpath = "Assets/Maps/">
 
-    <ball x="647" y="672" texturepath="Assets/Textures/pinball.png"/>
-    <!--    
-    <item x="256" y="515" texturepath="Assets/Textures/goldCoin.png"/>
-    <item x="416" y="512" texturepath="Assets/Textures/goldCoin.png"/>
-    <item x="384" y="352" texturepath="Assets/Textures/goldCoin.png"/>
+    <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
+    <triangle_left  x="164" y="710" renderable = "true"/>
+    <triangle_right x="450" y="707" renderable = "true"/>
+    <border x = "0" y = "0" renderable = "false"/>
+    <!--
     <item x="200" y="672" texturepath="Assets/Textures/goldCoin.png"/>
     <item x="500" y="672" texturepath="Assets/Textures/goldCoin.png"/>
     -->
