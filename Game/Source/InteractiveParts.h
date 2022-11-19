@@ -18,6 +18,7 @@ struct FlipperInfo
 {
 	PhysBody *anchor;
 	b2RevoluteJoint *joint;
+	float32 motorSpeed;
 };
 
 class InteractiveParts : public Entity

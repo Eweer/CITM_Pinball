@@ -45,7 +45,7 @@ enum class RevoluteJoinTypes
 
 struct RevoluteJointSingleProperty
 {
-	RevoluteJoinTypes type = RevoluteJoinTypes::UNKNOWN;
+	RevoluteJoinTypes type;
 	union
 	{
 		iPoint p;
@@ -55,7 +55,30 @@ struct RevoluteJointSingleProperty
 	};
 
 	RevoluteJointSingleProperty::RevoluteJointSingleProperty() {};
-	RevoluteJointSingleProperty::RevoluteJointSingleProperty(const RevoluteJointSingleProperty &r) {};
+	RevoluteJointSingleProperty::RevoluteJointSingleProperty(const RevoluteJointSingleProperty &r) : type(r.type)
+	{
+		switch(type)
+		{
+			case RevoluteJoinTypes::BOOL:
+				b = r.b;
+				break;
+
+			case RevoluteJoinTypes::FLOAT:
+				f = r.f;
+				break;
+
+			case RevoluteJoinTypes::INT:
+				i = r.i;
+				break;
+
+			case RevoluteJoinTypes::IPOINT:
+				p = r.p;
+				break;
+			case RevoluteJoinTypes::UNKNOWN:
+				LOG("Something went wrong in InteractiveParts doing the revolute joint");
+				break;
+		}
+	};
 	RevoluteJointSingleProperty::~RevoluteJointSingleProperty() {};
 };
 

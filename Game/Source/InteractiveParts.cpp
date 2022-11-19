@@ -75,10 +75,14 @@ bool InteractiveParts::Start()
 
 		pugi::xml_node flipperNode = parameters.child("revolute_joint");
 		std::vector<RevoluteJointSingleProperty> revoluteProperties;
+
 		for(pugi::xml_attribute attr : flipperNode.attributes())
 		{
 			std::string attrName(attr.name());
+			if(attrName == "motor_speed") flipper->motorSpeed = attr.as_float();
+
 			RevoluteJointSingleProperty propertyToAdd;
+
 			propertyToAdd.type = app->physics->GetTypeFromProperty(attrName);
 
 			switch(propertyToAdd.type)
@@ -100,7 +104,7 @@ bool InteractiveParts::Start()
 					LOG("Something went wrong in InteractiveParts doing the revolute joint");
 					break;
 			}
-			revoluteProperties.push_back(propertyToAdd);
+			revoluteProperties.push_back(RevoluteJointSingleProperty{propertyToAdd});
 		}
 		flipper->joint = app->physics->CreateRevoluteJoint(flipper->anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 	}
@@ -124,6 +128,14 @@ bool InteractiveParts::Update()
 
 		default:
 			break;
+	}
+
+	if(!flipper) return true;
+
+	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+	{
+		std::cout << "a" << std::endl;
+		flipper->joint->SetMotorSpeed(flipper->motorSpeed * -1.0f);
 	}
 
 	return true;

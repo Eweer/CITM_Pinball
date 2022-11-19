@@ -55,7 +55,7 @@
 		450,343
 		453,322
 	"/>
-	<flipper_left shape = "chain" bodytype = "static" xy ="
+	<flipper_left shape = "chain" bodytype = "dynamic" xy ="
 		259,885
 		314,924
 		316,937
@@ -66,7 +66,7 @@
 		239,895
 		248,885
 	"/>
-	<flipper_right shape = "chain" bodytype = "static" xy ="
+	<flipper_right shape = "chain" bodytype = "dynamic" xy ="
 		378,924
 		429,885
 		439,882
