@@ -62,7 +62,7 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-Entity* EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_node())
+Entity *EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_node())
 {
 	Entity *entity = nullptr;
 
@@ -72,6 +72,20 @@ Entity* EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_n
 	// Created entities are added to the list
 	AddEntity(entity);
 
+	std::string itemName(itemNode.name());
+
+	if(!launcher && itemName == "launcher_top") launcher = entity;
+
+	if(!flippers.first || !flippers.second)
+	{
+		std::string nameStart = itemName.substr(0, std::string("flipper").size());
+		if(nameStart == "flipper")
+		{
+			std::string nameEnd = itemName.substr(std::string("flipper").size() + 1);
+			if(nameEnd == "left") flippers.first = entity;
+			else flippers.second = entity;
+		}
+	}
 	return entity;
 }
 

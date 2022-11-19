@@ -33,9 +33,9 @@ public:
 
 	void AddEntity(Entity* entity);
 
-public:
-
 	List<Entity*> entities;
+	std::pair<Entity*, Entity*> flippers;
+	Entity *launcher = nullptr;
 
 };
 

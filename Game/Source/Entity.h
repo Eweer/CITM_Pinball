@@ -56,11 +56,12 @@ struct Texture
 enum class EntityType
 {
 	BALL = 0,
+	FLIPPER,
+	LAUNCHER,
 	ANIM,
 	CIRCLE_COMBO,
 	TREES,
 	PLUNGER,
-	FLIPPER,
 	RAMP,
 	TRIANGLE,
 	BORDER,
@@ -79,20 +80,7 @@ public:
 
 	explicit Entity(pugi::xml_node const &itemNode) : parameters(itemNode)
 	{
-		const std::unordered_map<std::string, EntityType> entityTypeStrToEnum{
-			{"ball", EntityType::BALL},
-			{"anim", EntityType::ANIM},
-			{"circle", EntityType::CIRCLE_COMBO},
-			{"trees", EntityType::TREES},
-			{"plunger", EntityType::PLUNGER},
-			{"flipper", EntityType::FLIPPER},
-			{"ramp", EntityType::RAMP},
-			{"triangle", EntityType::TRIANGLE},
-			{"border", EntityType::BORDER},
-			{"ping", EntityType::PING},
-			{"bridge", EntityType::BRIDGE},
-			{"unknown", EntityType::UNKNOWN}
-		};
+		const std::unordered_map<std::string, EntityType> entityTypeStrToEnum = CreateEnumMap();
 
 		std::smatch m;
 		std::string itemName(itemNode.name());
@@ -174,6 +162,27 @@ public:
 	{
 		//To override
 	};
+
+	std::unordered_map<std::string, EntityType> CreateEnumMap() const
+	{
+		const std::unordered_map<std::string, EntityType> aux{
+			{"ball", EntityType::BALL},
+			{"flipper", EntityType::FLIPPER},
+			{"launcher", EntityType::LAUNCHER},
+			{"anim", EntityType::ANIM},
+			{"circle", EntityType::CIRCLE_COMBO},
+			{"trees", EntityType::TREES},
+			{"plunger", EntityType::PLUNGER},
+			{"ramp", EntityType::RAMP},
+			{"triangle", EntityType::TRIANGLE},
+			{"border", EntityType::BORDER},
+			{"ping", EntityType::PING},
+			{"bridge", EntityType::BRIDGE},
+			{"unknown", EntityType::UNKNOWN}
+		};
+
+		return aux;
+	}
 
 	pugi::xml_node parameters;
 	bool active = true;

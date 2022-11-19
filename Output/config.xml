@@ -42,6 +42,9 @@
     <ping_up x = "438" y = "294" renderable = "true"/>
     <ping_down x = "314" y = "455" renderable = "true"/>
 
+    <launcher_top x = "636" y = "915" renderable = "true"/>
+    <launcher_bottom x = "565" y = "940" renderable = "true"/>
+
     <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "3"/>
     <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
 
