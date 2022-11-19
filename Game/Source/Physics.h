@@ -83,6 +83,7 @@ private:
 
 	// Debug mode
 	bool debug = false;
+	void DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *vertices, Uint8 r, Uint8 g, Uint8 b, Uint8 a = (Uint8)255U) const;
 
 	// Box2D World
 	b2World* world = nullptr;

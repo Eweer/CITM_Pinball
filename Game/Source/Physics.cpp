@@ -18,7 +18,7 @@
 #pragma comment( lib, "../Game/Source/External/Box2D/libx86/ReleaseLib/Box2D.lib" )
 #endif
 
-const std::unordered_map<std::string, bodyType> Physics::bodyTypeStrToEnum{
+const std::unordered_map<std::string, bodyType> Physics::bodyTypeStrToEnum {
 	{"dynamic", bodyType::DYNAMIC},
 	{"static", bodyType::STATIC},
 	{"kinematic", bodyType::KINEMATIC}
@@ -48,7 +48,6 @@ bool Physics::Start()
 bool Physics::PreUpdate()
 {
 	// Step (update) the World
-	// WARNING: WE ARE STEPPING BY CONSTANT 1/60 SECONDS!
 	world->Step(1.0f / 60.0f, 6, 2);
 
 	// Because Box2D does not automatically broadcast collisions/contacts with sensors, 
@@ -104,11 +103,18 @@ PhysBody* Physics::CreateCircle(int x, int y, int radius, bodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
-
-	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
-	if(type == bodyType::STATIC) body.type = b2_staticBody;
-	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
-
+	switch(type)
+	{
+		case bodyType::DYNAMIC:
+			body.type = b2_dynamicBody;
+			break;
+		case bodyType::STATIC:
+			body.type = b2_staticBody;
+			break;
+		case bodyType::KINEMATIC:
+			body.type = b2_kinematicBody;
+			break;
+	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
@@ -142,9 +148,18 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bo
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
-	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
-	if(type == bodyType::STATIC) body.type = b2_staticBody;
-	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
+	switch(type)
+	{
+		case bodyType::DYNAMIC:
+			body.type = b2_dynamicBody;
+			break;
+		case bodyType::STATIC:
+			body.type = b2_staticBody;
+			break;
+		case bodyType::KINEMATIC:
+			body.type = b2_kinematicBody;
+			break;
+	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
@@ -228,92 +243,84 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 // 
 bool Physics::PostUpdate()
 {
-	bool ret = true;
-
 	// Activate or deactivate debug mode
-	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	if(app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
-	
+
+	if(!debug)
+		return true;
+
 	//  Iterate all objects in the world and draw the bodies
-	if (debug)
+	for(b2Body *b = world->GetBodyList(); b; b = b->GetNext())
 	{
-		for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+		for(b2Fixture *f = b->GetFixtureList(); f; f = f->GetNext())
 		{
-			for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
+			switch(f->GetType())
 			{
-				switch (f->GetType())
-				{
-					// Draw circles ------------------------------------------------
+				// Draw circles ------------------------------------------------
 				case b2Shape::e_circle:
 				{
-					const auto* shape = (b2CircleShape*)f->GetShape();
-					uint width, height;
-					app->win->GetWindowSize(width, height);
+					b2CircleShape const *shape = (b2CircleShape *)f->GetShape();
 					b2Vec2 pos = f->GetBody()->GetPosition();
-					app->render->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius) * app->win->GetScale(), 255, 255, 255);
+					app->render->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
 				}
 				break;
 
 				// Draw polygons ------------------------------------------------
 				case b2Shape::e_polygon:
 				{
-					const auto* polygonShape = (b2PolygonShape*)f->GetShape();
-					int32 count = polygonShape->GetVertexCount();
-					b2Vec2 prev, v;
-
-					for (int32 i = 0; i < count; ++i)
-					{
-						v = b->GetWorldPoint(polygonShape->GetVertex(i));
-						if (i > 0)
-							app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 255, 100);
-
-						prev = v;
-					}
-
-					v = b->GetWorldPoint(polygonShape->GetVertex(0));
-					app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+					b2PolygonShape const *itemToDraw = (b2PolygonShape *)f->GetShape();
+					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 255, 100, 100);
 				}
 				break;
 
 				// Draw chains contour -------------------------------------------
 				case b2Shape::e_chain:
 				{
-					b2ChainShape* shape = (b2ChainShape*)f->GetShape();
-					b2Vec2 prev, v;
-
-					for (int32 i = 0; i < shape->m_count; ++i)
-					{
-						v = b->GetWorldPoint(shape->m_vertices[i]);
-						if (i > 0)
-							app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
-						prev = v;
-					}
-
-					v = b->GetWorldPoint(shape->m_vertices[0]);
-					app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+					b2ChainShape const *itemToDraw = (b2ChainShape *)f->GetShape();
+					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices , 100, 255, 100);
 				}
 				break;
 
 				// Draw a single segment(edge) ----------------------------------
 				case b2Shape::e_edge:
 				{
-					b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
-					b2Vec2 v1, v2;
+					b2EdgeShape const *shape = (b2EdgeShape *)f->GetShape();
+					b2Vec2 v1;
+					b2Vec2 v2;
 
 					v1 = b->GetWorldPoint(shape->m_vertex0);
 					v1 = b->GetWorldPoint(shape->m_vertex1);
 					app->render->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
 				}
 				break;
-				}
+
+				case b2Shape::e_typeCount:
+					//Info parameter. A shape should never have this type.
+					break;
 
 			}
 		}
 	}
-
-
-	return ret;
+	return true;
 }
+
+void Physics::DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *vertices, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
+{
+	b2Vec2 prev = body->GetWorldPoint(vertices[0]);
+	b2Vec2 v;
+
+	for(int32 i = 1; i < count; ++i)
+	{
+		v = body->GetWorldPoint(vertices[i]);
+		app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), r, g, b, a);
+		prev = v;
+	}
+
+	v = body->GetWorldPoint(vertices[0]);
+	app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), r, g, b, a);
+}
+
 
 // Called before quitting
 bool Physics::CleanUp()
