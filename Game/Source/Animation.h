@@ -119,6 +119,11 @@ public:
 	{
 		animStyle = i;
 	}
+
+	AnimIteration GetAnimStyle() const
+	{
+		return animStyle;
+	}
 	
 	void Start()
 	{

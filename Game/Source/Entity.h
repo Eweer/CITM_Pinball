@@ -59,7 +59,7 @@ enum class EntityType
 	FLIPPER,
 	LAUNCHER,
 	ANIM,
-	CIRCLE_COMBO,
+	CIRCLE,
 	TREES,
 	PLUNGER,
 	RAMP,
@@ -67,6 +67,7 @@ enum class EntityType
 	BORDER,
 	PING,
 	BRIDGE,
+	ROAD,
 	UNKNOWN
 };
 
@@ -170,7 +171,7 @@ public:
 			{"flipper", EntityType::FLIPPER},
 			{"launcher", EntityType::LAUNCHER},
 			{"anim", EntityType::ANIM},
-			{"circle", EntityType::CIRCLE_COMBO},
+			{"circle", EntityType::CIRCLE},
 			{"trees", EntityType::TREES},
 			{"plunger", EntityType::PLUNGER},
 			{"ramp", EntityType::RAMP},
@@ -178,6 +179,7 @@ public:
 			{"border", EntityType::BORDER},
 			{"ping", EntityType::PING},
 			{"bridge", EntityType::BRIDGE},
+			{"road", EntityType::ROAD},
 			{"unknown", EntityType::UNKNOWN}
 		};
 

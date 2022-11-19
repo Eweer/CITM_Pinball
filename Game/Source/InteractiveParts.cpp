@@ -51,8 +51,19 @@ bool InteractiveParts::Start()
 	if(texture.type == RenderModes::ANIMATION)
 	{
 		texture.anim->SetSpeed(parameters.attribute("speed").as_float());
-		texture.anim->SetAnimStyle(parameters.attribute("animstyle").as_int());
-		if(type == EntityType::ANIM) texture.anim->Start();
+		auto animStyle = static_cast<AnimIteration>(parameters.attribute("animstyle").as_int());
+		texture.anim->SetAnimStyle(animStyle);
+		if(type == EntityType::ANIM
+			|| animStyle == AnimIteration::LOOP_FORWARD_BACKWARD
+			|| animStyle == AnimIteration::LOOP_FROM_START)
+		{
+			texture.anim->Start();
+		}
+	}
+
+	if(name == "flipper")
+	{
+		flipper = std::make_unique<FlipperInfo>();
 	}
 
 	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;

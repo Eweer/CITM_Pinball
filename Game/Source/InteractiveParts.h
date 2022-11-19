@@ -14,6 +14,12 @@
 
 struct SDL_Texture;
 
+struct FlipperInfo
+{
+	PhysBody *anchor;
+	b2RevoluteJoint *joint;
+};
+
 class InteractiveParts : public Entity
 {
 public:
@@ -39,6 +45,8 @@ private:
 	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT);
 
 	void AddTexturesAndAnimationFrames();
+
+	std::unique_ptr<FlipperInfo> flipper;
 
 	std::string interactiveCollidersFolder;
 	pugi::xml_document collidersFile;
