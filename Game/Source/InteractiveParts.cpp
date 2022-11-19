@@ -152,8 +152,9 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 
 	struct dirent **nameList;
 	std::string texturePath = interactiveCollidersFolder + name + "/";
+
 	const char *dirPath = texturePath.c_str();
-	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort);
+	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort) - 2;
 	static const std::regex r(R"(([A-Za-z]+(?:_[A-Za-z]*)*)_(?:(image|anim)([\d]*)).png)"); // www.regexr.com/72ogq
 	std::string itemName(parameters.name());
 	bool foundOne = false;
@@ -162,6 +163,7 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 	{
 		std::smatch m;
 		std::string animFileName(nameList[n]->d_name);
+
 		if(!std::regex_match(animFileName, m, r))
 		{
 			free(nameList[n]);
@@ -176,7 +178,6 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 		}
 
 		if(!foundOne) foundOne = true;
-
 
 		if(texture.type == RenderModes::UNKNOWN)
 		{

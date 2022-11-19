@@ -11,6 +11,7 @@
 #include <regex>
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 #include <memory>
 
@@ -24,6 +25,8 @@ enum class RenderModes
 	UNKNOWN
 };
 
+
+//DO NOT TOUCH AT ALL. EVERYTHING WILL BREAK. IT MANAGED TO WORK. LET'S IGNORE THIS
 struct Texture
 {
 	RenderModes type;
@@ -48,6 +51,7 @@ struct Texture
 	}
 	Texture::~Texture(){}
 };
+// YOU CAN START TYPING AGAIN AFTER THIS LINE
 
 enum class EntityType
 {

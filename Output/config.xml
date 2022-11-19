@@ -27,6 +27,9 @@
     <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "once"/>
     <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "once"/>
     <border x = "0" y = "0" renderable = "false"/>
+    <flipper_left x = "225" y = "882" renderable = "true" speed = "0.2" animstyle = "once"/>
+    <flipper_right x = "376" y = "882" renderable = "true" speed = "0.2" animstyle = "once"/>
+    
     <!--
     <item x="200" y="672" texturepath="Assets/Textures/goldCoin.png"/>
     <item x="500" y="672" texturepath="Assets/Textures/goldCoin.png"/>
