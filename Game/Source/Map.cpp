@@ -7,7 +7,6 @@
 #include "Log.h"
 
 #include <math.h>
-#include <regex>
 
 #include "SDL_image/include/SDL_image.h"
 

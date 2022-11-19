@@ -1,3 +1,8 @@
+#ifndef __DIRENT_H__
+#define __DIRENT_H__
+#include "dirent/dirent.h"
+#endif //__DIRENT_H__
+
 #ifndef __DEFS_H__
 #define __DEFS_H__
 
@@ -60,6 +65,12 @@ inline const char* const PATH(const char* folder, const char* file)
 	sprintf_s(path, MID_STR, "%s/%s", folder, file);
 	return path;
 }
+
+inline int DescAlphasort(const struct dirent **c, const struct dirent **d)
+{
+	return alphasort(d, c);
+}
+
 
 // Performance macros
 #define PERF_START(timer) timer.Start()

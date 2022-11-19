@@ -9,7 +9,9 @@
 
 #include "Log.h"
 #include "Point.h"
+#include "Animation.h"
 
+#include <iostream>
 #include <regex>
 #include <string>
 #include <vector>
@@ -34,6 +36,47 @@ bool InteractiveParts::Awake()
 
 bool InteractiveParts::Start() 
 {
+	
+	if(!CreateColliders()) return false;
+	
+	position = { 
+		parameters.attribute("x").as_int(), 
+		parameters.attribute("y").as_int() 
+	};
+
+	AddTexturesAndAnimationFrames();
+
+	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
+
+	return true;
+}
+
+bool InteractiveParts::Update()
+{	
+	switch(texture.type)
+	{
+		case RenderModes::IMAGE:
+			app->render->DrawTexture(texture.image, position.x, position.y);
+			break;
+			
+		case RenderModes::ANIMATION:
+			app->render->DrawTexture(texture.anim->GetCurrentFrame(), position.x, position.y);
+			break;
+
+		default:
+			break;
+	}
+
+	return true;
+}
+
+bool InteractiveParts::CleanUp()
+{
+	return true;
+}
+
+bool InteractiveParts::CreateColliders()
+{
 	auto collidersFileName = interactiveCollidersFolder + "interactive_colliders_" + std::to_string(app->GetLevelNumber()) + ".xml";
 
 	pugi::xml_parse_result parseResult = collidersFile.load_file(collidersFileName.c_str());
@@ -57,37 +100,6 @@ bool InteractiveParts::Start()
 			break;
 		}
 	}
-	
-	position = { 
-		parameters.attribute("x").as_int(), 
-		parameters.attribute("y").as_int() 
-	};
-
-	texturePath = interactiveCollidersFolder + name + "/" + parameters.name() + "_anim001.png";
-
-	renderable = parameters.attribute("renderable").as_bool();
-
-	if(renderable)
-	{
-		texture = app->tex->Load(texturePath.c_str());
-		if(!texture) LOG("%s texture didn't load properly.", parameters.name());
-	}
-
-	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
-
-	return true;
-}
-
-bool InteractiveParts::Update()
-{
-	if(renderable) app->render->DrawTexture(texture, position.x, position.y);
-
-	return true;
-}
-
-bool InteractiveParts::CleanUp()
-{
-	return true;
 }
 
 void InteractiveParts::CreateCollidersBasedOnName(const pugi::xml_node &colliderNode, bodyType typeOfChildren)
@@ -100,7 +112,6 @@ void InteractiveParts::CreateCollidersBasedOnName(const pugi::xml_node &collider
 	}
 	else if(colliderShape == "circle")
 	{
-		//Attributes: name | x | y | radius
 		const int posX = colliderNode.attribute("x").as_int();
 		const int posY = colliderNode.attribute("y").as_int();
 		const int radius = colliderNode.attribute("radius").as_int();
@@ -129,4 +140,67 @@ PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, bodyT
 	PhysBody *border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
 
 	return border;
+}
+
+void InteractiveParts::AddTexturesAndAnimationFrames()
+{
+	if(!parameters.attribute("renderable").as_bool())
+	{
+		texture.type = RenderModes::NO_RENDER;
+		return;
+	}
+
+	struct dirent **nameList;
+	std::string texturePath = interactiveCollidersFolder + name + "/";
+	const char *dirPath = texturePath.c_str();
+	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort);
+	static const std::regex r(R"(([A-Za-z]+(?:_[A-Za-z]*)*)_(?:(image|anim)([\d]*)).png)"); // www.regexr.com/72ogq
+	std::string itemName(parameters.name());
+	bool foundOne = false;
+
+	while(n--)
+	{
+		std::smatch m;
+		std::string animFileName(nameList[n]->d_name);
+		if(!std::regex_match(animFileName, m, r))
+		{
+			free(nameList[n]);
+			continue;
+		}
+		std::string match = m[1];
+
+		if(match != itemName)
+		{
+			if(foundOne) return;	//As they are alphasorted, once we found one but the name isn't the same
+			else continue;			//there won't be any more.
+		}
+
+		if(!foundOne) foundOne = true;
+
+
+		if(texture.type == RenderModes::UNKNOWN)
+		{
+			match = m[2];
+			texture.type = (match == "image") ? RenderModes::IMAGE : RenderModes::ANIMATION;
+		}
+
+		match = texturePath;
+		match += m[0];
+
+		switch(texture.type)
+		{
+			case RenderModes::ANIMATION:
+				texture.anim->AddSingleFrame(match.c_str());
+				break;
+
+			case RenderModes::IMAGE:
+				texture.image = app->tex->Load(match.c_str());
+				break;
+
+			default:
+				break;
+		}
+		free(nameList[n]);
+	}
+	free(nameList);
 }

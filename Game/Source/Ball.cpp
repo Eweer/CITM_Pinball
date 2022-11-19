@@ -31,7 +31,8 @@ bool Ball::Awake()
 bool Ball::Start() {
 
 	//initilize textures
-	texture = app->tex->Load(texturePath.c_str());
+	texture.type = RenderModes::IMAGE;
+	texture.image = app->tex->Load(texturePath.c_str());
 
 	//initialize physics body
 	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);
@@ -75,7 +76,7 @@ bool Ball::Update()
 	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
 	position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - BALL_SIZE/2;
 
-	app->render->DrawTexture(texture, position.x , position.y);
+	app->render->DrawTexture(texture.image, position.x , position.y);
 
 	return true;
 }

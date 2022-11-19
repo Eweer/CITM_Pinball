@@ -6,12 +6,48 @@
 #include "Input.h"
 #include "Render.h"
 #include "Log.h"
+#include "Animation.h"
 
 #include <regex>
 #include <string>
 #include <unordered_map>
 
+#include <memory>
+
 class PhysBody;
+
+enum class RenderModes
+{
+	IMAGE = 0,
+	ANIMATION,
+	NO_RENDER,
+	UNKNOWN
+};
+
+struct Texture
+{
+	RenderModes type;
+	union
+	{
+		std::unique_ptr<Animation> anim = std::make_unique<Animation>();
+		SDL_Texture *image;
+	};
+
+	Texture::Texture() = default;
+	Texture::Texture(const Texture &t) : type(t.type)
+	{
+		switch(type)
+		{
+			case RenderModes::ANIMATION:
+				break;
+			case RenderModes::IMAGE:
+				image = t.image;
+				break;
+		}
+
+	}
+	Texture::~Texture(){}
+};
 
 enum class EntityType
 {
@@ -70,7 +106,8 @@ public:
 		this->name = m[0];
 		this->type = entityTypeStrToEnum.at(name);
 
-		
+		texture.type = RenderModes::UNKNOWN;
+		texture.anim = std::make_unique<Animation>();
 	}
 
 	virtual ~Entity() = default;
@@ -135,9 +172,9 @@ public:
 	EntityType type = EntityType::UNKNOWN;
 	iPoint position;
 
-	bool renderable = true;
 	std::string texturePath;
-	SDL_Texture *texture = nullptr;
+
+	Texture texture;
 
 	PhysBody *pBody = nullptr;
 };

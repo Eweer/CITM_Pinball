@@ -99,11 +99,10 @@ SDL_Texture* Textures::LoadSurface(SDL_Surface* surface)
 	if(!texture)
 	{
 		LOG("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
+		return nullptr;
 	}
-	else
-	{
-		textures.Add(texture);
-	}
+
+	textures.Add(texture);
 
 	return texture;
 }

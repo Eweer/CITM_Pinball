@@ -24,8 +24,8 @@
   <scene assetpath = "Assets/Maps/">
 
     <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
-    <triangle_left  x="164" y="710" renderable = "true"/>
-    <triangle_right x="450" y="707" renderable = "true"/>
+    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "once"/>
+    <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "once"/>
     <border x = "0" y = "0" renderable = "false"/>
     <!--
     <item x="200" y="672" texturepath="Assets/Textures/goldCoin.png"/>
