@@ -35,7 +35,7 @@ bool Ball::Start() {
 	texture.image = app->tex->Load(texturePath.c_str());
 
 	//initialize physics body
-	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, bodyType::DYNAMIC);
+	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, BodyType::DYNAMIC);
 
 	//This makes the Physics module to call the OnCollision method
 	pBody->listener = this; 

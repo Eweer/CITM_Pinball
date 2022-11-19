@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+#include <functional>
+
 #include "PugiXml/src/pugixml.hpp"
 
 
@@ -45,6 +47,13 @@ bool InteractiveParts::Start()
 	};
 
 	AddTexturesAndAnimationFrames();
+
+	if(texture.type == RenderModes::ANIMATION)
+	{
+		texture.anim->SetSpeed(parameters.attribute("speed").as_float());
+		texture.anim->SetAnimStyle(parameters.attribute("animstyle").as_int());
+		if(type == EntityType::ANIM) texture.anim->Start();
+	}
 
 	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
 
@@ -77,6 +86,9 @@ bool InteractiveParts::CleanUp()
 
 bool InteractiveParts::CreateColliders()
 {
+	//EntityType::ANIM are just animations of board, they don't have collisions.
+	if(type == EntityType::ANIM) return true;
+
 	auto collidersFileName = interactiveCollidersFolder + "interactive_colliders_" + std::to_string(app->GetLevelNumber()) + ".xml";
 
 	pugi::xml_parse_result parseResult = collidersFile.load_file(collidersFileName.c_str());
@@ -93,18 +105,25 @@ bool InteractiveParts::CreateColliders()
 	{
 		if(std::string(colliderNode.name()) == std::string(parameters.name()))
 		{
-			auto bodyTypeChar = colliderNode.attribute("bodytype").as_string();
-			bodyType typeOfChildren = app->physics->GetEnumFromStr(bodyTypeChar);
-
-			CreateCollidersBasedOnName(colliderNode, typeOfChildren);
-			break;
+			return CreateCollidersBasedOnShape(colliderNode);
 		}
 	}
 }
 
-void InteractiveParts::CreateCollidersBasedOnName(const pugi::xml_node &colliderNode, bodyType typeOfChildren)
+bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &colliderNode)
 {
-	std::string colliderShape(colliderNode.attribute("shape").as_string());
+	auto bodyTypeChar = colliderNode.attribute("bodytype").as_string();
+	std::string colliderShape = colliderNode.attribute("shape").as_string();
+
+	if(!bodyTypeChar || colliderShape.empty())
+	{
+		LOG("Can't read xml attributes on InteractiveParts::CreateCollidersBasedOnShape\n");
+		LOG("ColliderShape is %s || BodyTypeChar is %s\n", bodyTypeChar ? "true" : "false", colliderShape.empty() ? "false" : "true");
+		return false;
+	}
+
+	BodyType typeOfChildren = app->physics->GetEnumFromStr(bodyTypeChar);
+	
 	if(colliderShape == "chain")
 	{
 		const std::string xyStr = colliderNode.attribute("xy").as_string();
@@ -119,11 +138,13 @@ void InteractiveParts::CreateCollidersBasedOnName(const pugi::xml_node &collider
 	}
 	else
 	{
-		LOG("Attribute shape of %s not recognized in Map::Load()", colliderNode.name());
+		LOG("Attribute shape of %s not recognized in InteractiveParts::CreateCollidersBasedOnShape", colliderNode.name());
+		return false;
 	}
+	return true;
 }
 
-PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, bodyType bodyT)
+PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyType bodyT)
 {
 	static const std::regex r("\\d{1,3}");
 	auto xyStrBegin = std::sregex_iterator(xyStr.begin(), xyStr.end(), r);
@@ -154,10 +175,12 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 	std::string texturePath = interactiveCollidersFolder + name + "/";
 
 	const char *dirPath = texturePath.c_str();
-	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort) - 2;
-	static const std::regex r(R"(([A-Za-z]+(?:_[A-Za-z]*)*)_(?:(image|anim)([\d]*)).png)"); // www.regexr.com/72ogq
+	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort);
+	static const std::regex r(R"(([A-Za-z]+(?:_[A-Za-z]*)*)_(?:(image|static|anim)([\d]*)).png)"); // www.regexr.com/72ogq
 	std::string itemName(parameters.name());
 	bool foundOne = false;
+
+	if(n <= 0) return;
 
 	while(n--)
 	{
@@ -169,9 +192,10 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 			free(nameList[n]);
 			continue;
 		}
-		std::string match = m[1];
 
-		if(match != itemName)
+		std::string match1 = m[1]; //example: triangle_left
+
+		if(match1 != itemName)
 		{
 			if(foundOne) return;	//As they are alphasorted, once we found one but the name isn't the same
 			else continue;			//there won't be any more.
@@ -179,23 +203,23 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 
 		if(!foundOne) foundOne = true;
 
-		if(texture.type == RenderModes::UNKNOWN)
-		{
-			match = m[2];
-			texture.type = (match == "image") ? RenderModes::IMAGE : RenderModes::ANIMATION;
-		}
+		std::string match2 = m[2]; // (image|static|anim)
 
-		match = texturePath;
-		match += m[0];
+		if(texture.type == RenderModes::UNKNOWN)
+			texture.type = (match2 == "image") ? RenderModes::IMAGE : RenderModes::ANIMATION;
+
+		std::string match0 = texturePath + std::string(m[0]); //example: /Assets/Maps/ + triangle_left_anim001.png
 
 		switch(texture.type)
 		{
 			case RenderModes::ANIMATION:
-				texture.anim->AddSingleFrame(match.c_str());
+				
+				if(match2 == "anim") texture.anim->AddSingleFrame(match0.c_str());
+				else texture.anim->AddStaticImage(match0.c_str());
 				break;
 
 			case RenderModes::IMAGE:
-				texture.image = app->tex->Load(match.c_str());
+				texture.image = app->tex->Load(match0.c_str());
 				break;
 
 			default:

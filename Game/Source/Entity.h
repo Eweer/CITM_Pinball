@@ -56,6 +56,7 @@ struct Texture
 enum class EntityType
 {
 	BALL = 0,
+	ANIM,
 	CIRCLE_COMBO,
 	TREES,
 	PLUNGER,
@@ -63,6 +64,8 @@ enum class EntityType
 	RAMP,
 	TRIANGLE,
 	BORDER,
+	PING,
+	BRIDGE,
 	UNKNOWN
 };
 
@@ -78,6 +81,7 @@ public:
 	{
 		const std::unordered_map<std::string, EntityType> entityTypeStrToEnum{
 			{"ball", EntityType::BALL},
+			{"anim", EntityType::ANIM},
 			{"circle", EntityType::CIRCLE_COMBO},
 			{"trees", EntityType::TREES},
 			{"plunger", EntityType::PLUNGER},
@@ -85,6 +89,8 @@ public:
 			{"ramp", EntityType::RAMP},
 			{"triangle", EntityType::TRIANGLE},
 			{"border", EntityType::BORDER},
+			{"ping", EntityType::PING},
+			{"bridge", EntityType::BRIDGE},
 			{"unknown", EntityType::UNKNOWN}
 		};
 

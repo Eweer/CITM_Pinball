@@ -35,8 +35,8 @@ public:
 private:
 
 	bool CreateColliders();
-	void CreateCollidersBasedOnName(const pugi::xml_node &colliderAttributes, bodyType typeOfChildren);
-	PhysBody *CreateChainColliders(const std::string &xyStr, bodyType bodyT);
+	bool CreateCollidersBasedOnShape(const pugi::xml_node &colliderAttributes);
+	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT);
 
 	void AddTexturesAndAnimationFrames();
 

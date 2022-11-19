@@ -10,11 +10,12 @@ struct SDL_Texture;
 
 enum class AnimIteration
 {
-	ONCE,
+	ONCE = 0,
 	LOOP_FROM_START,
 	FORWARD_BACKWARD,
 	LOOP_FORWARD_BACKWARD,
-	NEVER
+	NEVER,
+	UNKNOWN
 };
 
 class Animation
@@ -28,7 +29,11 @@ public:
 	SDL_Texture* GetCurrentFrame()
 	{
 		//if it's not active, we just return frame
-		if(!bActive) return frames[(int)currentFrame]; 
+		if(!bActive)
+		{
+			if(staticImage) return staticImage;
+			return frames[(int)currentFrame];
+		}
 
 		//if it's active and finished, it's no longer finished
 		if(bFinished) bFinished = !bFinished;
@@ -66,14 +71,21 @@ public:
 					Stop();
 			}
 			bFinished = true;
-			timesLooped++;
 		}
 		return frames[(int)currentFrame];
 	}
 
+	/*------ TODO--------
 	Animation* AddFrames(const char *pathToFolder)
 	{
-		//TODO
+	
+	}
+	--------------------*/
+
+	Animation *AddStaticImage(const char *pathToPNG)
+	{
+		staticImage = app->tex->Load(pathToPNG);
+		return this;
 	}
 
 	Animation* AddSingleFrame(const char* pathToPNG)
@@ -93,9 +105,19 @@ public:
 		return bFinished;
 	}
 
-	void SetSpeed(float animSpeed)
+	void SetSpeed(float const &animSpeed)
 	{
 		speed = animSpeed;
+	}
+
+	void SetAnimStyle(int i)
+	{
+		animStyle = static_cast<AnimIteration>(i);
+	}
+
+	void SetAnimStyle(AnimIteration i)
+	{
+		animStyle = i;
 	}
 	
 	void Start()
@@ -111,7 +133,6 @@ public:
 	void Reset()
 	{
 		bFinished = false;
-		timesLooped = 0;
 		currentFrame = 0;
 	}
 
@@ -125,9 +146,9 @@ private:
 	float speed = 0;
 	float currentFrame = 0;
 	AnimIteration animStyle = AnimIteration::NEVER;
-	uint timesLooped = 0;
 	bool bActive = false;
 	bool bFinished = false;
 	std::vector<SDL_Texture*> frames;
+	SDL_Texture *staticImage = nullptr;
 }; 
 #endif	// __ANIMATION_H__

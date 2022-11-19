@@ -1,11 +1,11 @@
 <collider_info>
 	<ping_up shape = "circle" x = "467" y = "323" radius = "29" bodytype = "static"/>
-	<circle name ="ping_down" shape = "circle" x = "343" y = "484" radius = "29" bodytype = "static"/>
+	<ping_down shape = "circle" x = "343" y = "484" radius = "29" bodytype = "static"/>
 	<circle_down shape = "circle" x = "167" y = "671" radius = "14" bodytype = "static"/>
 	<circle_up shape = "circle" x = "396" y = "263" radius = "14" bodytype = "static"/>
 	<circle_left shape = "circle" x = "215" y = "415" radius = "14" bodytype = "static"/>
 	<circle_right shape = "circle" x = "548" y = "503" radius = "9" bodytype = "static"/>
-	<curve_ramp_down shape = "chain" xy ="
+	<bridge_down shape = "chain" bodytype = "static" xy ="
 		473,327
 		472,344
 		482,367
@@ -31,7 +31,7 @@
 		478,341
 		480,329
 	"/>
-	<curve_ramp_up shape = "chain" bodytype = "static" xy ="
+	<bridge_up shape = "chain" bodytype = "static" xy ="
 		446,319
 		444,346
 		448,361

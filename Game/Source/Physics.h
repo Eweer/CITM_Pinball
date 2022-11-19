@@ -19,10 +19,11 @@
 #define RADTODEG 57.295779513082320876f
 
 // types of bodies
-enum class bodyType {
+enum class BodyType {
 	DYNAMIC,
 	STATIC,
-	KINEMATIC
+	KINEMATIC,
+	UNKNOWN
 };
 
 enum class ColliderType {
@@ -69,15 +70,15 @@ public:
 	bool CleanUp() final;
 
 	// Create basic physics objects
-	PhysBody* CreateRectangle(int x, int y, int width, int height, bodyType type);
-	PhysBody* CreateCircle(int x, int y, int radius, bodyType type);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, bodyType type);
-	PhysBody* CreateChain(int x, int y, const int* const points, int size, bodyType type);
+	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type);
+	PhysBody* CreateCircle(int x, int y, int radius, BodyType type);
+	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
+	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type);
 	
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact) final;
 
-	bodyType GetEnumFromStr(const std::string &s) const;
+	BodyType GetEnumFromStr(const std::string &s) const;
 
 private:
 
@@ -88,5 +89,5 @@ private:
 	// Box2D World
 	b2World* world = nullptr;
 
-	static const std::unordered_map<std::string, bodyType> bodyTypeStrToEnum;
+	static const std::unordered_map<std::string, BodyType> bodyTypeStrToEnum;
 };

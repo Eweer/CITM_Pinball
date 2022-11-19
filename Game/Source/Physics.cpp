@@ -18,10 +18,11 @@
 #pragma comment( lib, "../Game/Source/External/Box2D/libx86/ReleaseLib/Box2D.lib" )
 #endif
 
-const std::unordered_map<std::string, bodyType> Physics::bodyTypeStrToEnum {
-	{"dynamic", bodyType::DYNAMIC},
-	{"static", bodyType::STATIC},
-	{"kinematic", bodyType::KINEMATIC}
+const std::unordered_map<std::string, BodyType> Physics::bodyTypeStrToEnum {
+	{"dynamic", BodyType::DYNAMIC},
+	{"static", BodyType::STATIC},
+	{"kinematic", BodyType::KINEMATIC},
+	{"unknown", BodyType::UNKNOWN}
 };
 
 Physics::Physics() : Module()
@@ -69,51 +70,72 @@ bool Physics::PreUpdate()
 	return true;
 }
 
-PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, bodyType type)
+PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, BodyType type)
 {
 	b2BodyDef body;
+	switch(type)
+	{
+		case BodyType::DYNAMIC:
+			body.type = b2_dynamicBody;
+			break;
+		case BodyType::STATIC:
+			body.type = b2_staticBody;
+			break;
+		case BodyType::KINEMATIC:
+			body.type = b2_kinematicBody;
+			break;
+		case BodyType::UNKNOWN:
+			LOG("CreateRectangle Received UNKNOWN BodyType");
+			return nullptr;
+	}
 
-	if(type == bodyType::DYNAMIC) body.type = b2_dynamicBody;
-	if(type == bodyType::STATIC) body.type = b2_staticBody;
-	if(type == bodyType::KINEMATIC) body.type = b2_kinematicBody;
-
+	// Add BODY to the world
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
+
+	// Create SHAPE
 	b2PolygonShape box;
 	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
 
+	// Create FIXTURE
 	b2FixtureDef fixture;
 	fixture.shape = &box;
 	fixture.density = 1.0f;
 	b->ResetMassData();
 
+	// Add fixture to the BODY
 	b->CreateFixture(&fixture);
 
+	// Create our custom PhysBody class
 	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
 
+	// Return our PhysBody class
 	return pbody;
 }
 
-PhysBody* Physics::CreateCircle(int x, int y, int radius, bodyType type)
+PhysBody* Physics::CreateCircle(int x, int y, int radius, BodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
 	switch(type)
 	{
-		case bodyType::DYNAMIC:
+		case BodyType::DYNAMIC:
 			body.type = b2_dynamicBody;
 			break;
-		case bodyType::STATIC:
+		case BodyType::STATIC:
 			body.type = b2_staticBody;
 			break;
-		case bodyType::KINEMATIC:
+		case BodyType::KINEMATIC:
 			body.type = b2_kinematicBody;
 			break;
+		case BodyType::UNKNOWN:
+			LOG("CreateRectangle Received UNKNOWN BodyType");
+			return nullptr;
 	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -144,21 +166,24 @@ PhysBody* Physics::CreateCircle(int x, int y, int radius, bodyType type)
 	return pbody;
 }
 
-PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bodyType type)
+PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
 	switch(type)
 	{
-		case bodyType::DYNAMIC:
+		case BodyType::DYNAMIC:
 			body.type = b2_dynamicBody;
 			break;
-		case bodyType::STATIC:
+		case BodyType::STATIC:
 			body.type = b2_staticBody;
 			break;
-		case bodyType::KINEMATIC:
+		case BodyType::KINEMATIC:
 			body.type = b2_kinematicBody;
 			break;
+		case BodyType::UNKNOWN:
+			LOG("CreateRectangle Received UNKNOWN BodyType");
+			return nullptr;
 	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -175,35 +200,38 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, bo
 	fixture.density = 1.0f;
 	fixture.isSensor = true;
 
-	// Add fixture to the BODY
+
 	b->CreateFixture(&fixture);
 
-	// Create our custom PhysBody class
+
 	auto* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width;
 	pbody->height = height;
 
-	// Return our PhysBody class
+
 	return pbody;
 }
 
-PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, bodyType type)
+PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, BodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
 	switch(type)
 	{
-		case bodyType::DYNAMIC:
+		case BodyType::DYNAMIC:
 			body.type = b2_dynamicBody;
 			break;
-		case bodyType::STATIC:
+		case BodyType::STATIC:
 			body.type = b2_staticBody;
 			break;
-		case bodyType::KINEMATIC:
+		case BodyType::KINEMATIC:
 			body.type = b2_kinematicBody;
 			break;
+		case BodyType::UNKNOWN:
+			LOG("CreateRectangle Received UNKNOWN BodyType");
+			return nullptr;
 	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -347,8 +375,13 @@ void Physics::BeginContact(b2Contact* contact)
 		pBodyB->listener->OnCollision(pBodyB, pBodyA);
 }
 
-bodyType Physics::GetEnumFromStr(const std::string &s) const
+BodyType Physics::GetEnumFromStr(const std::string &s) const
 {
+	if(!bodyTypeStrToEnum.count(s))
+	{
+		LOG("Physics::GetEnumFromStr didn't find %s attribute.", s);
+		return BodyType::UNKNOWN;
+	}
 	return bodyTypeStrToEnum.at(s);
 }
 

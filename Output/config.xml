@@ -23,17 +23,25 @@
 
   <scene assetpath = "Assets/Maps/">
 
+    <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
+
     <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
-    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "once"/>
-    <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "once"/>
+
+    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0"/>
+    <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0"/>
+    <flipper_left x = "225" y = "882" renderable = "true" speed = "0.2" animstyle = "0"/>
+    <flipper_right x = "376" y = "882" renderable = "true" speed = "0.2" animstyle = "0"/>
+
     <border x = "0" y = "0" renderable = "false"/>
-    <flipper_left x = "225" y = "882" renderable = "true" speed = "0.2" animstyle = "once"/>
-    <flipper_right x = "376" y = "882" renderable = "true" speed = "0.2" animstyle = "once"/>
-    
-    <!--
-    <item x="200" y="672" texturepath="Assets/Textures/goldCoin.png"/>
-    <item x="500" y="672" texturepath="Assets/Textures/goldCoin.png"/>
-    -->
+
+    <bridge_up x = "332" y = "320" renderable = "true"/>
+    <bridge_down x = "0" y = "0" renderable = "false"/>
+
+    <ping_up x = "438" y = "294" renderable = "true"/>
+    <ping_down x = "314" y = "455" renderable = "true"/>
+
+    <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "3"/>
+
   </scene>
 
   <map>
