@@ -77,8 +77,6 @@ bool Scene::Update(float dt)
 
 	app->map->Draw();
 
-	// L08: TODO 3: Test World to map method
-
 	return true;
 }
 

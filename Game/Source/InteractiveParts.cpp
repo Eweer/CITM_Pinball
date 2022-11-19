@@ -12,6 +12,7 @@
 
 #include <regex>
 #include <string>
+#include <vector>
 
 #include "PugiXml/src/pugixml.hpp"
 
@@ -117,19 +118,15 @@ PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, bodyT
 	auto xyStrBegin = std::sregex_iterator(xyStr.begin(), xyStr.end(), r);
 	auto xyStrEnd = std::sregex_iterator();
 
-	auto *points = new int[std::distance(xyStrBegin, xyStrEnd)];
-	int pointsEnd = 0;
+	std::vector<int> points;
 
 	for(std::sregex_iterator i = xyStrBegin; i != xyStrEnd; ++i)
 	{
 		std::smatch match = *i;
-		points[pointsEnd] = stoi(match.str());
-		pointsEnd++;
+		points.push_back(stoi(match.str()));
 	}
 
-	PhysBody *border = app->physics->CreateChain(0, 0, points, pointsEnd, bodyT);
-
-	delete[] points;
+	PhysBody *border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
 
 	return border;
 }
