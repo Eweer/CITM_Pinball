@@ -2,6 +2,7 @@
 #include "Render.h"
 #include "Textures.h"
 #include "Map.h"
+#include "Audio.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -58,7 +59,9 @@ bool Map::Load()
 
 	backgroundImage = app->tex->Load(levelFileName.c_str());
 
-	musicPath += "level_" + std::to_string(aux) + ".ogg";
+	std::string musicFileName = musicPath + "level_" + std::to_string(aux) + ".ogg";
+
+	backgroundMusic = app->audio->PlayMusic(musicFileName.c_str());
 
 	return true;
 }

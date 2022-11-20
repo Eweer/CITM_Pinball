@@ -34,8 +34,8 @@ private:
 	std::string musicPath;
 	std::string texturePath;
 
+	uint backgroundMusic = 0;
 
-	uint backgroundMusic;
 	SDL_Texture *backgroundImage = nullptr;
 };
 

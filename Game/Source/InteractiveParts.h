@@ -52,7 +52,7 @@ private:
 	void AddTexturesAndAnimationFrames();
 
 	int scoreValue = 0;
-	uint ballCollisionAudio = 0;
+	uint ballCollisionFx = 0;
 
 	std::unique_ptr<FlipperInfo> flipperJoint;
 
