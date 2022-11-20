@@ -60,7 +60,8 @@
     <anim_minifan x = "464" y = "491" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
     <anim_circle x = "137" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
-    <anim_pinkpower x = "210" y = "205" renderable = "true" speed = "0.25" animstyle = "0"/>
+    <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <anim_rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "3"/>
 
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
