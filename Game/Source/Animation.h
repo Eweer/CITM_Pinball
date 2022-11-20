@@ -42,7 +42,7 @@ public:
 		currentFrame += speed;
 
 		//if no more animations in std::vector<SDL_Texture*> frames
-		if((int)currentFrame >= frames.size() || (int)currentFrame < 0)
+		if((uint)currentFrame >= frames.size() || (int)currentFrame < 0)
 		{
 			//we do things
 			switch(animStyle)
@@ -74,13 +74,6 @@ public:
 		}
 		return frames[(int)currentFrame];
 	}
-
-	/*------ TODO--------
-	Animation* AddFrames(const char *pathToFolder)
-	{
-	
-	}
-	--------------------*/
 
 	Animation *AddStaticImage(const char *pathToPNG)
 	{
