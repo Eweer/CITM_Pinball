@@ -65,15 +65,17 @@
     <anim_fan x = "147" y = "468" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_minifan x = "464" y = "491" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
-    <anim_circle x = "137" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
+    <anim_circle x = "135" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_zoom x = "653" y = "727" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_zoombar x = "573" y = "163" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "3"/>
+    <anim_ting x = "215" y = "613" renderable = "true" speed = "0.1" animstyle = "3"/>
     <anim_ring x = "148" y = "648" renderable = "true"/>
     <anim_ringdos x = "533" y = "352" renderable = "true"/>
     <anim_ringtres x = "503" y = "273" renderable = "true"/>
     <anim_floatpiece x = "66" y = "395" renderable = "true"/>
+    <anim_sign x = "112" y = "505" renderable = "true"/>
 
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
