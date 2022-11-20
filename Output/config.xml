@@ -66,6 +66,9 @@
     <anim_zoombar x = "573" y = "163" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "3"/>
+    <anim_ring x = "148" y = "648" renderable = "true"/>
+    <anim_ringdos x = "533" y = "352" renderable = "true"/>
+    <anim_ringtres x = "503" y = "273" renderable = "true"/>
 
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
