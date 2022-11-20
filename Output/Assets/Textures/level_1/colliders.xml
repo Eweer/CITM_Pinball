@@ -100,6 +100,13 @@
 		518,708
 	"/>
 	<divider_one shape ="chain" bodytype ="static" xy ="
+		254,575
+		245,580
+		263,614
+		265,618
+		273,610
+	"/>
+	<divider_two shape ="chain" bodytype ="static" xy ="
 		310,565
 		310,605
 		314,611
@@ -109,13 +116,6 @@
 		319,560
 		313,559
 	"/> 
-	<divider_two shape ="chain" bodytype ="static" xy ="
-		254,575
-		245,580
-		263,614
-		265,618
-		273,610
-	"/>
 	<divider_three shape ="chain" bodytype ="static" xy ="
 		367,562
 		366,606
@@ -127,12 +127,12 @@
 		367,559
 	"/>
 	<divider_four shape ="chain" bodytype ="static" xy ="
-		302,428
-		311,406
-		317,406
-		320,411
-		311,433
-		305,434
+		430,606
+		444,576
+		452,575
+		455,581
+		442,612
+		434,614
 	"/> 
 	<ramp_left shape ="chain" bodytype ="static" xy ="
 		128,732

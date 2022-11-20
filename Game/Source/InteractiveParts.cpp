@@ -118,6 +118,10 @@ bool InteractiveParts::CleanUp()
 
 void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 {
+	if(name == "triangle")
+	{
+		std::cout << "a";
+	}
 	if(physB->ctype == ColliderType::BALL)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
@@ -131,7 +135,7 @@ bool InteractiveParts::CreateColliders()
 	//EntityType::ANIM are just animations of board, they don't have collisions.
 	if(type == EntityType::ANIM) return true;
 
-	auto collidersFileName = texLevelPath + "interactive_colliders_" + std::to_string(app->GetLevelNumber()) + ".xml";
+	auto collidersFileName = texLevelPath + "colliders" + ".xml";
 
 	pugi::xml_parse_result parseResult = collidersFile.load_file(collidersFileName.c_str());
 
@@ -150,8 +154,6 @@ bool InteractiveParts::CreateColliders()
 			return CreateCollidersBasedOnShape(colliderNode);
 		}
 	}
-
-	if(pBody) pBody->listener = this;
 
 	return true;
 }
@@ -174,6 +176,7 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	{
 		const std::string xyStr = colliderNode.attribute("xy").as_string();
 		pBody = CreateChainColliders(xyStr, typeOfChildren);
+		pBody->listener = this;
 	}
 	else if(colliderShape == "circle")
 	{
@@ -181,6 +184,7 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 		const int posY = colliderNode.attribute("y").as_int();
 		const int radius = colliderNode.attribute("radius").as_int();
 		pBody = app->physics->CreateCircle(posX, posY, radius, typeOfChildren);
+		pBody->listener = this;
 	}
 	else
 	{
@@ -278,9 +282,9 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 	}
 
 	struct dirent **nameList;
-	std::string texturePath = texLevelPath + name + "/";
+	std::string interactiveFolder = texLevelPath + name + "/";
 
-	const char *dirPath = texturePath.c_str();
+	const char *dirPath = interactiveFolder.c_str();
 	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort);
 	static const std::regex r(R"(([A-Za-z]+(?:_[A-Za-z]*)*)_(?:(image|static|anim)([\d]*)).png)"); // www.regexr.com/72ogq
 	std::string itemName(parameters.name());
@@ -316,9 +320,22 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 		std::string match2 = m[2]; // (image|static|anim)
 
 		if(texture.type == RenderModes::UNKNOWN)
+		{
 			texture.type = (match2 == "image") ? RenderModes::IMAGE : RenderModes::ANIMATION;
 
-		std::string match0 = texturePath + std::string(m[0]); //example: /Assets/Maps/ + triangle_left_anim001.png
+			if(texture.type == RenderModes::ANIMATION)
+			{
+				texture.anim->SetSpeed(parameters.attribute("speed").as_float());
+				auto animStyle = static_cast<AnimIteration>(parameters.attribute("animstyle").as_int());
+				texture.anim->SetAnimStyle(animStyle);
+				if(animStyle == AnimIteration::LOOP_FORWARD_BACKWARD || animStyle == AnimIteration::LOOP_FROM_START)
+				{
+					texture.anim->Start();
+				}
+			}
+		}
+
+		std::string match0 = interactiveFolder + std::string(m[0]); //example: /Assets/Maps/ + triangle_left_anim001.png
 
 		switch(texture.type)
 		{
@@ -338,15 +355,4 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 		free(nameList[n]);
 	}
 	free(nameList);
-
-	if(texture.type == RenderModes::ANIMATION)
-	{
-		texture.anim->SetSpeed(parameters.attribute("speed").as_float());
-		auto animStyle = static_cast<AnimIteration>(parameters.attribute("animstyle").as_int());
-		texture.anim->SetAnimStyle(animStyle);
-		if(animStyle == AnimIteration::LOOP_FORWARD_BACKWARD || animStyle == AnimIteration::LOOP_FROM_START)
-		{
-			texture.anim->Start();
-		}
-	}
 }
