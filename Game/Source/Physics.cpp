@@ -93,7 +93,12 @@ bool Physics::PostUpdate()
 {
 	if(app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 		world->SetGravity({0.0f, 1.0f});
-
+	if (app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		world->SetGravity({ 1.0f, 0.0f });
+	if (app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		world->SetGravity({ 0.0f, -1.0f });
+	if (app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		world->SetGravity({ -1.0f, 0.0f });
 	// Activate or deactivate debug mode
 	if(app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
