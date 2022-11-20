@@ -69,7 +69,7 @@ bool Physics::PreUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 		world->SetGravity({0.0f, -2.0f});
 	if(app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		world->SetGravity({0.0f, -4.0f});
+		world->SetGravity({0.0f, 4.0f});
 	if(app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
 		world->SetGravity({0.0f, -8.0f});
 	if(app->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
