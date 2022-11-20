@@ -54,8 +54,8 @@ bool Map::Start()
 
 void Map::Draw()
 {
-	app->render->DrawTexture(backgroundReal, 0, 0);
 	app->render->DrawTexture(backgroundImage, 0, 0);
+	app->render->DrawTexture(boardImage, 0, 0);
 	DrawUI();
 }
 
@@ -64,7 +64,7 @@ bool Map::CleanUp()
 {
 	LOG("Unloading map");
 
-	if(backgroundImage) app->tex->UnLoad(backgroundImage);
+	if(boardImage) app->tex->UnLoad(boardImage);
 
 	return true;
 }
@@ -74,16 +74,14 @@ bool Map::Load()
 {
 	uint aux = app->GetLevelNumber();
 
-	auto levelFileName = texturePath + "level_" + std::to_string(aux) + "/board.png";
-
-	backgroundImage = app->tex->Load(levelFileName.c_str());
+	auto levelFilePath = texturePath + "level_" + std::to_string(aux) + "/";
+	auto imageFolder = levelFilePath + "board.png";
+	boardImage = app->tex->Load(imageFolder.c_str());
 	
-	auto levelFileReal = texturePath + "level_" + std::to_string(aux) + "/background.png";
-
-	backgroundReal = app->tex->Load(levelFileName.c_str());
+	imageFolder = levelFilePath + "background.png";
+	backgroundImage = app->tex->Load(imageFolder.c_str());
 
 	std::string musicFileName = musicPath + "level_" + std::to_string(aux) + ".ogg";
-
 	backgroundMusic = app->audio->PlayMusic(musicFileName.c_str());
 
 	return true;

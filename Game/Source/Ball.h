@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Point.h"
 #include "SDL/include/SDL.h"
+#include <array>
 
 struct SDL_Texture;
 
@@ -33,6 +34,7 @@ public:
 
 private:
 	uint score = 0;
+	std::array<float, 3> scoreList;
 };
 
 #endif // __BALL_H__
