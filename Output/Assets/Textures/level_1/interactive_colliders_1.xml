@@ -245,23 +245,13 @@
 		185,114
 		172,125
 		161,137
-		151,147
-		142,159
-		133,175
-		127,191
-		127,360
-		117,350
-		108,339
-		104,323
-		101,310
-		103,295
-		103,284
-		105,269
-		108,254
-		110,239
-		113,227
-		115,215
-		119,203
+		151,148
+		135,141
+		117,181
+		96,236
+		94,313
+		112,351
+		122,363
 		124,371
 		67,501
 		67,512
@@ -283,14 +273,14 @@
 		109,877
 		214,943
 	"/>
-	<divider_two shape ="chain" bodytype ="static" xy ="
+	<divider_center_left shape ="chain" bodytype ="static" xy ="
 		254,575
 		245,580
 		263,614
 		265,618
 		273,610
 	"/>
-	<divider_three shape ="chain" bodytype ="static" xy ="
+	<divider_center_right shape ="chain" bodytype ="static" xy ="
 		367,562
 		366,606
 		372,613
@@ -300,7 +290,7 @@
 		375,559
 		367,559
 	"/>
-	<divider_one shape ="chain" bodytype ="static" xy ="
+	<divider_left shape ="chain" bodytype ="static" xy ="
 		310,565
 		310,605
 		314,611
@@ -310,7 +300,7 @@
 		319,560
 		313,559
 	"/> 
-	<divider_four shape ="chain" bodytype ="static" xy ="
+	<divider_right shape ="chain" bodytype ="static" xy ="
 		367,562
 		366,606
 		372,613
@@ -321,23 +311,23 @@
 		367,559
 	"/> 
 	<ramp_left shape ="chain" bodytype ="static" xy ="
-		128,732
-		128,807
-		131,817
-		138,822
-		237,869
-		238,878
-		228,889
-		228,898
-		227,904
-		219,902
-		129,848
-		121,840
-		117,832
-		116,819
-		116,736
-		119,729
-		126,728		
+		132,735
+		132,810
+		135,820
+		142,825
+		241,872
+		242,881
+		232,892
+		231,901
+		230,907
+		222,905
+		132,851
+		124,843
+		120,835
+		119,822
+		119,735
+		122,732
+		129,731
 	"/> 
 	<ramp_right shape ="chain" bodytype ="static" xy ="
 		575,614
