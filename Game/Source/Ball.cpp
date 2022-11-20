@@ -9,7 +9,7 @@
 #include "Point.h"
 #include "Physics.h"
 
-constexpr uint BALL_SIZE = 40;
+constexpr uint BALL_SIZE = 30;
 
 Ball::Ball() : Entity(EntityType::UNKNOWN) {}
 

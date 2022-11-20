@@ -47,10 +47,10 @@ bool InteractiveParts::Start()
 
 	AddTexturesAndAnimationFrames();
 
-	if(parameters.attribute("audio"))
+	if(parameters.attribute("hasfx"))
 	{
-		std::string audioFile = fxPath + name + ".ogg";
-		app->audio->LoadFx(audioFile.c_str());
+		std::string audioFile = fxLevelPath + name + "." + parameters.attribute("hasfx").as_string();
+		ballCollisionFx = app->audio->LoadFx(audioFile.c_str());
 	}
 
 	CreateFlipperInfo();
@@ -125,7 +125,7 @@ void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 	if(physB->ctype == ColliderType::BALL)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
-		if(ballCollisionAudio) app->audio->PlayFx(ballCollisionAudio);
+		if(ballCollisionFx) app->audio->PlayFx(ballCollisionFx);
 	}
 		
 }
