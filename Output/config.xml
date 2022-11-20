@@ -82,6 +82,11 @@
     <anim_floatpiece x = "66" y = "395" renderable = "true"/>
     <anim_sign x = "112" y = "505" renderable = "true"/>
 
+    <circle_large x = "154" y = "653" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <circle_medium x = "217" y = "405" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <circle_medium x = "380" y = "245" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <circle_small x = "479" y = "507" renderable = "true" speed = "0.1" animstyle = "1"/>
+    
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
     
     <anim_billboard x = "535" y = "50" renderable = "true" speed = "0.1" animstyle = "1"/>
