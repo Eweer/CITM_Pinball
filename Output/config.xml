@@ -57,12 +57,11 @@
 
     <anim_power_pink x = "210" y = "205" renderable = "true" speed = "0.25" animstyle = "0"/>
 
-<!--
     <divider_one x = "0" y = "0" renderable = "true" speed = "0.5" animstyle = "3"/>
     <divider_two x = "0" y = "0" renderable = "true" speed = "0.5" animstyle = "3"/>
     <divider_three x = "0" y = "0" renderable = "true"/>
     <divider_four x = "0" y = "0" renderable = "true"/>
--->
+    
     <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
   </scene>
 

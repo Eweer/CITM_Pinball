@@ -84,8 +84,6 @@ bool InteractiveParts::Update()
 		auto anchorPos = app->physics->WorldVecToIPoint(flipperJoint->anchor->body->GetPosition());
 		auto mainPos = app->physics->WorldVecToIPoint(pBody->body->GetPosition());
 
-		std::cout << "Creating line for " << this->parameters.name() << "." << std::endl;
-
 		app->render->DrawLine(mainPos.x, mainPos.y, anchorPos.x, anchorPos.y, 255, 0, 0);
 	}
 	
@@ -260,8 +258,11 @@ bool InteractiveParts::CreateFlipperInfo()
 		}
 		revoluteProperties.emplace_back(propertyToAdd);
 	}
+	if(std::string(this->parameters.name()) == "flipper_left")
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
+	else
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {-8,13}, revoluteProperties);
 
-	flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 
 	this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
 	
