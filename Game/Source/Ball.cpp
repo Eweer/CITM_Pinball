@@ -21,7 +21,8 @@ bool Ball::Awake()
 {
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
-	texturePath = parameters.attribute("texturepath").as_string();
+
+	SetPaths();
 
 	return true;
 }
@@ -30,7 +31,10 @@ bool Ball::Start() {
 
 	//initilize textures
 	texture.type = RenderModes::IMAGE;
-	texture.image = app->tex->Load(texturePath.c_str());
+
+	std::string ballImage = texLevelPath + name + ".png";
+
+	texture.image = app->tex->Load(ballImage.c_str());
 
 	//initialize physics body
 	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, BodyType::DYNAMIC);
@@ -40,9 +44,6 @@ bool Ball::Start() {
 
 	//Assign collider type
 	pBody->ctype = ColliderType::BALL;
-
-	//initialize audio effect - !! Path is hardcoded, should be loaded from config.xml
-	//pickCoinFxId = app->audio->LoadFx("Assets/Audio/Fx/retro-video-game-coin-pickup-38299.ogg");
 
 	return true;
 }

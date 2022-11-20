@@ -49,17 +49,12 @@ private:
 
 	bool CreateFlipperInfo();
 
-	void SetPathsToLevel();
-
 	void AddTexturesAndAnimationFrames();
 
 	int scoreValue = 0;
 	uint ballCollisionAudio = 0;
 
 	std::unique_ptr<FlipperInfo> flipperJoint;
-
-	std::string texLevelPath;
-	std::string fxLevelPath;
 
 	pugi::xml_document collidersFile;
 };

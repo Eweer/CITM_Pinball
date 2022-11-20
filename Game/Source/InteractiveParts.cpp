@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 #include <array>
-
 #include <functional>
 
 #include "PugiXml/src/pugixml.hpp"
@@ -31,23 +30,9 @@ bool InteractiveParts::Awake()
 {
 	if(!parameters) return false;
 
-	texturePath = parameters.parent().attribute("texturepath").as_string();
-
-	fxPath = parameters.parent().attribute("audiopath").as_string();
-	fxPath += parameters.parent().attribute("fxfolder").as_string();
-	SetPathsToLevel();
+	SetPaths();
 
 	return true;
-}
-
-void InteractiveParts::SetPathsToLevel()
-{
-	uint levelNumber = app->GetLevelNumber();
-
-	std::string levelFolder = "level_" + std::to_string(levelNumber) + "/";
-
-	texLevelPath = texturePath + levelFolder;
-	fxLevelPath = fxPath + levelFolder;
 }
 
 bool InteractiveParts::Start() 
@@ -166,6 +151,9 @@ bool InteractiveParts::CreateColliders()
 			return CreateCollidersBasedOnShape(colliderNode);
 		}
 	}
+
+	if(pBody) pBody->listener = this;
+
 	return true;
 }
 
