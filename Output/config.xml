@@ -53,6 +53,7 @@
     <anim_flower x = "350" y = "129" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_arrow x = "474" y = "235" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_pinkarrow x = "129" y = "374" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <anim_photo x = "236" y = "394" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_fan x = "147" y = "468" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_minifan x = "464" y = "491" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
