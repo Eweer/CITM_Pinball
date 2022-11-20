@@ -101,17 +101,17 @@ bool InteractiveParts::Update()
 		switch(app->input->GetKey(SDL_SCANCODE_DOWN))
 		{
 			case KeyState::KEY_DOWN:
-				std::cout << "a" << std::endl;
+
 			case KeyState::KEY_REPEAT:
 				launcherJoint->joint->SetMotorSpeed(1);
 				launcherJoint->joint->SetMaxMotorForce(2);
-				std::cout << "b" << std::endl;
+
 				break;
 
 			case KeyState::KEY_UP:
 				launcherJoint->joint->SetMotorSpeed(-15);
 				launcherJoint->joint->SetMaxMotorForce(20);
-				std::cout << "c" << std::endl;
+
 				break;
 
 			default:
