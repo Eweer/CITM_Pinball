@@ -37,6 +37,7 @@ bool Map::Awake(pugi::xml_node& config)
 
 void Map::Draw()
 {
+	app->render->DrawTexture(backgroundReal, 0, 0);
 	app->render->DrawTexture(backgroundImage, 0, 0);
 }
 
@@ -55,9 +56,13 @@ bool Map::Load()
 {
 	uint aux = app->GetLevelNumber();
 
-	auto levelFileName = texturePath + "level_" + std::to_string(aux) + "/bg"  + ".png";
+	auto levelFileName = texturePath + "level_" + std::to_string(aux) + "/board.png";
 
 	backgroundImage = app->tex->Load(levelFileName.c_str());
+	
+	auto levelFileReal = texturePath + "level_" + std::to_string(aux) + "/background.png";
+
+	backgroundReal = app->tex->Load(levelFileName.c_str());
 
 	std::string musicFileName = musicPath + "level_" + std::to_string(aux) + ".ogg";
 

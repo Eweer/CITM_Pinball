@@ -37,6 +37,7 @@ private:
 	uint backgroundMusic = 0;
 
 	SDL_Texture *backgroundImage = nullptr;
+	SDL_Texture *backgroundReal = nullptr;
 };
 
 #endif // __MAP_H__
