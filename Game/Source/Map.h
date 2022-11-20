@@ -23,6 +23,8 @@ public:
 	// Called before the first frame
 	bool Start() final;
 
+	bool PostUpdate() final;
+
 	// Called each loop iteration
 	void Draw();
 
@@ -32,7 +34,10 @@ public:
 	// Load new map
 	bool Load();
 
+
+	
 	void DrawUI() const;
+
 
 private:
 
