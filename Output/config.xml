@@ -79,6 +79,8 @@
 
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
+    
+    <anim_billboard x = "535" y = "50" renderable = "true" speed = "0.1" animstyle = "1"/>
 
     <divider_one x = "245" y = "575" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     <divider_two x = "310" y = "559" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
