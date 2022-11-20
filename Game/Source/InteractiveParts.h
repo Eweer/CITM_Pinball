@@ -21,6 +21,15 @@ struct FlipperInfo
 	float32 motorSpeed;
 };
 
+struct LauncherInfo
+{
+	PhysBody *anchor;
+	b2PrismaticJoint *joint;
+	float32 motorSpeed;
+	int h;
+	int w;
+};
+
 class InteractiveParts : public Entity
 {
 public:
@@ -45,7 +54,7 @@ private:
 
 	bool CreateColliders();
 	bool CreateCollidersBasedOnShape(const pugi::xml_node &colliderAttributes);
-	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string shape);
+	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string const &shape);
 
 	bool CreateFlipperInfo();
 
@@ -55,6 +64,7 @@ private:
 	uint ballCollisionFx = 0;
 
 	std::unique_ptr<FlipperInfo> flipperJoint;
+	std::unique_ptr<LauncherInfo> launcherJoint;
 
 	pugi::xml_document collidersFile;
 };

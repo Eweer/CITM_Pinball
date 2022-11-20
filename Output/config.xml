@@ -35,12 +35,12 @@
     <ramp_right x="452" y="538" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
 
     <flipper_left x = "237" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
-      <revolute_joint enable_limit = "true" max_angle = "45" min_angle = "-5" enable_motor = "true" motor_speed = "30" max_torque = "40"/>
+      <joint enable_limit = "true" max_angle = "25" min_angle = "25" enable_motor = "true" motor_speed = "0" max_torque = "40"/>
       <anchor x = "251" y = "900" radius = "10"/>
     </flipper_left>
 
     <flipper_right x = "368" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
-      <revolute_joint enable_limit = "true" max_angle = "45" min_angle = "-5" enable_motor = "true" motor_speed = "30" max_torque = "40"/>
+      <joint enable_limit = "true" max_angle = "25" min_angle = "25" enable_motor = "true" motor_speed = "0" max_torque = "40"/>
       <anchor x = "435" y = "900" radius = "10"/>
     </flipper_right>
     
@@ -52,7 +52,11 @@
     <ping_up x = "438" y = "294" renderable = "true" hasfx ="ogg"/>
     <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
 
-    <launcher_top x = "636" y = "915" renderable = "true"/>
+    <launcher_top x = "636" y = "915" renderable = "true">
+      <joint enable_limit = "true" max_angle = "1" min_angle = "-30" enable_motor = "true" motor_speed = "-10" max_torque = "5"/>
+      <anchor x = "636" y = "921" w = "5" h = "5"/>
+    </launcher_top>
+
     <anim_launcher x = "565" y = "940" renderable = "true"/>
 
     <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "1"/>

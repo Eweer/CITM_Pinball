@@ -38,12 +38,13 @@ bool InteractiveParts::Awake()
 
 bool InteractiveParts::Start() 
 {
-	if(!CreateColliders()) return false;
 
 	position = {
 		parameters.attribute("x").as_int(),
 		parameters.attribute("y").as_int()
 	};
+
+	if(!CreateColliders()) return false;
 
 	AddTexturesAndAnimationFrames();
 
@@ -72,14 +73,50 @@ bool InteractiveParts::Update()
 
 		default:
 			break;
-
 	}
 
-	if(!flipperJoint) return true;
-	
-	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+	if(flipperJoint)
 	{
-		flipperJoint->joint->SetMotorSpeed(flipperJoint->motorSpeed * -1.0f);
+		if(app->physics->IsDebugActive() && flipperJoint)
+		{
+			auto anchorPos = app->physics->WorldVecToIPoint(flipperJoint->anchor->body->GetPosition());
+			auto mainPos = app->physics->WorldVecToIPoint(pBody->body->GetPosition());
+			app->render->DrawLine(mainPos.x, mainPos.y, anchorPos.x, anchorPos.y, 255, 0, 0);
+		}
+
+		if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+		{
+			if(std::string(parameters.name()) == "flipper_left")
+				flipperJoint->joint->SetMotorSpeed(flipperJoint->motorSpeed * -1.0f);
+			else
+				flipperJoint->joint->SetMotorSpeed(flipperJoint->motorSpeed);
+		}
+	}
+
+	if(launcherJoint)
+	{
+		position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - launcherJoint->w/2;
+		position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - launcherJoint->h/2;
+
+		switch(app->input->GetKey(SDL_SCANCODE_DOWN))
+		{
+			case KeyState::KEY_DOWN:
+				std::cout << "a" << std::endl;
+			case KeyState::KEY_REPEAT:
+				launcherJoint->joint->SetMotorSpeed(1);
+				launcherJoint->joint->SetMaxMotorForce(2);
+				std::cout << "b" << std::endl;
+				break;
+
+			case KeyState::KEY_UP:
+				launcherJoint->joint->SetMotorSpeed(-15);
+				launcherJoint->joint->SetMaxMotorForce(20);
+				std::cout << "c" << std::endl;
+				break;
+
+			default:
+				break;
+		}
 	}
 
 	return true;
@@ -148,12 +185,6 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	auto bodyTypeChar = colliderNode.attribute("bodytype").as_string();
 	std::string colliderShape = colliderNode.attribute("shape").as_string();
 
-	if(colliderShape == "rectangle" || colliderShape == "rectangle_sensor")
-		std::cout << "a";
-
-	if(name == "launcher" || name == "sensor")
-		std::cout << "b";
-
 	if(!bodyTypeChar || colliderShape.empty())
 	{
 		LOG("Can't read xml attributes on InteractiveParts::CreateCollidersBasedOnShape\n");
@@ -162,6 +193,9 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	}
 
 	BodyType typeOfChildren = app->physics->GetEnumFromStr(bodyTypeChar);
+
+	const int posX = colliderNode.attribute("x").as_int();
+	const int posY = colliderNode.attribute("y").as_int();
 	
 	if(colliderShape == "chain" || colliderShape == "polygon")
 	{
@@ -170,30 +204,24 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	}
 	else if(colliderShape == "circle")
 	{
-		const int posX = colliderNode.attribute("x").as_int();
-		const int posY = colliderNode.attribute("y").as_int();
 		const int radius = colliderNode.attribute("radius").as_int();
 		pBody = app->physics->CreateCircle(posX, posY, radius, typeOfChildren);
 	}
 	else if(colliderShape == "rectangle_sensor")
 	{
-		const int posX = colliderNode.attribute("x").as_int();
-		const int posY = colliderNode.attribute("y").as_int();
 		const int width = colliderNode.attribute("w").as_int();
 		const int height = colliderNode.attribute("h").as_int();
 		pBody = app->physics->CreateRectangleSensor(posX, posY, width, height, typeOfChildren);
 	}
 	else if(colliderShape == "rectangle")
 	{
-		const int posX = colliderNode.attribute("x").as_int();
-		const int posY = colliderNode.attribute("y").as_int();
 		const int width = colliderNode.attribute("w").as_int();
 		const int height = colliderNode.attribute("h").as_int();
 		pBody = app->physics->CreateRectangle(posX, posY, width, height, typeOfChildren);
 	}
 	else
 	{
-		LOG("Attribute shape of %s not recognized in InteractiveParts::CreateCollidersBasedOnShape", colliderNode.name());
+		LOG("Attribute shape of %s not recognized in InteractiveParts::CreateCollidersBasedOnShape", std::string(colliderNode.name()));
 		return false;
 	}
 
@@ -218,7 +246,7 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	return true;
 }
 
-PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string shape)
+PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string const &shape)
 {
 	static const std::regex r("\\d{1,3}");
 	auto xyStrBegin = std::sregex_iterator(xyStr.begin(), xyStr.end(), r);
@@ -234,10 +262,16 @@ PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyT
 
 	PhysBody *border;
 	if(shape == "chain")
+	{
 		border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+	}
 	else
-		border = app->physics->CreatePolygon(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+	{
+		int posX = parameters.child("anchor").attribute("x").as_int();
+		int posY = parameters.child("anchor").attribute("y").as_int();
 
+		border = app->physics->CreatePolygon(posX, posY, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+	}
 	
 	return border;
 }
@@ -245,26 +279,48 @@ PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyT
 bool InteractiveParts::CreateFlipperInfo()
 {
 	
-	if(name != "flipper" || this->flipperJoint) return false;
+	if((name != "flipper" || this->flipperJoint) && (name != "launcher" || this->launcherJoint))
+		return false;
 
 	LOG("Creating flipper info");
 
 	FlipperInfo flipperHelper;
+	LauncherInfo launcherHelper;
 
-	flipperHelper.anchor = app->physics->CreateCircle(
-		parameters.child("anchor").attribute("x").as_int(),
-		parameters.child("anchor").attribute("y").as_int(),
-		parameters.child("anchor").attribute("radius").as_int(),
-		BodyType::STATIC
-	);
+	if(name == "flipper")
+	{
+		flipperHelper.anchor = app->physics->CreateCircle(
+			parameters.child("anchor").attribute("x").as_int(),
+			parameters.child("anchor").attribute("y").as_int(),
+			parameters.child("anchor").attribute("radius").as_int(),
+			BodyType::STATIC
+		);
+	}
+	else
+	{
+		launcherHelper.anchor = app->physics->CreateRectangle(
+			parameters.child("anchor").attribute("x").as_int(),
+			parameters.child("anchor").attribute("y").as_int(),
+			parameters.child("anchor").attribute("w").as_int(),
+			parameters.child("anchor").attribute("h").as_int(),
+			BodyType::STATIC
+		);
+		launcherHelper.h = parameters.child("anchor").attribute("h").as_int();
+		launcherHelper.w = parameters.child("anchor").attribute("w").as_int();
+	}
 
-	pugi::xml_node flipperNode = parameters.child("revolute_joint");
+	pugi::xml_node flipperNode = parameters.child("joint");
 	std::vector<RevoluteJointSingleProperty> revoluteProperties;
 
 	for(pugi::xml_attribute attr : flipperNode.attributes())
 	{
 		std::string attrName(attr.name());
-		if(attrName == "motor_speed") flipperHelper.motorSpeed = attr.as_float();
+		if(attrName == "motor_speed")
+		{
+			if(name == "flipper") flipperHelper.motorSpeed = attr.as_float();
+			else launcherHelper.motorSpeed = attr.as_float();
+		}
+				
 
 		RevoluteJointSingleProperty propertyToAdd;
 
@@ -292,12 +348,14 @@ bool InteractiveParts::CreateFlipperInfo()
 		revoluteProperties.emplace_back(propertyToAdd);
 	}
 	if(std::string(this->parameters.name()) == "flipper_left")
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {50,13}, revoluteProperties);
+	else if(std::string(this->parameters.name()) == "flipper_right")
 		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 	else
-		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {50,13}, revoluteProperties);
+		launcherHelper.joint = app->physics->CreatePrismaticJoint(launcherHelper.anchor, this->pBody, {0,0}, {0,10}, revoluteProperties);
 
-
-	this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
+	if(this->name == "flipper") this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
+	else this->launcherJoint = std::make_unique<LauncherInfo>(launcherHelper);
 	
 	return true;
 }

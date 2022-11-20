@@ -7,7 +7,7 @@
 #include "Box2D/Box2D/Box2D.h"
 
 #define GRAVITY_X 0.0f
-#define GRAVITY_Y -10.0f
+#define GRAVITY_Y -8.0f
 
 #define PIXELS_PER_METER 50.0f // if touched change METER_PER_PIXEL too
 #define METER_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
@@ -135,6 +135,7 @@ public:
 
 	// Create joints
 	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
+	b2PrismaticJoint *CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
 	b2MouseJoint *CreateMouseJoint(PhysBody *ground, PhysBody *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
 	b2MouseJoint *CreateMouseJoint(b2Body *ground, b2Body *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
 	

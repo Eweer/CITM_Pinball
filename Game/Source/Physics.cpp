@@ -64,6 +64,19 @@ bool Physics::Start()
 
 bool Physics::PreUpdate()
 {
+	if(app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		world->SetGravity({0.0f, -1.0f});
+	if(app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		world->SetGravity({0.0f, -2.0f});
+	if(app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		world->SetGravity({0.0f, -4.0f});
+	if(app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		world->SetGravity({0.0f, -8.0f});
+	if(app->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+		world->SetGravity({-1.0f, 0.0f});
+	if(app->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+		world->SetGravity({1.0f, 0.0f});
+
 	// Step (update) the World
 	if(stepActive || (!stepActive && app->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN))
 	   world->Step(1.0f / 60.0f, 6, 2);
@@ -91,14 +104,6 @@ bool Physics::PreUpdate()
 
 bool Physics::PostUpdate()
 {
-	if(app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		world->SetGravity({0.0f, 1.0f});
-	if (app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-		world->SetGravity({ 1.0f, 0.0f });
-	if (app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		world->SetGravity({ 0.0f, -1.0f });
-	if (app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		world->SetGravity({ -1.0f, 0.0f });
 	// Activate or deactivate debug mode
 	if(app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -315,7 +320,7 @@ PhysBody *Physics::CreatePolygon(int x, int y, const int* const points, int size
 			body.type = b2_kinematicBody;
 			break;
 		case BodyType::UNKNOWN:
-			LOG("CreatePolygon Received UNKNOWN BodyType");
+			LOG("Create Polygon Received UNKNOWN BodyType");
 			return nullptr;
 	}
 
@@ -480,6 +485,32 @@ b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, 
 
 	auto *returnJoint = ((b2RevoluteJoint *)world->CreateJoint(&rJoint));
 	return returnJoint;
+}
+
+b2PrismaticJoint *Physics::CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties)
+{
+	b2PrismaticJointDef pJoint;
+	pJoint.bodyA = anchor->body;
+	pJoint.bodyB = body->body;
+	pJoint.collideConnected = false;
+
+	pJoint.localAnchorA = b2Vec2(PIXEL_TO_METERS(anchorOffset.x), PIXEL_TO_METERS(anchorOffset.y));
+	pJoint.localAnchorB = b2Vec2(PIXEL_TO_METERS(bodyOffset.x), PIXEL_TO_METERS(bodyOffset.y));
+
+	pJoint.localAxisA = b2Vec2(0, 1);
+
+	if((pJoint.enableLimit = properties[0].b))
+	{
+		pJoint.lowerTranslation = DEGTORAD * (properties[1].f);
+		pJoint.upperTranslation = DEGTORAD * (properties[2].f);
+	}
+	if((pJoint.enableMotor = properties[3].b))
+	{
+		pJoint.motorSpeed = (float)properties[4].i;
+		pJoint.maxMotorForce = (float)properties[5].i;
+	}
+
+	return (b2PrismaticJoint *)world->CreateJoint(&pJoint);
 }
 
 b2MouseJoint *Physics::CreateMouseJoint(PhysBody *origin, PhysBody *target, b2Vec2 position, float dampingRatio, float frequecyHz, float maxForce)
