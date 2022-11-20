@@ -18,6 +18,7 @@ class Audio;
 class Scene;
 class EntityManager;
 class Map;
+class Fonts;
 class Physics;
 
 class App
@@ -89,6 +90,7 @@ public:
 	EntityManager* entityManager;
 	Map* map;
 	Physics* physics;
+	Fonts *fonts;
 
 private:
 

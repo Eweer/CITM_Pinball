@@ -45,7 +45,7 @@ private:
 
 	bool CreateColliders();
 	bool CreateCollidersBasedOnShape(const pugi::xml_node &colliderAttributes);
-	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT);
+	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string shape);
 
 	bool CreateFlipperInfo();
 

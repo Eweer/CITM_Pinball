@@ -33,10 +33,12 @@ public:
 
 	void AddEntity(Entity* entity);
 
+	uint GetScore() const;
+
 	List<Entity*> entities;
 	std::pair<Entity*, Entity*> flippers;
 	Entity *launcher = nullptr;
-
+	Entity *ball = nullptr;
 };
 
 #endif // __ENTITYMANAGER_H__

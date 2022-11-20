@@ -33,12 +33,6 @@ public:
 
 	// Called before quitting
 	bool CleanUp() final;
-
-	void AddScore(int n);
-
-	void ResetScore();
-
-	float score = 0;
 };
 
 #endif // __SCENE_H__

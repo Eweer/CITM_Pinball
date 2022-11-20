@@ -129,6 +129,7 @@ public:
 	// Create basic physics objects
 	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type);
 	PhysBody* CreateCircle(int x, int y, int radius, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL);
+	PhysBody* CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL, int angle = 0);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
 	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL, int angle = 0);
 

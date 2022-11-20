@@ -74,6 +74,8 @@ Entity *EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_n
 
 	std::string itemName(itemNode.name());
 
+	if(!ball && itemName == "ball") ball = entity;
+
 	if(!launcher && itemName == "launcher_top") launcher = entity;
 
 	if(!flippers.first || !flippers.second)
@@ -117,4 +119,9 @@ bool EntityManager::Update(float dt)
 	}
 
 	return true;
+}
+
+uint EntityManager::GetScore() const
+{
+	return ball->GetScore();
 }

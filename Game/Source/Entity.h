@@ -185,6 +185,11 @@ public:
 		//To override
 	};
 
+	virtual uint GetScore() const
+	{
+		return 0;
+	};
+
 	std::unordered_map<std::string, EntityType> CreateEnumMap() const
 	{
 		const std::unordered_map<std::string, EntityType> aux{

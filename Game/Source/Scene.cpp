@@ -35,10 +35,7 @@ bool Scene::Awake(pugi::xml_node& config)
 
 // Called before the first frame
 bool Scene::Start()
-{
-	//img = app->tex->Load("Assets/Textures/test.png");
-	//app->audio->PlayMusic("Assets/Audio/Music/music_spy.ogg");
-	
+{	
 	app->map->Load();
 
 	SString title("Pinball");
@@ -63,6 +60,9 @@ bool Scene::Update(float dt)
 	if (app->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 		app->LoadGameRequest();
 
+	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		app->render->camera.x -= 1;
+
 	app->map->Draw();
 
 	return true;
@@ -86,14 +86,4 @@ bool Scene::CleanUp()
 	LOG("Freeing scene");
 
 	return true;
-}
-
-void Scene::AddScore(int n)
-{
-	score += n;
-}
-
-void Scene::ResetScore()
-{
-	score = 0;
 }

@@ -120,7 +120,6 @@ void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
 		if(ballCollisionFx) app->audio->PlayFx(ballCollisionFx);
-		app->scene->AddScore(100.0f);
 	}
 		
 }
@@ -167,26 +166,10 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 
 	BodyType typeOfChildren = app->physics->GetEnumFromStr(bodyTypeChar);
 	
-	if(colliderShape == "chain")
+	if(colliderShape == "chain" || colliderShape == "polygon")
 	{
 		const std::string xyStr = colliderNode.attribute("xy").as_string();
-		pBody = CreateChainColliders(xyStr, typeOfChildren);
-		pBody->listener = this;
-		switch(this->type)
-		{
-			case EntityType::TRIANGLE:
-			case EntityType::CIRCLE:
-			case EntityType::RAMP:
-			case EntityType::DIVIDER:
-				pBody->ctype = ColliderType::ITEM;
-				break;
-
-			case EntityType::UNKNOWN:
-				pBody->ctype = ColliderType::UNKNOWN;
-
-			default:
-				pBody->ctype = ColliderType::ANIM;
-		}
+		pBody = CreateChainColliders(xyStr, typeOfChildren, colliderShape);
 	}
 	else if(colliderShape == "circle")
 	{
@@ -194,17 +177,35 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 		const int posY = colliderNode.attribute("y").as_int();
 		const int radius = colliderNode.attribute("radius").as_int();
 		pBody = app->physics->CreateCircle(posX, posY, radius, typeOfChildren);
-		pBody->listener = this;
 	}
 	else
 	{
 		LOG("Attribute shape of %s not recognized in InteractiveParts::CreateCollidersBasedOnShape", colliderNode.name());
 		return false;
 	}
+
+	pBody->listener = this;
+
+	switch(this->type)
+	{
+		case EntityType::TRIANGLE:
+		case EntityType::CIRCLE:
+		case EntityType::RAMP:
+		case EntityType::DIVIDER:
+			pBody->ctype = ColliderType::ITEM;
+			break;
+
+		case EntityType::UNKNOWN:
+			pBody->ctype = ColliderType::UNKNOWN;
+			break;
+
+		default:
+			pBody->ctype = ColliderType::ANIM;
+	}
 	return true;
 }
 
-PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyType bodyT)
+PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyType bodyT, std::string shape)
 {
 	static const std::regex r("\\d{1,3}");
 	auto xyStrBegin = std::sregex_iterator(xyStr.begin(), xyStr.end(), r);
@@ -218,7 +219,12 @@ PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyT
 		points.push_back(stoi(match.str()));
 	}
 
-	PhysBody *border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+	PhysBody *border;
+	if(shape == "chain")
+		border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+	else
+		border = app->physics->CreatePolygon(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+
 	
 	return border;
 }

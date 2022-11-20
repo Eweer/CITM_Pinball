@@ -89,7 +89,7 @@
   </scene>
 
   <map>
-    <mapfolder texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" musicfolder = "Music/"/>
+    <mapfolder texturepath = "Assets/Textures/" fontsfolder = "Fonts/" audiopath = "Assets/Audio/" musicfolder = "Music/"/>
   </map>
   
 </config>

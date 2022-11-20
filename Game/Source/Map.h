@@ -20,6 +20,9 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node& conf) final;
 
+	// Called before the first frame
+	bool Start() final;
+
 	// Called each loop iteration
 	void Draw();
 
@@ -29,10 +32,16 @@ public:
 	// Load new map
 	bool Load();
 
+	void DrawUI() const;
+
 private:
 
 	std::string musicPath;
 	std::string texturePath;
+	std::string fontsPath;
+
+	uint fontWhite = 0;
+	uint fontOrange = 0;
 
 	uint backgroundMusic = 0;
 

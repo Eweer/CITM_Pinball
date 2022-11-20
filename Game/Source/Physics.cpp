@@ -295,6 +295,56 @@ PhysBody *Physics::CreateCircle(int x, int y, int radius, BodyType type, float r
 	return pbody;
 }
 
+PhysBody *Physics::CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest, int cat, int mask, int angle)
+{
+	b2BodyDef body;
+	switch(type)
+	{
+		case BodyType::DYNAMIC:
+			body.type = b2_dynamicBody;
+			break;
+		case BodyType::STATIC:
+			body.type = b2_staticBody;
+			break;
+		case BodyType::KINEMATIC:
+			body.type = b2_kinematicBody;
+			break;
+		case BodyType::UNKNOWN:
+			LOG("CreatePolygon Received UNKNOWN BodyType");
+			return nullptr;
+	}
+
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.angle = DEGTORAD*(float)angle;
+
+	b2Body *b = world->CreateBody(&body);
+	b2PolygonShape box;
+	b2Vec2 *p = new b2Vec2[size / 2];
+
+	for(uint i = 0; i < size / 2; ++i)
+	{
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+	}
+	box.Set(p, size / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &box;
+	fixture.density = 1.0f;
+	fixture.filter.categoryBits = cat;
+	fixture.filter.maskBits = mask;
+	fixture.restitution = rest;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody *pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->height = pbody->width = 0;
+
+	return pbody;
+}
+
 PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type)
 {
 	// Create BODY at position x,y

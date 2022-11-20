@@ -3,6 +3,8 @@
 #include "Textures.h"
 #include "Map.h"
 #include "Audio.h"
+#include "EntityManager.h"
+#include "Fonts.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -32,6 +34,21 @@ bool Map::Awake(pugi::xml_node& config)
 	std::string audioPath = config.child("mapfolder").attribute("audiopath").as_string();
 	musicPath = audioPath + config.child("mapfolder").attribute("musicfolder").as_string();
 
+	fontsPath = texturePath + config.child("mapfolder").attribute("fontsfolder").as_string();
+
+	return true;
+}
+
+bool Map::Start()
+{
+	std::string fontWhiteFile = fontsPath + "font_white.png";
+	std::string fontOrangeFile = fontsPath + "font_orange.png";
+
+	std::string characters = " .!'0123456789ABCEFGHILNPRSTUabcdefghiklnoprstuvy   ";
+
+	fontWhite = app->fonts->Load(fontWhiteFile.c_str(), characters.c_str(), 2);
+	fontOrange = app->fonts->Load(fontOrangeFile.c_str(), characters.c_str(), 2);
+
 	return true;
 }
 
@@ -39,6 +56,7 @@ void Map::Draw()
 {
 	app->render->DrawTexture(backgroundReal, 0, 0);
 	app->render->DrawTexture(backgroundImage, 0, 0);
+	DrawUI();
 }
 
 // Called before quitting
@@ -69,4 +87,10 @@ bool Map::Load()
 	backgroundMusic = app->audio->PlayMusic(musicFileName.c_str());
 
 	return true;
+}
+
+void Map::DrawUI() const
+{
+	std::string score = std::to_string(app->entityManager->GetScore());
+	app->fonts->Blit(27, 27, fontWhite, score.c_str());
 }

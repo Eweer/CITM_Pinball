@@ -27,6 +27,12 @@ public:
 
 	void OnCollision(PhysBody* physA, PhysBody* physB) final;
 
+	void ResetScore();
+
+	uint GetScore() const final;
+
+private:
+	uint score = 0;
 };
 
 #endif // __BALL_H__

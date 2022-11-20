@@ -6,6 +6,7 @@
 	<audio />
 	<scene />
 	<entitymanager />
+	<map />
 	<renderer>
 		<camera x="195" y="36" />
 	</renderer>

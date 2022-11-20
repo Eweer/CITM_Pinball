@@ -83,6 +83,7 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 	switch (physB->ctype)
 	{
 		case ColliderType::ITEM:
+			score += 100;
 			LOG("Collision ITEM");
 			break;
 		case ColliderType::ANIM:
@@ -94,7 +95,14 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 		default:
 			LOG("HOW DID YOU GET HERE?!?!?!?");
 	}
-	
+}
 
+void Ball::ResetScore()
+{
+	score = 0;
+}
 
+uint Ball::GetScore() const
+{
+	return score;
 }
