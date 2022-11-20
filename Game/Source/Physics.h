@@ -34,6 +34,63 @@ enum class ColliderType {
 	// ..
 };
 
+enum class Layers
+{
+	LAUNCH = 0, 
+	BOARD, 
+	KICKERS, 
+	BALL, 
+	TOP
+};
+
+enum class RevoluteJoinTypes
+{
+	 IPOINT,
+	 BOOL,
+	 FLOAT,
+	 INT,
+	 UNKNOWN
+};
+
+struct RevoluteJointSingleProperty
+{
+	RevoluteJoinTypes type;
+	union
+	{
+		iPoint p;
+		bool b;
+		float f;
+		int i;
+	};
+
+	RevoluteJointSingleProperty::RevoluteJointSingleProperty() {};
+	RevoluteJointSingleProperty::RevoluteJointSingleProperty(const RevoluteJointSingleProperty &r) : type(r.type)
+	{
+		switch(type)
+		{
+			case RevoluteJoinTypes::BOOL:
+				b = r.b;
+				break;
+
+			case RevoluteJoinTypes::FLOAT:
+				f = r.f;
+				break;
+
+			case RevoluteJoinTypes::INT:
+				i = r.i;
+				break;
+
+			case RevoluteJoinTypes::IPOINT:
+				p = r.p;
+				break;
+			case RevoluteJoinTypes::UNKNOWN:
+				LOG("Something went wrong in InteractiveParts doing the revolute joint");
+				break;
+		}
+	};
+	RevoluteJointSingleProperty::~RevoluteJointSingleProperty() {};
+};
+
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
 {
@@ -71,23 +128,49 @@ public:
 
 	// Create basic physics objects
 	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type);
-	PhysBody* CreateCircle(int x, int y, int radius, BodyType type);
+	PhysBody* CreateCircle(int x, int y, int radius, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
-	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type);
+	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL, int angle = 0);
+
+	// Create joints
+	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
+	b2MouseJoint *CreateMouseJoint(PhysBody *ground, PhysBody *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
+	b2MouseJoint *CreateMouseJoint(b2Body *ground, b2Body *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
 	
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact) final;
 
+	// Utils
+	iPoint WorldVecToIPoint(const b2Vec2 &v) const;
+	b2Vec2 IPointToWorldVec(const iPoint &p) const;
+
+	// Get Info
+	bool IsDebugActive() const;
 	BodyType GetEnumFromStr(const std::string &s) const;
+	RevoluteJoinTypes GetTypeFromProperty(const std::string &s) const;
 
 private:
 
+	// Debug
+	void DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *vertices, Uint8 r, Uint8 g, Uint8 b, Uint8 a = (Uint8)255U) const;
+
+	// Joints
+	void DragSelectedObject();
+	bool IsMouseOverObject(b2Fixture const *f) const;
+
 	// Debug mode
 	bool debug = false;
-	void DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *vertices, Uint8 r, Uint8 g, Uint8 b, Uint8 a = (Uint8)255U) const;
+	bool debugWhileSelected = true;
+	bool stepActive = true;
 
 	// Box2D World
 	b2World* world = nullptr;
+	b2Body *ground;
+
+	// Mouse Joint
+	b2Body *selected = nullptr;
+	b2MouseJoint *mouseJoint = nullptr;
 
 	static const std::unordered_map<std::string, BodyType> bodyTypeStrToEnum;
+	static const std::unordered_map<std::string, RevoluteJoinTypes> propertyToType;
 };

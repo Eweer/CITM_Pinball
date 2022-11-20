@@ -2,6 +2,7 @@
 #define __INPUT_H__
 
 #include "Module.h"
+#include "Point.h"
 
 //#define NUM_KEYS 352
 #define NUM_MOUSE_BUTTONS 3
@@ -59,11 +60,12 @@ public:
 	}
 
 	// Check if a certain window event happened
-	bool GetWindowEvent(EventWindow ev);
+	bool GetWindowEvent(EventWindow ev) const;
 
 	// Get mouse / axis position
-	void GetMousePosition(int &x, int &y);
-	void GetMouseMotion(int& x, int& y);
+	iPoint GetMousePosition() const;
+	void GetMousePosition(int &x, int &y) const;
+	void GetMouseMotion(int& x, int& y) const;
 
 private:
 	bool windowEvents[WE_COUNT];

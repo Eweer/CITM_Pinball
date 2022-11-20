@@ -68,6 +68,7 @@ enum class EntityType
 	PING,
 	BRIDGE,
 	ROAD,
+	DIVIDER,
 	UNKNOWN
 };
 
@@ -159,6 +160,26 @@ public:
 		}
 	}
 
+	void SetPaths()
+	{
+		texturePath = parameters.parent().attribute("texturepath").as_string();
+
+		fxPath = parameters.parent().attribute("audiopath").as_string();
+		fxPath += parameters.parent().attribute("fxfolder").as_string();
+
+		SetPathsToLevel();
+	}
+
+	void SetPathsToLevel()
+	{
+		uint levelNumber = app->GetLevelNumber();
+
+		std::string levelFolder = "level_" + std::to_string(levelNumber) + "/";
+
+		texLevelPath = texturePath + levelFolder;
+		fxLevelPath = fxPath + levelFolder;
+	}
+
 	virtual void OnCollision(PhysBody* physA, PhysBody* physB) 
 	{
 		//To override
@@ -180,6 +201,7 @@ public:
 			{"ping", EntityType::PING},
 			{"bridge", EntityType::BRIDGE},
 			{"road", EntityType::ROAD},
+			{"divider", EntityType::DIVIDER},
 			{"unknown", EntityType::UNKNOWN}
 		};
 
@@ -194,8 +216,13 @@ public:
 	iPoint position;
 
 	std::string texturePath;
-
+	std::string texLevelPath;
 	Texture texture;
+
+
+	std::string fxPath;
+	std::string fxLevelPath;
+
 
 	PhysBody *pBody = nullptr;
 };

@@ -42,7 +42,7 @@ public:
 		currentFrame += speed;
 
 		//if no more animations in std::vector<SDL_Texture*> frames
-		if((int)currentFrame >= frames.size() || (int)currentFrame < 0)
+		if((uint)currentFrame >= frames.size() || (int)currentFrame < 0)
 		{
 			//we do things
 			switch(animStyle)
@@ -75,13 +75,6 @@ public:
 		return frames[(int)currentFrame];
 	}
 
-	/*------ TODO--------
-	Animation* AddFrames(const char *pathToFolder)
-	{
-	
-	}
-	--------------------*/
-
 	Animation *AddStaticImage(const char *pathToPNG)
 	{
 		staticImage = app->tex->Load(pathToPNG);
@@ -98,6 +91,13 @@ public:
 	{
 		frames.push_back(texture);
 		return this;
+	}
+
+	bool CleanUp()
+	{
+		for(auto &elem : frames) app->tex->UnLoad(elem);
+		if(staticImage) app->tex->UnLoad(staticImage);
+		return true;
 	}
 
 	bool GetAnimFinished() const
