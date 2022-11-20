@@ -42,7 +42,7 @@
     <border x = "0" y = "0" renderable = "false"/>
     <bridge_down x = "0" y = "0" renderable = "false"/>
 
-    <bridge_up x = "332" y = "320" renderable = "true"/>
+    <bridge_up x = "332" y = "320" renderable = "true" hasfx ="ogg"/>
     <ping_up x = "438" y = "294" renderable = "true" hasfx ="ogg"/>
     <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
 
