@@ -134,7 +134,7 @@ bool Physics::PostUpdate()
 				case b2Shape::Type::e_polygon:
 				{
 					auto const *itemToDraw = (b2PolygonShape *)f->GetShape();
-					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 255, 100, 100);
+					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 255, 255, 0);
 					break;
 				}
 				// Draw chains contour -------------------------------------------
@@ -221,9 +221,9 @@ PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 			return nullptr;
 	}
 
-	// Add BODY to the world
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
+	// Add BODY to the world
 	b2Body *b = world->CreateBody(&body);
 
 	// Create SHAPE

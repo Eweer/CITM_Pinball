@@ -69,6 +69,7 @@ enum class EntityType
 	BRIDGE,
 	ROAD,
 	DIVIDER,
+	SENSOR,
 	UNKNOWN
 };
 
@@ -207,6 +208,7 @@ public:
 			{"bridge", EntityType::BRIDGE},
 			{"road", EntityType::ROAD},
 			{"divider", EntityType::DIVIDER},
+			{"sensor", EntityType::SENSOR},
 			{"unknown", EntityType::UNKNOWN}
 		};
 

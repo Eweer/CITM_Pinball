@@ -23,6 +23,7 @@
 
   <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
     <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
+    <sensor_death renderable = "false"/>
     
     <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_logo x = "198" y = "624" renderable = "true"/>
@@ -52,7 +53,7 @@
     <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
 
     <launcher_top x = "636" y = "915" renderable = "true"/>
-    <launcher_bottom x = "565" y = "940" renderable = "true"/>
+    <anim_launcher x = "565" y = "940" renderable = "true"/>
 
     <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_flower x = "350" y = "129" renderable = "true" speed = "0.1" animstyle = "1"/>
@@ -76,7 +77,6 @@
     <anim_ringtres x = "503" y = "273" renderable = "true"/>
     <anim_floatpiece x = "66" y = "395" renderable = "true"/>
     <anim_sign x = "112" y = "505" renderable = "true"/>
-
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
     

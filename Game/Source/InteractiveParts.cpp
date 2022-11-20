@@ -157,6 +157,12 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	auto bodyTypeChar = colliderNode.attribute("bodytype").as_string();
 	std::string colliderShape = colliderNode.attribute("shape").as_string();
 
+	if(colliderShape == "rectangle" || colliderShape == "rectangle_sensor")
+		std::cout << "a";
+
+	if(name == "launcher" || name == "sensor")
+		std::cout << "b";
+
 	if(!bodyTypeChar || colliderShape.empty())
 	{
 		LOG("Can't read xml attributes on InteractiveParts::CreateCollidersBasedOnShape\n");
@@ -177,6 +183,22 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 		const int posY = colliderNode.attribute("y").as_int();
 		const int radius = colliderNode.attribute("radius").as_int();
 		pBody = app->physics->CreateCircle(posX, posY, radius, typeOfChildren);
+	}
+	else if(colliderShape == "rectangle_sensor")
+	{
+		const int posX = colliderNode.attribute("x").as_int();
+		const int posY = colliderNode.attribute("y").as_int();
+		const int width = colliderNode.attribute("w").as_int();
+		const int height = colliderNode.attribute("h").as_int();
+		pBody = app->physics->CreateRectangleSensor(posX, posY, width, height, typeOfChildren);
+	}
+	else if(colliderShape == "rectangle")
+	{
+		const int posX = colliderNode.attribute("x").as_int();
+		const int posY = colliderNode.attribute("y").as_int();
+		const int width = colliderNode.attribute("w").as_int();
+		const int height = colliderNode.attribute("h").as_int();
+		pBody = app->physics->CreateRectangle(posX, posY, width, height, typeOfChildren);
 	}
 	else
 	{

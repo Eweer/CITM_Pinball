@@ -54,7 +54,7 @@ bool Map::Start()
 
 void Map::Draw()
 {
-	app->render->DrawTexture(backgroundImage, 0, 0);
+	//app->render->DrawTexture(backgroundImage, 0, 0);
 	app->render->DrawTexture(boardImage, 0, 0);
 	DrawUI();
 }
