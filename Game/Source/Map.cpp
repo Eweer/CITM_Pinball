@@ -51,12 +51,16 @@ bool Map::Start()
 
 	return true;
 }
-
+bool Map::PostUpdate()
+{
+	DrawUI();
+	return true;
+}
 void Map::Draw()
 {
 	//app->render->DrawTexture(backgroundImage, 0, 0);
 	app->render->DrawTexture(boardImage, 0, 0);
-	DrawUI();
+	
 }
 
 // Called before quitting
@@ -90,5 +94,5 @@ bool Map::Load()
 void Map::DrawUI() const
 {
 	std::string score = std::to_string(app->entityManager->GetScore());
-	app->fonts->Blit(27, 27, fontWhite, score.c_str());
+	app->fonts->Blit(600, 135, fontWhite, score.c_str());
 }
