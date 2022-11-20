@@ -26,6 +26,7 @@
     
     <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_logo x = "198" y = "624" renderable = "true"/>
+    <anim_minicamera x = "295" y = "448" renderable = "true" speed = "0.1" animstyle = "1"/>
     
     <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
     <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
