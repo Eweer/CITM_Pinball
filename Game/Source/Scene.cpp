@@ -87,3 +87,13 @@ bool Scene::CleanUp()
 
 	return true;
 }
+
+void Scene::AddScore(int n)
+{
+	score += n;
+}
+
+void Scene::ResetScore()
+{
+	score = 0;
+}

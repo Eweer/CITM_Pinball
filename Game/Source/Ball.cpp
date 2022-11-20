@@ -85,8 +85,8 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 		case ColliderType::ITEM:
 			LOG("Collision ITEM");
 			break;
-		case ColliderType::PLATFORM:
-			LOG("Collision PLATFORM");
+		case ColliderType::ANIM:
+			LOG("Collision ANIM");
 			break;
 		case ColliderType::UNKNOWN:
 			LOG("Collision UNKNOWN");

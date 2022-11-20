@@ -3,6 +3,7 @@
 
 #include "App.h"
 #include "Textures.h"
+#include "Defs.h"
 
 #include <vector>
 
@@ -26,7 +27,7 @@ public:
 
 	~Animation() = default;
 
-	SDL_Texture* GetCurrentFrame()
+	SDL_Texture *GetCurrentFrame()
 	{
 		//if it's not active, we just return frame
 		if(!bActive)
@@ -37,12 +38,12 @@ public:
 
 		//if it's active and finished, it's no longer finished
 		if(bFinished) bFinished = !bFinished;
-		
+
 		//if it's active we increase the frame
 		currentFrame += speed;
 
 		//if no more animations in std::vector<SDL_Texture*> frames
-		if((uint)currentFrame >= frames.size() || (int)currentFrame < 0)
+		if((uint)currentFrame >= frames.size() + 1 || (int)currentFrame < 0)
 		{
 			//we do things
 			switch(animStyle)
@@ -72,7 +73,10 @@ public:
 			}
 			bFinished = true;
 		}
-		return frames[(int)currentFrame];
+		if((int)currentFrame >= frames.size()) 
+			return frames[(int)frames.size() - 1];
+		else 
+			return frames[(int)currentFrame];
 	}
 
 	Animation *AddStaticImage(const char *pathToPNG)

@@ -1,5 +1,5 @@
-#include "InteractiveParts.h"
 #include "App.h"
+#include "InteractiveParts.h"
 #include "Textures.h"
 #include "Audio.h"
 #include "Input.h"
@@ -54,8 +54,6 @@ bool InteractiveParts::Start()
 	}
 
 	CreateFlipperInfo();
-
-	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
 
 	return true;
 }
@@ -118,14 +116,11 @@ bool InteractiveParts::CleanUp()
 
 void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 {
-	if(name == "triangle")
-	{
-		std::cout << "a";
-	}
 	if(physB->ctype == ColliderType::BALL)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
 		if(ballCollisionFx) app->audio->PlayFx(ballCollisionFx);
+		app->scene->AddScore(100.0f);
 	}
 		
 }
@@ -177,6 +172,21 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 		const std::string xyStr = colliderNode.attribute("xy").as_string();
 		pBody = CreateChainColliders(xyStr, typeOfChildren);
 		pBody->listener = this;
+		switch(this->type)
+		{
+			case EntityType::TRIANGLE:
+			case EntityType::CIRCLE:
+			case EntityType::RAMP:
+			case EntityType::DIVIDER:
+				pBody->ctype = ColliderType::ITEM;
+				break;
+
+			case EntityType::UNKNOWN:
+				pBody->ctype = ColliderType::UNKNOWN;
+
+			default:
+				pBody->ctype = ColliderType::ANIM;
+		}
 	}
 	else if(colliderShape == "circle")
 	{
