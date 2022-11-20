@@ -23,6 +23,10 @@
 
   <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
     <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
+    
+    <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
+    <anim_logo x = "198" y = "624" renderable = "true"/>
+    
     <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
     <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
     <ramp_left  x="115" y="728" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
@@ -58,7 +62,6 @@
     <anim_recycle x = "376" y = "387" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_sorplas x = "374" y = "407" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_fan x = "147" y = "468" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_minifan x = "464" y = "491" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
     <anim_circle x = "137" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
@@ -69,6 +72,7 @@
     <anim_ring x = "148" y = "648" renderable = "true"/>
     <anim_ringdos x = "533" y = "352" renderable = "true"/>
     <anim_ringtres x = "503" y = "273" renderable = "true"/>
+    <anim_floatpiece x = "66" y = "395" renderable = "true"/>
 
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
