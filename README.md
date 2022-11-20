@@ -1,26 +1,29 @@
-# {Project Name}
+# Pinball
 
 ## Description
 
 {project description}
 
-## Key Features
-
- - {Feature01}
- - {Feature02}
- - {Feature03}
- - {Feature04}
- 
 ## Controls
 
- - {ControlsScheme}
+ - 1: Gravity set to -1
+ - 2: Gravity set to -2
+ - 3: Gravity set to -4
+ - 4: Gravity set to -8
+ - 5: Horizontal gravity set to -1
+ - 6: Horizontal gravity to set 1
+ - F1: Debug Mode (Draw shapes + mouse joint) 
+ - F2: Toggle draw shapes while mouse joint 
+ - N: Toggles stepActive
+ - B: If stepActive == False -> do one step
+
 
 ## Developers
 
- - {Dev01} - {Role(s)}
- - {Dev02} - {Role(s)}
- - {Dev03} - {Role(s)}
- - {Dev04} - {Role(s)}
+ - Oriol Rodríoguez - Coding, Organizer
+ - Adrian Ponce - Coding
+ - Eric Regalón - Coding
+ - Leone Martí - Coding
 
 ## License
 
