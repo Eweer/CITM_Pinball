@@ -66,8 +66,8 @@
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
 
     <divider_one x = "245" y = "575" renderable = "true" speed = "0.5" animstyle = "0"/>
-    <divider_two x = "310" y = "559" renderable = "true"/>
-    <divider_three x = "366" y = "559" renderable = "true"/>
+    <divider_two x = "310" y = "559" renderable = "true" speed = "0.5" animstyle = "0"/>
+    <divider_three x = "366" y = "559" renderable = "true" speed = "0.5" animstyle = "0"/>
     <divider_four x = "430" y = "575" renderable = "true" speed = "0.5" animstyle = "0"/>
     
     <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
