@@ -77,17 +77,8 @@ bool InteractiveParts::Update()
 
 	if(!flipperJoint) return true;
 	
-	if(app->physics->IsDebugActive())
-	{
-		auto anchorPos = app->physics->WorldVecToIPoint(flipperJoint->anchor->body->GetPosition());
-		auto mainPos = app->physics->WorldVecToIPoint(pBody->body->GetPosition());
-
-		app->render->DrawLine(mainPos.x, mainPos.y, anchorPos.x, anchorPos.y, 255, 0, 0);
-	}
-	
 	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
 	{
-		std::cout << "a" << std::endl;
 		flipperJoint->joint->SetMotorSpeed(flipperJoint->motorSpeed * -1.0f);
 	}
 
@@ -303,7 +294,7 @@ bool InteractiveParts::CreateFlipperInfo()
 	if(std::string(this->parameters.name()) == "flipper_left")
 		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 	else
-		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {-8,13}, revoluteProperties);
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {50,13}, revoluteProperties);
 
 
 	this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
