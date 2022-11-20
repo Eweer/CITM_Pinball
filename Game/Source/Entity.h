@@ -68,6 +68,7 @@ enum class EntityType
 	PING,
 	BRIDGE,
 	ROAD,
+	DIVIDER,
 	UNKNOWN
 };
 
@@ -180,6 +181,7 @@ public:
 			{"ping", EntityType::PING},
 			{"bridge", EntityType::BRIDGE},
 			{"road", EntityType::ROAD},
+			{"divider", EntityType::DIVIDER},
 			{"unknown", EntityType::UNKNOWN}
 		};
 
@@ -194,6 +196,7 @@ public:
 	iPoint position;
 
 	std::string texturePath;
+	std::string fxPath;
 
 	Texture texture;
 

@@ -19,8 +19,6 @@ Ball::~Ball() = default;
 
 bool Ball::Awake() 
 {
-	texturePath = parameters.attribute("texturepath").as_string();
-
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
 	texturePath = parameters.attribute("texturepath").as_string();
@@ -51,38 +49,32 @@ bool Ball::Start() {
 
 bool Ball::Update()
 {
-	int speed = 10; 
-	auto vel = b2Vec2(0,0); 
-
-	if (app->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		//
-	}
-	if (app->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		//
-	}
-		
-	if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		vel = b2Vec2(-speed, -GRAVITY_Y);
-	}
-
-	if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		vel = b2Vec2(speed, -GRAVITY_Y);
-	}
-
-	//Set the velocity of the pbody of the ball
-	pBody->body->SetLinearVelocity(vel);
-
 	//Update ball position in pixels
+	
 	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
 	position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - BALL_SIZE/2;
 
 	app->render->DrawTexture(texture.image, position.x , position.y);
-
+	
 	return true;
 }
 
 bool Ball::CleanUp()
 {
+	switch(texture.type)
+	{
+		case RenderModes::IMAGE:
+			app->tex->UnLoad(texture.image);
+			break;
+		case RenderModes::ANIMATION:
+			texture.anim->CleanUp();
+			break;
+		default:
+			break;
+
+	}
+	return true;
+
 	return true;
 }
 
@@ -91,7 +83,6 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 	{
 		case ColliderType::ITEM:
 			LOG("Collision ITEM");
-			//app->audio->PlayFx(pickCoinFxId);
 			break;
 		case ColliderType::PLATFORM:
 			LOG("Collision PLATFORM");

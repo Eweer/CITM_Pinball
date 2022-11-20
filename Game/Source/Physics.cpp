@@ -43,6 +43,8 @@ Physics::Physics() : Module()
 // Destructor
 Physics::~Physics() = default;
 
+//--------------- 
+
 bool Physics::Start()
 {
 	LOG("Creating Physics 2D environment");
@@ -53,14 +55,20 @@ bool Physics::Start()
 	// Set this module as a listener for contacts
 	world->SetContactListener(this);
 
+	//Setting up so we can use joints
+	b2BodyDef bd;
+	ground = world->CreateBody(&bd);
+
 	return true;
 }
 
-// 
 bool Physics::PreUpdate()
 {
 	// Step (update) the World
-	world->Step(1.0f / 60.0f, 6, 2);
+	if(stepActive || (!stepActive && app->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN))
+	   world->Step(1.0f / 60.0f, 6, 2);
+	
+	if(app->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN) stepActive = !stepActive;
 
 	// Because Box2D does not automatically broadcast collisions/contacts with sensors, 
 	// we have to manually search for collisions and "call" the equivalent to the ModulePhysics::BeginContact() ourselves...
@@ -81,7 +89,115 @@ bool Physics::PreUpdate()
 	return true;
 }
 
-PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, BodyType type)
+bool Physics::PostUpdate()
+{
+	if(app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		world->SetGravity({0.0f, 1.0f});
+
+	// Activate or deactivate debug mode
+	if(app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		debug = !debug;
+
+	if(app->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) 
+		debugWhileSelected = !debugWhileSelected;
+
+	if(!debug) return true;
+
+	//  Iterate all objects in the world and draw the bodies
+	//  until there are no more bodies or 
+	//  we are dragging an object around and not debugging draw in the meantime
+	for(b2Body *b = world->GetBodyList(); b && (!selected || (selected && debugWhileSelected)); b = b->GetNext())
+	{
+		for(b2Fixture *f = b->GetFixtureList(); f; f = f->GetNext())
+		{
+			if(app->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && IsMouseOverObject(f))
+			{
+				selected = f->GetBody();
+				break;
+			}
+			switch(f->GetType())
+			{
+				// Draw circles ------------------------------------------------
+				case b2Shape::Type::e_circle:
+				{
+					auto const circleShape = (b2CircleShape *)f->GetShape();
+					b2Vec2 pos = f->GetBody()->GetPosition();
+					app->render->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(circleShape->m_radius), 255, 255, 255);
+					break;
+				}
+				// Draw polygons ------------------------------------------------
+				case b2Shape::Type::e_polygon:
+				{
+					auto const *itemToDraw = (b2PolygonShape *)f->GetShape();
+					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 255, 100, 100);
+					break;
+				}
+				// Draw chains contour -------------------------------------------
+				case b2Shape::Type::e_chain:
+				{
+					auto const *itemToDraw = (b2ChainShape *)f->GetShape();
+					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 100, 255, 100);
+					break;
+				}
+				// Draw a single segment(edge) ----------------------------------
+				case b2Shape::Type::e_edge:
+				{
+					auto const *edgeShape = (b2EdgeShape *)f->GetShape();
+					b2Vec2 v1;
+					b2Vec2 v2;
+
+					v1 = b->GetWorldPoint(edgeShape->m_vertex0);
+					v1 = b->GetWorldPoint(edgeShape->m_vertex1);
+					app->render->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
+					break;
+				}
+				case b2Shape::Type::e_typeCount:
+				{
+					//Info parameter. A shape should never have this type.
+					break;
+				}
+			}
+		}
+	}
+
+	if(selected) DragSelectedObject();
+
+	return true;
+}
+
+
+//--------------- Called before quitting
+
+bool Physics::CleanUp()
+{
+	LOG("Destroying physics world");
+
+	// Delete the whole physics world!
+	RELEASE(world)
+
+	return true;
+}
+
+
+//--------------- Callback function to collisions with Box2D
+
+void Physics::BeginContact(b2Contact* contact)
+{
+	// Call the OnCollision listener function to bodies A and B, passing as inputs our custom PhysBody classes
+	auto* pBodyA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	auto* pBodyB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+	if (pBodyA && pBodyA->listener)
+		pBodyA->listener->OnCollision(pBodyA, pBodyB);
+
+	if (pBodyB && pBodyB->listener)
+		pBodyB->listener->OnCollision(pBodyB, pBodyA);
+}
+
+
+//--------------- Create Shapes and Joints
+
+PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType type)
 {
 	b2BodyDef body;
 	switch(type)
@@ -103,7 +219,7 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 	// Add BODY to the world
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
-	b2Body* b = world->CreateBody(&body);
+	b2Body *b = world->CreateBody(&body);
 
 	// Create SHAPE
 	b2PolygonShape box;
@@ -119,7 +235,7 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 	b->CreateFixture(&fixture);
 
 	// Create our custom PhysBody class
-	auto* pbody = new PhysBody();
+	auto *pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width * 0.5f;
@@ -129,7 +245,7 @@ PhysBody* Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 	return pbody;
 }
 
-PhysBody* Physics::CreateCircle(int x, int y, int radius, BodyType type)
+PhysBody *Physics::CreateCircle(int x, int y, int radius, BodyType type, float rest, int cat, int mask)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -151,7 +267,7 @@ PhysBody* Physics::CreateCircle(int x, int y, int radius, BodyType type)
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
-	b2Body* b = world->CreateBody(&body);
+	b2Body *b = world->CreateBody(&body);
 
 	// Create SHAPE
 	b2CircleShape circle;
@@ -161,13 +277,15 @@ PhysBody* Physics::CreateCircle(int x, int y, int radius, BodyType type)
 	b2FixtureDef fixture;
 	fixture.shape = &circle;
 	fixture.density = 1.0f;
-	b->ResetMassData();
+	fixture.filter.categoryBits = (uint16)cat;
+	fixture.filter.maskBits = (uint16)mask;
+	fixture.restitution = rest;
 
 	// Add fixture to the BODY
 	b->CreateFixture(&fixture);
 
 	// Create our custom PhysBody class
-	auto* pbody = new PhysBody();
+	auto *pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = radius * 0.5f;
@@ -177,7 +295,7 @@ PhysBody* Physics::CreateCircle(int x, int y, int radius, BodyType type)
 	return pbody;
 }
 
-PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type)
+PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -199,7 +317,7 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, Bo
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
-	b2Body* b = world->CreateBody(&body);
+	b2Body *b = world->CreateBody(&body);
 
 	// Create SHAPE
 	b2PolygonShape box;
@@ -215,7 +333,7 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, Bo
 	b->CreateFixture(&fixture);
 
 
-	auto* pbody = new PhysBody();
+	auto *pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = width;
@@ -225,7 +343,7 @@ PhysBody* Physics::CreateRectangleSensor(int x, int y, int width, int height, Bo
 	return pbody;
 }
 
-PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, BodyType type)
+PhysBody *Physics::CreateChain(int x, int y, const int *const points, int size, BodyType type, float rest, int cat, int mask, int angle)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -245,14 +363,15 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 			return nullptr;
 	}
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.angle = DEGTORAD*(float)angle;
 
 	// Add BODY to the world
-	b2Body* b = world->CreateBody(&body);
+	b2Body *b = world->CreateBody(&body);
 
 	// Create SHAPE
 	b2ChainShape shape;
-	auto* p = new b2Vec2[size / 2];
-	for (uint i = 0; i < size / 2; ++i)
+	auto *p = new b2Vec2[size / 2];
+	for(uint i = 0; i < size / 2; ++i)
 	{
 		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
 		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
@@ -262,6 +381,10 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 	// Create FIXTURE
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
+	fixture.density = 1.0f;
+	fixture.filter.categoryBits = (uint16)cat;
+	fixture.filter.maskBits = (uint16)mask;
+	fixture.restitution = rest;
 
 	// Add fixture to the BODY
 	b->CreateFixture(&fixture);
@@ -270,7 +393,7 @@ PhysBody* Physics::CreateChain(int x, int y, const int* const points, int size, 
 	delete[] p;
 
 	// Create our custom PhysBody class
-	auto* pbody = new PhysBody();
+	auto *pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
@@ -285,7 +408,6 @@ b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, 
 	rJoint.bodyA = anchor->body;
 	rJoint.bodyB = body->body;
 	rJoint.collideConnected = false;
-	rJoint.type = e_revoluteJoint;
 
 	rJoint.localAnchorA = b2Vec2(PIXEL_TO_METERS(anchorOffset.x), PIXEL_TO_METERS(anchorOffset.y));
 	rJoint.localAnchorB = b2Vec2(PIXEL_TO_METERS(bodyOffset.x), PIXEL_TO_METERS(bodyOffset.y));
@@ -301,73 +423,38 @@ b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, 
 		rJoint.maxMotorTorque = (float)properties[5].i;
 	}
 
-	return ((b2RevoluteJoint *)world->CreateJoint(&rJoint));
+	auto *returnJoint = ((b2RevoluteJoint *)world->CreateJoint(&rJoint));
+	return returnJoint;
 }
 
-// 
-bool Physics::PostUpdate()
+b2MouseJoint *Physics::CreateMouseJoint(PhysBody *origin, PhysBody *target, b2Vec2 position, float dampingRatio, float frequecyHz, float maxForce)
 {
-	// Activate or deactivate debug mode
-	if(app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debug = !debug;
+	b2MouseJointDef mJointDef;
+	mJointDef.bodyA = origin->body;
+	mJointDef.bodyB = target->body;
+	mJointDef.target = position;
+	mJointDef.dampingRatio = dampingRatio;
+	mJointDef.frequencyHz = frequecyHz;
+	mJointDef.maxForce = maxForce * selected->GetMass();
 
-	if(!debug)
-		return true;
-
-	//  Iterate all objects in the world and draw the bodies
-	for(b2Body *b = world->GetBodyList(); b; b = b->GetNext())
-	{
-		for(b2Fixture *f = b->GetFixtureList(); f; f = f->GetNext())
-		{
-			switch(f->GetType())
-			{
-				// Draw circles ------------------------------------------------
-				case b2Shape::e_circle:
-				{
-					b2CircleShape const *shape = (b2CircleShape *)f->GetShape();
-					b2Vec2 pos = f->GetBody()->GetPosition();
-					app->render->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
-				}
-				break;
-
-				// Draw polygons ------------------------------------------------
-				case b2Shape::e_polygon:
-				{
-					b2PolygonShape const *itemToDraw = (b2PolygonShape *)f->GetShape();
-					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices, 255, 100, 100);
-				}
-				break;
-
-				// Draw chains contour -------------------------------------------
-				case b2Shape::e_chain:
-				{
-					b2ChainShape const *itemToDraw = (b2ChainShape *)f->GetShape();
-					DrawDebug(b, itemToDraw->m_count, itemToDraw->m_vertices , 100, 255, 100);
-				}
-				break;
-
-				// Draw a single segment(edge) ----------------------------------
-				case b2Shape::e_edge:
-				{
-					b2EdgeShape const *shape = (b2EdgeShape *)f->GetShape();
-					b2Vec2 v1;
-					b2Vec2 v2;
-
-					v1 = b->GetWorldPoint(shape->m_vertex0);
-					v1 = b->GetWorldPoint(shape->m_vertex1);
-					app->render->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
-				}
-				break;
-
-				case b2Shape::e_typeCount:
-					//Info parameter. A shape should never have this type.
-					break;
-
-			}
-		}
-	}
-	return true;
+	return ((b2MouseJoint *)world->CreateJoint(&mJointDef));
 }
+
+b2MouseJoint *Physics::CreateMouseJoint(b2Body *origin, b2Body *target, b2Vec2 position, float dampingRatio, float frequecyHz, float maxForce)
+{
+	b2MouseJointDef mJointDef;
+	mJointDef.bodyA = origin;
+	mJointDef.bodyB = target;
+	mJointDef.target = position;
+	mJointDef.dampingRatio = dampingRatio;
+	mJointDef.frequencyHz = frequecyHz;
+	mJointDef.maxForce = maxForce * selected->GetMass();
+
+	return ((b2MouseJoint *)world->CreateJoint(&mJointDef));
+}
+
+
+//--------------- Utils
 
 void Physics::DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *vertices, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
 {
@@ -385,30 +472,60 @@ void Physics::DrawDebug(const b2Body *body, const int32 count, const b2Vec2 *ver
 	app->render->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), r, g, b, a);
 }
 
-
-// Called before quitting
-bool Physics::CleanUp()
+void Physics::DragSelectedObject()
 {
-	LOG("Destroying physics world");
+	int mouseX;
+	int mouseY;
+	app->input->GetMousePosition(mouseX, mouseY);
+	b2Vec2 target(PIXEL_TO_METERS(mouseX), PIXEL_TO_METERS(mouseY));
 
-	// Delete the whole physics world!
-	RELEASE(world)
+	switch(app->input->GetMouseButtonDown(SDL_BUTTON_LEFT))
+	{
+		case KeyState::KEY_DOWN:
+		{
+			mouseJoint = CreateMouseJoint(ground, selected, target);
+			break;
+		}
+		case KeyState::KEY_REPEAT:
+		{
+			mouseJoint->SetTarget(target);
+			app->render->DrawLine(mouseX, mouseY, METERS_TO_PIXELS(selected->GetPosition().x), METERS_TO_PIXELS(selected->GetPosition().y), 0, 255, 255, 255);
+			break;
+		}
+		case KeyState::KEY_UP:
+		{
+			world->DestroyJoint(mouseJoint);
+			mouseJoint = nullptr;
+			selected = nullptr;
+			break;
+		}
+		case KeyState::KEY_IDLE:
+			break;
 
-	return true;
+	}
+
 }
 
-// Callback function to collisions with Box2D
-void Physics::BeginContact(b2Contact* contact)
+bool Physics::IsMouseOverObject(b2Fixture const *f) const
 {
-	// Call the OnCollision listener function to bodies A and B, passing as inputs our custom PhysBody classes
-	auto* pBodyA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	auto* pBodyB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	if(f->TestPoint(IPointToWorldVec(app->input->GetMousePosition())))
+		return true;
+	return false;
+}
 
-	if (pBodyA && pBodyA->listener)
-		pBodyA->listener->OnCollision(pBodyA, pBodyB);
+bool Physics::IsDebugActive() const
+{
+	return debug;
+}
 
-	if (pBodyB && pBodyB->listener)
-		pBodyB->listener->OnCollision(pBodyB, pBodyA);
+iPoint Physics::WorldVecToIPoint(const b2Vec2 &v) const
+{
+	return iPoint(METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y));
+}
+
+b2Vec2 Physics::IPointToWorldVec(const iPoint &p) const
+{
+	return b2Vec2(PIXEL_TO_METERS(p.x), PIXEL_TO_METERS(p.y));
 }
 
 BodyType Physics::GetEnumFromStr(const std::string &s) const
@@ -430,6 +547,7 @@ RevoluteJoinTypes Physics::GetTypeFromProperty(const std::string &s) const
 	}
 	return propertyToType.at(s);
 }
+
 
 //--------------- PhysBody
 

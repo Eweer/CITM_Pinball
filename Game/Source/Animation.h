@@ -100,6 +100,13 @@ public:
 		return this;
 	}
 
+	bool CleanUp()
+	{
+		for(auto &elem : frames) app->tex->UnLoad(elem);
+		if(staticImage) app->tex->UnLoad(staticImage);
+		return true;
+	}
+
 	bool GetAnimFinished() const
 	{
 		return bFinished;

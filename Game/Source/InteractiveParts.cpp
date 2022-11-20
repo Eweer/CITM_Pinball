@@ -21,7 +21,6 @@
 
 #include "PugiXml/src/pugixml.hpp"
 
-
 InteractiveParts::InteractiveParts() : Entity(EntityType::UNKNOWN) {}
 
 InteractiveParts::InteractiveParts(pugi::xml_node const &itemNode = pugi::xml_node()) : Entity(itemNode) {}
@@ -32,82 +31,43 @@ bool InteractiveParts::Awake()
 {
 	if(!parameters) return false;
 
-	interactiveCollidersFolder = parameters.parent().attribute("assetpath").as_string();
+	texturePath = parameters.parent().attribute("texturepath").as_string();
+
+	fxPath = parameters.parent().attribute("audiopath").as_string();
+	fxPath += parameters.parent().attribute("fxfolder").as_string();
+	SetPathsToLevel();
 
 	return true;
 }
 
+void InteractiveParts::SetPathsToLevel()
+{
+	uint levelNumber = app->GetLevelNumber();
+
+	std::string levelFolder = "level_" + std::to_string(levelNumber) + "/";
+
+	texLevelPath = texturePath + levelFolder;
+	fxLevelPath = fxPath + levelFolder;
+}
+
 bool InteractiveParts::Start() 
 {
-	
 	if(!CreateColliders()) return false;
-	
-	position = { 
-		parameters.attribute("x").as_int(), 
-		parameters.attribute("y").as_int() 
+
+	position = {
+		parameters.attribute("x").as_int(),
+		parameters.attribute("y").as_int()
 	};
 
 	AddTexturesAndAnimationFrames();
 
-	if(texture.type == RenderModes::ANIMATION)
+	if(parameters.attribute("audio"))
 	{
-		texture.anim->SetSpeed(parameters.attribute("speed").as_float());
-		auto animStyle = static_cast<AnimIteration>(parameters.attribute("animstyle").as_int());
-		texture.anim->SetAnimStyle(animStyle);
-		if(type == EntityType::ANIM
-			|| animStyle == AnimIteration::LOOP_FORWARD_BACKWARD
-			|| animStyle == AnimIteration::LOOP_FROM_START)
-		{
-			texture.anim->Start();
-		}
+		std::string audioFile = fxPath + name + ".ogg";
+		app->audio->LoadFx(audioFile.c_str());
 	}
 
-	if(name == "flipper")
-	{
-		flipper = std::make_unique<FlipperInfo>();
-
-		flipper->anchor = app->physics->CreateCircle(
-			parameters.child("anchor").attribute("x").as_int(),
-			parameters.child("anchor").attribute("y").as_int(),
-			parameters.child("anchor").attribute("radius").as_int(),
-			BodyType::STATIC
-		);
-
-		pugi::xml_node flipperNode = parameters.child("revolute_joint");
-		std::vector<RevoluteJointSingleProperty> revoluteProperties;
-
-		for(pugi::xml_attribute attr : flipperNode.attributes())
-		{
-			std::string attrName(attr.name());
-			if(attrName == "motor_speed") flipper->motorSpeed = attr.as_float();
-
-			RevoluteJointSingleProperty propertyToAdd;
-
-			propertyToAdd.type = app->physics->GetTypeFromProperty(attrName);
-
-			switch(propertyToAdd.type)
-			{
-				case RevoluteJoinTypes::BOOL:
-					propertyToAdd.b = attr.as_bool();
-					break;
-
-				case RevoluteJoinTypes::FLOAT:
-					propertyToAdd.f = attr.as_float();
-					break;
-
-				case RevoluteJoinTypes::INT:
-					propertyToAdd.i = attr.as_int();
-					break;
-
-				case RevoluteJoinTypes::IPOINT:
-				case RevoluteJoinTypes::UNKNOWN:
-					LOG("Something went wrong in InteractiveParts doing the revolute joint");
-					break;
-			}
-			revoluteProperties.push_back(RevoluteJointSingleProperty{propertyToAdd});
-		}
-		flipper->joint = app->physics->CreateRevoluteJoint(flipper->anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
-	}
+	CreateFlipperInfo();
 
 	//pBody->ctype = ColliderType::INTERACTIVE_PARTS;
 
@@ -121,21 +81,32 @@ bool InteractiveParts::Update()
 		case RenderModes::IMAGE:
 			app->render->DrawTexture(texture.image, position.x, position.y);
 			break;
-			
+
 		case RenderModes::ANIMATION:
 			app->render->DrawTexture(texture.anim->GetCurrentFrame(), position.x, position.y);
 			break;
 
 		default:
 			break;
+
 	}
 
-	if(!flipper) return true;
+	if(!flipperJoint) return true;
+	
+	if(app->physics->IsDebugActive())
+	{
+		auto anchorPos = app->physics->WorldVecToIPoint(flipperJoint->anchor->body->GetPosition());
+		auto mainPos = app->physics->WorldVecToIPoint(pBody->body->GetPosition());
 
+		std::cout << "Creating line for " << this->parameters.name() << "." << std::endl;
+
+		app->render->DrawLine(mainPos.x, mainPos.y, anchorPos.x, anchorPos.y, 255, 0, 0);
+	}
+	
 	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
 	{
 		std::cout << "a" << std::endl;
-		flipper->joint->SetMotorSpeed(flipper->motorSpeed * -1.0f);
+		flipperJoint->joint->SetMotorSpeed(flipperJoint->motorSpeed * -1.0f);
 	}
 
 	return true;
@@ -143,7 +114,32 @@ bool InteractiveParts::Update()
 
 bool InteractiveParts::CleanUp()
 {
+	switch(texture.type)
+	{
+		case RenderModes::IMAGE:
+			app->tex->UnLoad(texture.image);
+			break;
+
+		case RenderModes::ANIMATION:
+			texture.anim->CleanUp();
+			break;
+
+		default: 
+			break;
+
+	}
+
 	return true;
+}
+
+void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
+{
+	if(physB->ctype == ColliderType::BALL)
+	{
+		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
+		if(ballCollisionAudio) app->audio->PlayFx(ballCollisionAudio);
+	}
+		
 }
 
 bool InteractiveParts::CreateColliders()
@@ -151,7 +147,7 @@ bool InteractiveParts::CreateColliders()
 	//EntityType::ANIM are just animations of board, they don't have collisions.
 	if(type == EntityType::ANIM) return true;
 
-	auto collidersFileName = interactiveCollidersFolder + "interactive_colliders_" + std::to_string(app->GetLevelNumber()) + ".xml";
+	auto collidersFileName = texLevelPath + "interactive_colliders_" + std::to_string(app->GetLevelNumber()) + ".xml";
 
 	pugi::xml_parse_result parseResult = collidersFile.load_file(collidersFileName.c_str());
 
@@ -222,8 +218,65 @@ PhysBody* InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyT
 	}
 
 	PhysBody *border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
-
+	
 	return border;
+}
+
+bool InteractiveParts::CreateFlipperInfo()
+{
+	
+	if(name != "flipper" || this->flipperJoint) return false;
+
+	LOG("Creating flipper info");
+
+	FlipperInfo flipperHelper;
+
+	flipperHelper.anchor = app->physics->CreateCircle(
+		parameters.child("anchor").attribute("x").as_int(),
+		parameters.child("anchor").attribute("y").as_int(),
+		parameters.child("anchor").attribute("radius").as_int(),
+		BodyType::STATIC
+	);
+
+	pugi::xml_node flipperNode = parameters.child("revolute_joint");
+	std::vector<RevoluteJointSingleProperty> revoluteProperties;
+
+	for(pugi::xml_attribute attr : flipperNode.attributes())
+	{
+		std::string attrName(attr.name());
+		if(attrName == "motor_speed") flipperHelper.motorSpeed = attr.as_float();
+
+		RevoluteJointSingleProperty propertyToAdd;
+
+		propertyToAdd.type = app->physics->GetTypeFromProperty(attrName);
+
+		switch(propertyToAdd.type)
+		{
+			case RevoluteJoinTypes::BOOL:
+				propertyToAdd.b = attr.as_bool();
+				break;
+
+			case RevoluteJoinTypes::FLOAT:
+				propertyToAdd.f = attr.as_float();
+				break;
+
+			case RevoluteJoinTypes::INT:
+				propertyToAdd.i = attr.as_int();
+				break;
+
+			case RevoluteJoinTypes::IPOINT:
+			case RevoluteJoinTypes::UNKNOWN:
+				LOG("Something went wrong in InteractiveParts doing the revolute joint");
+				break;
+		}
+		revoluteProperties.emplace_back(propertyToAdd);
+	}
+
+	flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
+
+	this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
+	
+	return true;
 }
 
 void InteractiveParts::AddTexturesAndAnimationFrames()
@@ -235,7 +288,7 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 	}
 
 	struct dirent **nameList;
-	std::string texturePath = interactiveCollidersFolder + name + "/";
+	std::string texturePath = texLevelPath + name + "/";
 
 	const char *dirPath = texturePath.c_str();
 	int n = scandir(dirPath, &nameList, nullptr, DescAlphasort);
@@ -243,10 +296,14 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 	std::string itemName(parameters.name());
 	bool foundOne = false;
 
-	if(n <= 0) return;
-
 	while(n--)
 	{
+		if(nameList[n]->d_name[0] == '.')
+		{
+			free(nameList[n]);
+			continue;
+		}
+
 		std::smatch m;
 		std::string animFileName(nameList[n]->d_name);
 
@@ -291,4 +348,15 @@ void InteractiveParts::AddTexturesAndAnimationFrames()
 		free(nameList[n]);
 	}
 	free(nameList);
+
+	if(texture.type == RenderModes::ANIMATION)
+	{
+		texture.anim->SetSpeed(parameters.attribute("speed").as_float());
+		auto animStyle = static_cast<AnimIteration>(parameters.attribute("animstyle").as_int());
+		texture.anim->SetAnimStyle(animStyle);
+		if(animStyle == AnimIteration::LOOP_FORWARD_BACKWARD || animStyle == AnimIteration::LOOP_FROM_START)
+		{
+			texture.anim->Start();
+		}
+	}
 }

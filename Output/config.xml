@@ -1,7 +1,7 @@
 <config>
   <app>
     <title>Physics II - Pinball</title>
-    <organization>UPC</organization>
+    <organization>CITM</organization>
   </app>
 
   <renderer>
@@ -21,13 +21,9 @@
     <fx volume="128"/>
   </audio>
 
-  <scene assetpath = "Assets/Maps/">
-
+  <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
     <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
-
-    <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
-
-    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0"/>
+    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0" b_audio = "true"/>
     <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0"/>
     <ramp_left  x="115" y="728" renderable = "true" speed = "0.2" animstyle = "0"/>
     <ramp_right x="452" y="538" renderable = "true" speed = "0.2" animstyle = "0"/>
@@ -44,10 +40,9 @@
     
 
     <border x = "0" y = "0" renderable = "false"/>
-
-    <bridge_up x = "332" y = "320" renderable = "true"/>
     <bridge_down x = "0" y = "0" renderable = "false"/>
 
+    <bridge_up x = "332" y = "320" renderable = "true"/>
     <ping_up x = "438" y = "294" renderable = "true"/>
     <ping_down x = "314" y = "455" renderable = "true"/>
 
@@ -60,11 +55,19 @@
 
     <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
 
+    <anim_power_pink x = "210" y = "205" renderable = "true" speed = "0.25" animstyle = "0"/>
 
+<!--
+    <divider_one x = "0" y = "0" renderable = "true" speed = "0.5" animstyle = "3"/>
+    <divider_two x = "0" y = "0" renderable = "true" speed = "0.5" animstyle = "3"/>
+    <divider_three x = "0" y = "0" renderable = "true"/>
+    <divider_four x = "0" y = "0" renderable = "true"/>
+-->
+    <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
   </scene>
 
   <map>
-    <mapfolder path="Assets/Maps/"/>
+    <mapfolder texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" musicfolder = "Music/"/>
   </map>
   
 </config>

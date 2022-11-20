@@ -27,20 +27,24 @@ bool Map::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Map Parser");
 
-	mapFolder = config.child("mapfolder").attribute("path").as_string();
+	texturePath = config.child("mapfolder").attribute("texturepath").as_string();
+	std::string audioPath = config.child("mapfolder").attribute("audiopath").as_string();
+	musicPath = audioPath + config.child("mapfolder").attribute("musicfolder").as_string();
 
 	return true;
 }
 
 void Map::Draw()
 {
-	app->render->DrawTexture(background, 0, 0);
+	app->render->DrawTexture(backgroundImage, 0, 0);
 }
 
 // Called before quitting
 bool Map::CleanUp()
 {
 	LOG("Unloading map");
+
+	if(backgroundImage) app->tex->UnLoad(backgroundImage);
 
 	return true;
 }
@@ -49,10 +53,12 @@ bool Map::CleanUp()
 bool Map::Load()
 {
 	uint aux = app->GetLevelNumber();
-	std::string str(std::to_string(aux));
-	auto levelFileName = mapFolder + "bg_" + str + ".png";
 
-	background = app->tex->Load(levelFileName.c_str());
+	auto levelFileName = texturePath + "level_" + std::to_string(aux) + "/bg"  + ".png";
+
+	backgroundImage = app->tex->Load(levelFileName.c_str());
+
+	musicPath += "level_" + std::to_string(aux) + ".ogg";
 
 	return true;
 }

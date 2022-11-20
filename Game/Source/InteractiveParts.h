@@ -39,17 +39,28 @@ public:
 
 	bool CleanUp() final;
 
+	void OnCollision(PhysBody *physA, PhysBody *physB) final;
+
 private:
 
 	bool CreateColliders();
 	bool CreateCollidersBasedOnShape(const pugi::xml_node &colliderAttributes);
 	PhysBody *CreateChainColliders(const std::string &xyStr, BodyType bodyT);
 
+	bool CreateFlipperInfo();
+
+	void SetPathsToLevel();
+
 	void AddTexturesAndAnimationFrames();
 
-	std::unique_ptr<FlipperInfo> flipper;
+	int scoreValue = 0;
+	uint ballCollisionAudio = 0;
 
-	std::string interactiveCollidersFolder;
+	std::unique_ptr<FlipperInfo> flipperJoint;
+
+	std::string texLevelPath;
+	std::string fxLevelPath;
+
 	pugi::xml_document collidersFile;
 };
 

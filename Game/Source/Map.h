@@ -31,8 +31,12 @@ public:
 
 private:
 
-	std::string mapFolder;
-	SDL_Texture *background = nullptr;
+	std::string musicPath;
+	std::string texturePath;
+
+
+	uint backgroundMusic;
+	SDL_Texture *backgroundImage = nullptr;
 };
 
 #endif // __MAP_H__
