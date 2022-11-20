@@ -20,6 +20,7 @@
 
 #include "PugiXml/src/pugixml.hpp"
 
+
 InteractiveParts::InteractiveParts() : Entity(EntityType::UNKNOWN) {}
 
 InteractiveParts::InteractiveParts(pugi::xml_node const &itemNode = pugi::xml_node()) : Entity(itemNode) {}
