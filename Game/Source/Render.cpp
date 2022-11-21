@@ -273,7 +273,7 @@ bool Render::SaveState(pugi::xml_node& data)
 
 	pugi::xml_node vsyncNode = data.append_child("vsync");
 
-	vsyncNode.append_attribute("active") = (bool)vSyncOnRestart;
+	vsyncNode.append_attribute("active") = vSyncOnRestart;
 
 	return true;
 }

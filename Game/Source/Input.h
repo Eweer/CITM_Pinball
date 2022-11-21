@@ -60,7 +60,7 @@ public:
 	}
 
 	// Check if a certain window event happened
-	bool GetWindowEvent(EventWindow ev) const;
+	bool GetWindowEvent(EventWindow ev);
 
 	// Get mouse / axis position
 	iPoint GetMousePosition() const;

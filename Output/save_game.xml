@@ -4,10 +4,13 @@
 	<window />
 	<textures />
 	<audio />
+	<:anonymous />
 	<scene />
 	<entitymanager />
 	<map />
+	<:anonymous />
 	<renderer>
-		<camera x="195" y="36" />
+		<camera x="0" y="0" />
+		<vsync active="false" />
 	</renderer>
 </save_state>

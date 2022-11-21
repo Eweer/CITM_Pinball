@@ -73,10 +73,10 @@ void Window::SetTitle(const char* new_title)
 	SDL_SetWindowTitle(window, new_title);
 }
 
-void Window::GetWindowSize(uint& width, uint& height) const
+void Window::GetWindowSize(uint& w, uint& h) const
 {
-	width = this->width;
-	height = this->height;
+	w = this->width;
+	h = this->height;
 }
 
 uint Window::GetScale() const

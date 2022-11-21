@@ -5,7 +5,7 @@
 		<organization>CITM</organization>
 	</app>
 	<renderer>
-		<vsync value="false" />
+		<vsync value="true" />
 	</renderer>
 	<window>
 		<resolution width="768" height="1024" scale="1" />
@@ -72,7 +72,7 @@
 		<divider_two x="310" y="559" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
 		<divider_three x="366" y="559" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
 		<divider_four x="430" y="575" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
-		<ball x="647" y="672" renderable="true" highscore="2403" />
+		<ball x="647" y="672" renderable="true" highscore="12917" />
 		<anim_launcher x="565" y="942" renderable="true" />
 		<anim_billboard x="530" y="40" renderable="true" speed="0.3" animstyle="1" />
 		<road_top x="58" y="13" renderable="true" speed="0.25" animstyle="3" />

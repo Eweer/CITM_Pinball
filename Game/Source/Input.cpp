@@ -142,7 +142,8 @@ bool Input::CleanUp()
 	return true;
 }
 
-bool Input::GetWindowEvent(EventWindow ev) const
+
+bool Input::GetWindowEvent(EventWindow ev)
 {
 	return windowEvents[ev];
 }
