@@ -115,7 +115,7 @@ bool Map::Load()
 
 void Map::DrawUI() const
 {
-	DrawScores(560, 95);
+	DrawScores(565, 125, -4, -10.0f);
 	DrawFPS(5, 5);
 	DrawGravity(5, 75);
 }
@@ -191,19 +191,19 @@ void Map::DrawFPS(int x, int y) const
 	app->fonts->Blit(x + 180, y + 40, fontOrange, targetFPS.c_str());
 }
 
-void Map::DrawScores(int x, int y) const
+void Map::DrawScores(int x, int y, int offsetY, double angle) const
 {
 	std::string score = std::to_string(app->entityManager->GetScore());
-	app->fonts->Blit(x, y, fontWhite, "SC0RE ", 4);
-	app->fonts->Blit(x + 90, y + 20, fontWhite, score.c_str(), 4);
+	app->fonts->Blit(x, y, fontWhite, "SC0RE ", offsetY, angle);
+	app->fonts->Blit(x + 90, y - 20, fontWhite, score.c_str(), offsetY, angle);
 
 	std::pair<uint, uint> scoreList = app->entityManager->GetScoreList();
 
 	std::string highScore = std::to_string(scoreList.first);
-	app->fonts->Blit(x, y + 20, fontOrange, "HIGH", 4);
-	app->fonts->Blit(x + 90, y + 40, fontOrange, highScore.c_str(), 4);
+	app->fonts->Blit(x, y + 20, fontOrange, "HIGH", offsetY, angle);
+	app->fonts->Blit(x + 90, y, fontOrange, highScore.c_str(), offsetY, angle);
 
 	std::string lastScore = std::to_string(scoreList.second);
-	app->fonts->Blit(x, y + 40, fontOrange, "LAST", 4);
-	app->fonts->Blit(x + 90, y + 60, fontOrange, lastScore.c_str(), 4);
+	app->fonts->Blit(x, y + 40, fontOrange, "LAST", offsetY, angle);
+	app->fonts->Blit(x + 90, y +20, fontOrange, lastScore.c_str(), offsetY, angle);
 }

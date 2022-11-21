@@ -72,7 +72,10 @@ bool InteractiveParts::Update()
 			break;
 
 		case RenderModes::ANIMATION:
-			app->render->DrawTexture(texture.anim->GetCurrentFrame(), position.x, position.y);
+			if(std::string(parameters.name()) != "anim_billboard") 
+				app->render->DrawTexture(texture.anim->GetCurrentFrame(), position.x, position.y);
+			else 
+				app->render->DrawTexture(texture.anim->GetCurrentFrame(), position.x, position.y, nullptr, 1.0F, 0.0, MAXINT, MAXINT, SDL_FLIP_HORIZONTAL);
 			break;
 
 		default:

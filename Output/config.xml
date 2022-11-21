@@ -74,7 +74,7 @@
 		<divider_four x="430" y="575" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
 		<ball x="647" y="672" renderable="true" highscore="2403" />
 		<anim_launcher x="565" y="942" renderable="true" />
-		<anim_billboard x="535" y="50" renderable="true" speed="0.3" animstyle="1" />
+		<anim_billboard x="530" y="40" renderable="true" speed="0.3" animstyle="1" />
 		<road_top x="58" y="13" renderable="true" speed="0.25" animstyle="3" />
 		<bridge_up x="332" y="320" renderable="true" hasfx="ogg" />
 		<bridge_down x="0" y="0" renderable="false" />

@@ -40,7 +40,7 @@ public:
 
 	void DrawGravity(int x, int y) const;
 	void DrawFPS(int x, int y) const;
-	void DrawScores(int x, int y) const;
+	void DrawScores(int x, int y, int offsetY, double angle) const;
 
 	
 	//void OffsetDrawPosition(iPoint &position, iPoint amount, bool condition = true, std::string const &str = "", uint font = 0);

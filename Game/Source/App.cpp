@@ -176,7 +176,7 @@ bool App::PostUpdate()
 
 	if(input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 	{
-		PauseGame();
+		return PauseGame();
 	}
 	return true;
 }
@@ -293,7 +293,7 @@ bool App::SaveToFile()
 	return true;
 }
 
-void App::PauseGame() const
+bool App::PauseGame() const
 {
 	physics->ToggleStep();
 	while(input->GetKey(SDL_SCANCODE_P) == KEY_DOWN || input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
@@ -307,6 +307,7 @@ void App::PauseGame() const
 		if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) return false;
 	}
 	physics->ToggleStep();
+	return true;
 }
 
 bool App::SaveToConfig(std::string const &moduleName, std::string const &node, std::string const &attribute, std::string const &value) const

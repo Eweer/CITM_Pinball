@@ -58,7 +58,7 @@ public:
 	bool LoadFromFile();
 	bool SaveToFile();
 
-	void PauseGame() const;
+	bool PauseGame() const;
 
 	bool SaveToConfig(std::string const &moduleName, std::string const &node, std::string const &attribute, std::string const &value) const;
 
