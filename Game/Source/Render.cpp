@@ -1,11 +1,12 @@
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
+#include "Input.h"
 
 #include "Defs.h"
 #include "Log.h"
 
-#define VSYNC true
+#define VSYNC false
 
 Render::Render() : Module()
 {
@@ -44,6 +45,8 @@ bool Render::Awake(pugi::xml_node& config)
 	camera.h = app->win->screenSurface->h;
 	camera.x = 0;
 	camera.y = 0;
+
+	ticksForNextFrame = 1000 / fpsTarget;
 	
 	return true;
 }
@@ -60,12 +63,26 @@ bool Render::Start()
 // Called each loop iteration
 bool Render::PreUpdate()
 {
+	while (SDL_GetTicks() - lastTime < ticksForNextFrame)
+	{
+		SDL_Delay(1);
+	}
 	SDL_RenderClear(renderer);
 	return true;
 }
 
 bool Render::Update(float dt)
 {
+	if (app->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && fpsTarget < 1000)
+	{
+		fpsTarget += 10; 
+		ticksForNextFrame = 1000 / fpsTarget;
+	}
+	if (app->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN && fpsTarget > 10)
+	{
+		fpsTarget -= 10;
+		ticksForNextFrame = 1000 / fpsTarget;
+	}
 	return true;
 }
 
@@ -73,11 +90,15 @@ bool Render::PostUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
-	while(lastTime - SDL_GetTicks() < TICKS_FOR_NEXT_FRAME)
-	{
-		SDL_Delay(1);
-	}
 	lastTime = SDL_GetTicks();
+
+	fpsFrames++;
+	if (fpsLastTime < (SDL_GetTicks() - FPS_INTERVAL * 1000))
+	{
+		fpsLastTime = SDL_GetTicks();
+		fpsCurrent = fpsFrames;
+		fpsFrames = 0;
+	}
 	return true;
 }
 
@@ -238,4 +259,14 @@ bool Render::SaveState(pugi::xml_node& data)
 	cam.append_attribute("y") = camera.y;
 
 	return true;
+}
+
+uint Render::GetCurrentFPS() const
+{
+	return fpsCurrent;
+}
+
+uint Render::GetTargetFPS() const
+{
+	return fpsTarget;
 }

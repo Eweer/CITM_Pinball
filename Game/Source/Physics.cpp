@@ -64,18 +64,30 @@ bool Physics::Start()
 
 bool Physics::PreUpdate()
 {
-	if(app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		world->SetGravity({0.0f, -1.0f});
-	if(app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-		world->SetGravity({0.0f, -2.0f});
-	if(app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		world->SetGravity({0.0f, 4.0f});
-	if(app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		world->SetGravity({0.0f, -8.0f});
-	if(app->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-		world->SetGravity({-1.0f, 0.0f});
-	if(app->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-		world->SetGravity({1.0f, 0.0f});
+	float newGrav = b2_maxFloat;
+	for (uint keyIterator = SDL_SCANCODE_1; keyIterator <= SDL_SCANCODE_0; keyIterator++)
+	{
+		if (app->input->GetKey(keyIterator) == KEY_DOWN) {
+			if (keyIterator == SDL_SCANCODE_0)
+			{
+				newGrav = 0;
+				break;
+			}
+			newGrav = ((int)keyIterator - (int)SDL_SCANCODE_1 + 1);
+			if (app->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT) newGrav *= -1;
+			if (app->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT) newGrav *= 2;
+		}
+	}
+
+	if (newGrav != b2_maxFloat)
+	{
+		b2Vec2 newGravVec;
+		if (app->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+			newGravVec = { newGrav, world->GetGravity().y };
+		else
+			newGravVec = { world->GetGravity().x, newGrav };
+		world->SetGravity(newGravVec);
+	}
 
 	// Step (update) the World
 	if(stepActive || (!stepActive && app->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN))
@@ -620,6 +632,11 @@ iPoint Physics::WorldVecToIPoint(const b2Vec2 &v) const
 b2Vec2 Physics::IPointToWorldVec(const iPoint &p) const
 {
 	return b2Vec2(PIXEL_TO_METERS(p.x), PIXEL_TO_METERS(p.y));
+}
+
+b2Vec2 Physics::GetWorldGravity() const
+{
+	return world->GetGravity();
 }
 
 void Physics::DestroyBody(b2Body *b)

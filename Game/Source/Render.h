@@ -45,12 +45,23 @@ public:
 	bool LoadState(pugi::xml_node&) final;
 	bool SaveState(pugi::xml_node&) final;
 
+	uint GetCurrentFPS() const;
+	uint GetTargetFPS() const;
+
 	SDL_Renderer* renderer;
 	SDL_Rect camera;
 	SDL_Rect viewport;
 	SDL_Color background;
 
-	int lastTime = 0;
+
+private:
+	uint fpsLastTime = 0;
+	uint fpsCurrent = 0;
+	uint fpsFrames = 0;
+
+	uint lastTime = 0;
+	uint fpsTarget = 60;
+	uint ticksForNextFrame = 1000;
 };
 
 #endif // __RENDER_H__

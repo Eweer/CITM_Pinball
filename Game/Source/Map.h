@@ -38,6 +38,18 @@ public:
 	
 	void DrawUI() const;
 
+	void DrawGravity(int x, int y) const;
+	void DrawFPS(int x, int y) const;
+	void DrawScores(int x, int y) const;
+
+/*		Move position by amount if condition is true.
+*		Position: Current Position
+*		Amount: How much to move the position
+*		Condition: Will offset if condition is true
+*		str: Text to write before offsetting if condition true
+*/		
+	void OffsetDrawPosition(iPoint &position, iPoint amount, bool condition, std::string const &str = "");
+
 
 private:
 

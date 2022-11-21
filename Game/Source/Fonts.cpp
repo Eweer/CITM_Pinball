@@ -76,7 +76,7 @@ void Fonts::UnLoad(int font_id)
 }
 
 // Render text using a bmp font
-void Fonts::Blit(int x, int y, int font_id, const char *text) const
+void Fonts::Blit(int x, int y, int font_id, const char *text, uint angle) const
 {
 	if(text == nullptr || font_id < 0 || font_id >= MAX_FONTS || fonts[font_id].graphic == nullptr)
 	{
@@ -105,6 +105,6 @@ void Fonts::Blit(int x, int y, int font_id, const char *text) const
 		rect.x = c_col*font->char_w;
 		rect.y = c_row*font->char_h;
 
-		app->render->DrawTexture(font->graphic, x + i*font->char_w, y + i*4, &rect, 1.0f, 5.0f);
+		app->render->DrawTexture(font->graphic, x + i*font->char_w, y + i*angle, &rect, 1.0f, 5.0f);
 	}
 }

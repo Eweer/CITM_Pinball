@@ -32,7 +32,7 @@ public:
 	void UnLoad(int font_id);
 
 	// Create a surface from text
-	void Blit(int x, int y, int bmp_font_id, const char *text) const;
+	void Blit(int x, int y, int bmp_font_id, const char *text, uint angle = 0) const;
 
 private:
 

@@ -150,6 +150,8 @@ public:
 	iPoint WorldVecToIPoint(const b2Vec2 &v) const;
 	b2Vec2 IPointToWorldVec(const iPoint &p) const;
 
+	b2Vec2 GetWorldGravity() const;
+
 	void DestroyBody(b2Body* b = nullptr);
 	void DestroyPhysBody(PhysBody* b = nullptr);
 

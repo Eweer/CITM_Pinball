@@ -16,6 +16,7 @@
 #define NULL  0
 
 #define TICKS_FOR_NEXT_FRAME (1000 / 60)
+#define FPS_INTERVAL 1.0
 
 // Deletes a buffer
 #define RELEASE( x ) \
