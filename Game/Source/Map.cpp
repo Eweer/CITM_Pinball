@@ -21,6 +21,14 @@
 #include <iostream>
 
 
+/*		Move position by amount if condition is true.
+*		Position: Current Position
+*		Amount: How much to move the position
+*		lambdaValue: Number that will be evaluated
+*		Condition: Lambda function that will offset if condition is true
+*		str: Text to write before offsetting if condition true
+*		font: font to use
+*/
 template<class UnaryPred> void OffsetDrawPosition(iPoint &position, iPoint amount, float lambdaValue = 1, UnaryPred predicate = true, std::string const &str = "", uint font = 0)
 {
 	if(!predicate(lambdaValue)) return;
@@ -108,13 +116,12 @@ bool Map::Load()
 void Map::DrawUI() const
 {
 	DrawScores(560, 95);
-	DrawFPS(5, 25);
-	DrawGravity(5, 65);
+	DrawFPS(5, 5);
+	DrawGravity(5, 75);
 }
 
 void Map::DrawGravity(int x, int y) const
 {
-
 	b2Vec2 gravity = app->physics->GetWorldGravity();
 	iPoint pos(x, y);
 
@@ -161,36 +168,39 @@ void Map::DrawGravity(int x, int y) const
 
 void Map::DrawFPS(int x, int y) const
 {
+	std::string vSyncActive;
+
+	if(app->render->RestartForVSync()) 
+		vSyncActive = "Restart for vsync";
+	else if(app->render->IsVSyncActive())
+		vSyncActive = "vsync enabled";
+	else 
+		vSyncActive = "vsync disabled";
+
+	app->fonts->Blit(x, y, fontWhite, vSyncActive.c_str());
+
 	std::string currentFPS = std::to_string(app->render->GetCurrentFPS());
-	app->fonts->Blit(5, 25, fontWhite, "CURRENT FPS ");
-	app->fonts->Blit(185, 25, fontWhite, currentFPS.c_str());
+	app->fonts->Blit(x, y + 20, fontWhite, "CURRENT FPS ");
+	app->fonts->Blit(x + 180, y + 20, fontWhite, currentFPS.c_str());
 
 	std::string targetFPS = std::to_string(app->render->GetTargetFPS());
-	app->fonts->Blit(5, 45, fontOrange, "TARGET  FPS ");
-	app->fonts->Blit(185, 45, fontOrange, targetFPS.c_str());
+	app->fonts->Blit(x, y + 40, fontOrange, "TARGET  FPS ");
+	app->fonts->Blit(x + 180, y + 40, fontOrange, targetFPS.c_str());
 }
 
 void Map::DrawScores(int x, int y) const
 {
 	std::string score = std::to_string(app->entityManager->GetScore());
+	app->fonts->Blit(x, y, fontWhite, "SC0RE ", 4);
+	app->fonts->Blit(x + 90, y + 20, fontWhite, score.c_str(), 4);
+
 	std::pair<uint, uint> scoreList = app->entityManager->GetScoreList();
+
 	std::string highScore = std::to_string(scoreList.first);
-	std::string prevScore = std::to_string(scoreList.second);
-	app->fonts->Blit(560, 95, fontWhite, "SC0RE ", 4);
-	app->fonts->Blit(560, 115, fontOrange, "HIGH", 4);
-	app->fonts->Blit(560, 135, fontOrange, "LAST", 4);
-	app->fonts->Blit(650, 115, fontWhite, score.c_str(), 4);
-	app->fonts->Blit(650, 135, fontOrange, highScore.c_str(), 4);
-	app->fonts->Blit(650, 155, fontOrange, prevScore.c_str(), 4);
+	app->fonts->Blit(x, y + 20, fontOrange, "HIGH", 4);
+	app->fonts->Blit(x + 90, y + 40, fontOrange, highScore.c_str(), 4);
+
+	std::string lastScore = std::to_string(scoreList.second);
+	app->fonts->Blit(x, y + 40, fontOrange, "LAST", 4);
+	app->fonts->Blit(x + 90, y + 60, fontOrange, lastScore.c_str(), 4);
 }
-/*
-void Map::OffsetDrawPosition(iPoint &position, iPoint amount, bool condition, std::string const &str, uint font)
-{
-	if (!condition) return;
-
-	if(str != "") app->fonts->Blit(position.x, position.y, font, str.c_str());
-
-	position += amount;
-}
-
-*/

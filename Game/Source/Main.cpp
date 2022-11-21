@@ -20,7 +20,8 @@ enum MainState
 	LOOP,
 	CLEAN,
 	FAIL,
-	EXIT
+	EXIT,
+	RESTART
 };
 
 App* app = NULL;
@@ -103,6 +104,7 @@ int main(int argc, char* args[])
 			result = EXIT_FAILURE;
 			state = EXIT;
 			break;
+
 		}
 	}
 

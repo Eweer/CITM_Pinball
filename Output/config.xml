@@ -1,109 +1,85 @@
+<?xml version="1.0"?>
 <config>
-  <app>
-    <title>Physics II - Pinball</title>
-    <organization>CITM</organization>
-  </app>
-
-  <renderer>
-    <vsync value="false"/>
-  </renderer>
-
-  <window>
-    <resolution width="768" height="1024" scale="1"/>
-    <fullscreen value="false"/>
-    <borderless value="false"/>
-    <resizable value="false"/>
-    <fullscreen_window value="false"/>
-  </window>
-
-  <audio>
-    <music volume="128"/>
-    <fx volume="128"/>
-  </audio>
-
-  <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
-    <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
-    <!-- Sensor function: Player death  = 0 | Power = 1 | HP_UP = 2 | UNKNOWN = 3 -->
-    <sensor_death1 function = "0" renderable = "false"/>
-
-    <launcher_top x = "638" y = "978" renderable = "true">
-      <joint enable_limit = "true" max_angle = "-70" min_angle = "20" enable_motor = "true" motor_speed = "-10" max_torque = "5"/>
-      <anchor x = "638" y = "978" w = "5" h = "5"/>
-    </launcher_top>
-    
-    <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_logo x = "198" y = "624" renderable = "true"/>
-    <anim_minicamera x = "295" y = "448" renderable = "true" speed = "0.1" animstyle = "1"/>
-    
-    <triangle_left  x="164" y="710" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
-    <triangle_right x="450" y="707" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
-    <ramp_left  x="115" y="728" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
-    <ramp_right x="452" y="538" renderable = "true" speed = "0.2" animstyle = "0" hasfx = "ogg"/>
-
-    <flipper_left x = "237" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
-      <joint enable_limit = "true" max_angle = "25" min_angle = "25" enable_motor = "true" motor_speed = "0" max_torque = "40"/>
-      <anchor x = "251" y = "900" radius = "10"/>
-    </flipper_left>
-
-    <flipper_right x = "368" y = "882" renderable = "true" speed = "0.2" animstyle = "0">
-      <joint enable_limit = "true" max_angle = "25" min_angle = "25" enable_motor = "true" motor_speed = "0" max_torque = "40"/>
-      <anchor x = "435" y = "900" radius = "10"/>
-    </flipper_right>
-    
-
-    <border x = "0" y = "0" renderable = "false"/>
-
-    <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_flower x = "350" y = "129" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_arrow x = "474" y = "235" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_pinkarrow x = "129" y = "374" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_photo x = "236" y = "394" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_more x = "366" y = "292" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_recycle x = "376" y = "387" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_sorplas x = "374" y = "407" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_fan x = "147" y = "468" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_minifan x = "464" y = "491" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_power x = "85" y = "505" renderable = "true" speed = "0.1" animstyle = "3"/>
-    <anim_circle x = "135" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
-    <anim_zoom x = "653" y = "727" renderable = "true" speed = "0.1" animstyle = "1"/>    
-    <anim_zoombar x = "573" y = "163" renderable = "true" speed = "0.1" animstyle = "1"/>    
-    <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "4"/>
-    <rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "4"/>
-    <anim_ting x = "215" y = "613" renderable = "true" speed = "0.1" animstyle = "3"/>
-    <anim_ring x = "148" y = "648" renderable = "true"/>
-    <anim_ringdos x = "533" y = "352" renderable = "true"/>
-    <anim_ringtres x = "503" y = "273" renderable = "true"/>
-    <anim_floatpiece x = "66" y = "395" renderable = "true"/>
-    <anim_sign x = "112" y = "505" renderable = "true"/>
-
-    <circle_large x = "154" y = "653" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <circle_medium x = "217" y = "405" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <circle_medium x = "380" y = "245" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <circle_small x = "479" y = "507" renderable = "true" speed = "0.1" animstyle = "1"/>
-
-    <divider_one x = "245" y = "575" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_two x = "310" y = "559" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_three x = "366" y = "559" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_four x = "430" y = "575" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    
-    <ball x="647" y="672" renderable = "true"/>
-
-    <anim_launcher x = "565" y = "942" renderable = "true"/>
-
-    <anim_billboard x = "535" y = "50" renderable = "true" speed = "0.3" animstyle = "1"/>
-
-    <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
-
-    <bridge_up x = "332" y = "320" renderable = "true" hasfx ="ogg"/>
-    <bridge_down x = "0" y = "0" renderable = "false"/>
-
-    <ping_up x = "438" y = "294" renderable = "true" hasfx ="ogg"/>
-    <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
-
-  </scene>
-
-  <map>
-    <mapfolder texturepath = "Assets/Textures/" fontsfolder = "Fonts/" audiopath = "Assets/Audio/" musicfolder = "Music/"/>
-  </map>
-  
+	<app>
+		<title>Physics II - Pinball</title>
+		<organization>CITM</organization>
+	</app>
+	<renderer>
+		<vsync value="false" />
+	</renderer>
+	<window>
+		<resolution width="768" height="1024" scale="1" />
+		<fullscreen value="false" />
+		<borderless value="false" />
+		<resizable value="false" />
+		<fullscreen_window value="false" />
+	</window>
+	<audio>
+		<music volume="128" />
+		<fx volume="128" />
+	</audio>
+	<scene assetpath="Assets/" texturepath="Assets/Textures/" audiopath="Assets/Audio/" fxfolder="Fx/">
+		<sensor_death1 function="0" renderable="false" />
+		<launcher_top x="638" y="978" renderable="true">
+			<joint enable_limit="true" max_angle="-70" min_angle="20" enable_motor="true" motor_speed="-10" max_torque="5" />
+			<anchor x="638" y="978" w="5" h="5" />
+		</launcher_top>
+		<anim_camera x="166" y="550" renderable="true" speed="0.1" animstyle="1" />
+		<anim_logo x="198" y="624" renderable="true" />
+		<anim_minicamera x="295" y="448" renderable="true" speed="0.1" animstyle="1" />
+		<triangle_left x="164" y="710" renderable="true" speed="0.2" animstyle="0" hasfx="ogg" />
+		<triangle_right x="450" y="707" renderable="true" speed="0.2" animstyle="0" hasfx="ogg" />
+		<ramp_left x="115" y="728" renderable="true" speed="0.2" animstyle="0" hasfx="ogg" />
+		<ramp_right x="452" y="538" renderable="true" speed="0.2" animstyle="0" hasfx="ogg" />
+		<flipper_left x="237" y="882" renderable="true" speed="0.2" animstyle="0">
+			<joint enable_limit="true" max_angle="25" min_angle="25" enable_motor="true" motor_speed="0" max_torque="40" />
+			<anchor x="251" y="900" radius="10" />
+		</flipper_left>
+		<flipper_right x="368" y="882" renderable="true" speed="0.2" animstyle="0">
+			<joint enable_limit="true" max_angle="25" min_angle="25" enable_motor="true" motor_speed="0" max_torque="40" />
+			<anchor x="435" y="900" radius="10" />
+		</flipper_right>
+		<border x="0" y="0" renderable="false" />
+		<anim_battery x="175" y="170" renderable="true" speed="0.1" animstyle="1" />
+		<anim_flower x="350" y="129" renderable="true" speed="0.1" animstyle="1" />
+		<anim_arrow x="474" y="235" renderable="true" speed="0.1" animstyle="1" />
+		<anim_pinkarrow x="129" y="374" renderable="true" speed="0.1" animstyle="1" />
+		<anim_photo x="236" y="394" renderable="true" speed="0.1" animstyle="1" />
+		<anim_more x="366" y="292" renderable="true" speed="0.1" animstyle="1" />
+		<anim_recycle x="376" y="387" renderable="true" speed="0.1" animstyle="1" />
+		<anim_sorplas x="374" y="407" renderable="true" speed="0.1" animstyle="1" />
+		<anim_fan x="147" y="468" renderable="true" speed="0.1" animstyle="1" />
+		<anim_minifan x="464" y="491" renderable="true" speed="0.1" animstyle="1" />
+		<anim_power x="85" y="505" renderable="true" speed="0.1" animstyle="3" />
+		<anim_circle x="135" y="718" renderable="true" speed="0.1" animstyle="1" />
+		<anim_zoom x="653" y="727" renderable="true" speed="0.1" animstyle="1" />
+		<anim_zoombar x="573" y="163" renderable="true" speed="0.1" animstyle="1" />
+		<anim_pinkpower x="170" y="240" renderable="true" speed="0.1" animstyle="4" />
+		<rotate x="150" y="145" renderable="true" speed="0.1" animstyle="4" />
+		<anim_ting x="215" y="613" renderable="true" speed="0.1" animstyle="3" />
+		<anim_ring x="148" y="648" renderable="true" />
+		<anim_ringdos x="533" y="352" renderable="true" />
+		<anim_ringtres x="503" y="273" renderable="true" />
+		<anim_floatpiece x="66" y="395" renderable="true" />
+		<anim_sign x="112" y="505" renderable="true" />
+		<circle_large x="154" y="653" renderable="true" speed="0.1" animstyle="1" />
+		<circle_medium x="217" y="405" renderable="true" speed="0.1" animstyle="1" />
+		<circle_medium x="380" y="245" renderable="true" speed="0.1" animstyle="1" />
+		<circle_small x="479" y="507" renderable="true" speed="0.1" animstyle="1" />
+		<divider_one x="245" y="575" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
+		<divider_two x="310" y="559" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
+		<divider_three x="366" y="559" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
+		<divider_four x="430" y="575" function="1" renderable="true" speed="0.5" animstyle="0" hasfx="ogg" />
+		<ball x="647" y="672" renderable="true" />
+		<anim_launcher x="565" y="942" renderable="true" />
+		<anim_billboard x="535" y="50" renderable="true" speed="0.3" animstyle="1" />
+		<road_top x="58" y="13" renderable="true" speed="0.25" animstyle="3" />
+		<bridge_up x="332" y="320" renderable="true" hasfx="ogg" />
+		<bridge_down x="0" y="0" renderable="false" />
+		<ping_up x="438" y="294" renderable="true" hasfx="ogg" />
+		<ping_down x="314" y="455" renderable="true" hasfx="ogg" />
+	</scene>
+	<map>
+		<mapfolder texturepath="Assets/Textures/" fontsfolder="Fonts/" audiopath="Assets/Audio/" musicfolder="Music/" />
+	</map>
 </config>

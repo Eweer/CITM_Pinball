@@ -23,11 +23,14 @@ Render::~Render() = default;
 // Called before render is available
 bool Render::Awake(pugi::xml_node& config)
 {
+	vSyncMode = config.child("vsync").attribute("value").as_bool();
+	vSyncOnRestart = vSyncMode;
+
 	LOG("Create SDL rendering context");
 
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
-	if (config.child("vsync").attribute("value").as_bool(true))
+	if(vSyncMode)
 	{
 		flags |= SDL_RENDERER_PRESENTVSYNC;
 		LOG("Using vsync");
@@ -63,9 +66,17 @@ bool Render::Start()
 // Called each loop iteration
 bool Render::PreUpdate()
 {
-	while (SDL_GetTicks() - lastTime < ticksForNextFrame)
+	if(app->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
 	{
-		SDL_Delay(1);
+		vSyncOnRestart = !vSyncOnRestart;
+		app->SaveToConfig(this, "vsync", "value", vSyncOnRestart ? "true" : "false");
+	}
+	if(!vSyncMode)
+	{
+		while(SDL_GetTicks() - lastTime < ticksForNextFrame)
+		{
+			SDL_Delay(1);
+		}
 	}
 	SDL_RenderClear(renderer);
 	return true;
@@ -90,7 +101,8 @@ bool Render::PostUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
-	lastTime = SDL_GetTicks();
+	
+	if(!vSyncMode) lastTime = SDL_GetTicks();
 
 	fpsFrames++;
 	if (fpsLastTime < (SDL_GetTicks() - FPS_INTERVAL * 1000))
@@ -99,6 +111,7 @@ bool Render::PostUpdate()
 		fpsCurrent = fpsFrames;
 		fpsFrames = 0;
 	}
+
 	return true;
 }
 
@@ -258,6 +271,10 @@ bool Render::SaveState(pugi::xml_node& data)
 	cam.append_attribute("x") = camera.x;
 	cam.append_attribute("y") = camera.y;
 
+	pugi::xml_node vsyncNode = data.append_child("vsync");
+
+	vsyncNode.append_attribute("active") = (bool)vSyncOnRestart;
+
 	return true;
 }
 
@@ -269,4 +286,14 @@ uint Render::GetCurrentFPS() const
 uint Render::GetTargetFPS() const
 {
 	return fpsTarget;
+}
+
+bool Render::IsVSyncActive() const
+{
+	return vSyncMode;
+}
+
+bool Render::RestartForVSync() const
+{
+	return vSyncMode != vSyncOnRestart;
 }

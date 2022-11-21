@@ -58,6 +58,8 @@ public:
 	bool LoadFromFile();
 	bool SaveToFile() ;
 
+	bool SaveToConfig(Module const *item, std::string const &node, std::string const &attribute, std::string const &value) const;
+
 private:
 
 	// Load config file

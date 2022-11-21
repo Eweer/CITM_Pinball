@@ -5,6 +5,7 @@
 
 #include "Point.h"
 
+#include "PugiXml/src/pugixml.hpp"
 #include "SDL/include/SDL.h"
 
 class Render : public Module
@@ -47,6 +48,8 @@ public:
 
 	uint GetCurrentFPS() const;
 	uint GetTargetFPS() const;
+	bool IsVSyncActive() const;
+	bool RestartForVSync() const;
 
 	SDL_Renderer* renderer;
 	SDL_Rect camera;
@@ -55,6 +58,9 @@ public:
 
 
 private:
+	bool vSyncOnRestart = 0;
+	bool vSyncMode = 0;
+
 	uint fpsLastTime = 0;
 	uint fpsCurrent = 0;
 	uint fpsFrames = 0;
