@@ -120,7 +120,7 @@ bool App::Update()
 // Load config from XML file
 bool App::LoadConfig()
 {
-	pugi::xml_parse_result parseResult = configFile.load_file("config.xml");
+	pugi::xml_parse_result parseResult = configFile.load_file("config.xml", pugi::parse_default | pugi::parse_comments);
 
 	if(parseResult) configNode = configFile.child("config");
 	else LOG("Error in App::LoadConfig(): %s", parseResult.description());
