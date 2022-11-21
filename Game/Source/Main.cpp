@@ -1,10 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#include <iostream>
-#include <crtdbg.h>
-#ifdef _DEBUG
-	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-	#define new DEBUG_NEW
-#endif
+#pragma once
+#include <assert.h>
+#include <memory>
 
 #include "App.h"
 
@@ -18,7 +14,15 @@
 //#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2.lib")
 //#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2main.lib")
 
+#define _CRTDBG_MAP_ALLOC
+#include <iostream>
 #include <stdlib.h>
+#include <crtdbg.h>
+#ifndef _DEBUG
+	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+	#define new DEBUG_NEW
+#endif
+
 
 
 enum MainState

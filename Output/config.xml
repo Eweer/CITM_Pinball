@@ -5,7 +5,7 @@
 		<organization>CITM</organization>
 	</app>
 	<renderer>
-		<vsync value="true" />
+		<vsync value="false" />
 	</renderer>
 	<window>
 		<resolution width="768" height="1024" scale="1" />
