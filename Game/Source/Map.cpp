@@ -170,14 +170,17 @@ void Map::DrawFPS(int x, int y) const
 {
 	std::string vSyncActive;
 
-	if(app->render->RestartForVSync()) 
-		vSyncActive = "Restart for vsync";
-	else if(app->render->IsVSyncActive())
-		vSyncActive = "vsync enabled";
-	else 
-		vSyncActive = "vsync disabled";
+	uint vSyncFont = fontWhite;
 
-	app->fonts->Blit(x, y, fontWhite, vSyncActive.c_str());
+	if(app->render->RestartForVSync()) 
+	{
+		vSyncActive = "Restart for vsync";
+		vSyncFont = fontOrange;
+	}
+	else if(app->render->IsVSyncActive()) vSyncActive = "vsync enabled";
+	else vSyncActive = "vsync disabled";
+
+	app->fonts->Blit(x, y, vSyncFont, vSyncActive.c_str());
 
 	std::string currentFPS = std::to_string(app->render->GetCurrentFPS());
 	app->fonts->Blit(x, y + 20, fontWhite, "CURRENT FPS ");

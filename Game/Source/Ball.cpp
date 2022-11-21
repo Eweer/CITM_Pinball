@@ -21,7 +21,7 @@ bool Ball::Awake()
 {
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
-	scoreList.first = 0;
+	scoreList.first = parameters.attribute("highscore").as_uint();
 	scoreList.second = 0;
 	SetPaths();
 
@@ -53,6 +53,7 @@ bool Ball::Update()
 			if((uint)score > scoreList.first)
 			{
 				scoreList.first = (uint)score;
+				app->SaveToConfig("scene", "ball", "highscore", std::to_string(scoreList.first));
 			}
 			scoreList.second = (uint)score;
 			ResetScore();

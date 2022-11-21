@@ -69,7 +69,7 @@ bool Render::PreUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
 	{
 		vSyncOnRestart = !vSyncOnRestart;
-		app->SaveToConfig(this, "vsync", "value", vSyncOnRestart ? "true" : "false");
+		app->SaveToConfig(name.GetString(), "vsync", "value", vSyncOnRestart ? "true" : "false");
 	}
 	if(!vSyncMode)
 	{

@@ -288,9 +288,8 @@ bool App::SaveToFile()
 	return true;
 }
 
-bool App::SaveToConfig(Module const *item, std::string const &node, std::string const &attribute, std::string const &value) const
+bool App::SaveToConfig(std::string const &moduleName, std::string const &node, std::string const &attribute, std::string const &value) const
 {
-	std::string moduleName = item->name.GetString();
 	if(configNode.child(moduleName.c_str()).child(node.c_str()).attribute(attribute.c_str()))
 	{
 		pugi::xml_attribute attr = configNode.child(moduleName.c_str()).child(node.c_str()).attribute(attribute.c_str());
