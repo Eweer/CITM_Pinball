@@ -11,7 +11,7 @@ We found another bug with the hitboxes surrounding the board, where the points i
 
  - 1: Gravity set to -1
  - 2: Gravity set to -2
- - 3: Gravity set to -4
+ - 3: Gravity set to 4
  - 4: Gravity set to -8
  - 5: Horizontal gravity set to -1
  - 6: Horizontal gravity to set 1
