@@ -41,7 +41,7 @@ bool Window::Awake(pugi::xml_node& config)
 	if (resizable) flags |= SDL_WINDOW_RESIZABLE;
 	if (fullscreen_window) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-	window = SDL_CreateWindow(app->GetTitle(), 0, 0, width, height, flags);
+	window = SDL_CreateWindow(app->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 	if (!window)
 	{

@@ -48,7 +48,7 @@ public:
 *		Condition: Will offset if condition is true
 *		str: Text to write before offsetting if condition true
 */		
-	void OffsetDrawPosition(iPoint &position, iPoint amount, bool condition, std::string const &str = "");
+	//void OffsetDrawPosition(iPoint &position, iPoint amount, bool condition = true, std::string const &str = "", uint font = 0);
 
 
 private:

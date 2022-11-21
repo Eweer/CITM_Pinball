@@ -12,12 +12,24 @@
 #include <math.h>
 #include <iomanip>
 #include <sstream>
+#include <functional>
 
 #include "SDL_image/include/SDL_image.h"
 
 #include "PugiXml/src/pugixml.hpp"
 
 #include <iostream>
+
+
+template<class UnaryPred> void OffsetDrawPosition(iPoint &position, iPoint amount, float lambdaValue = 1, UnaryPred predicate = true, std::string const &str = "", uint font = 0)
+{
+	if(!predicate(lambdaValue)) return;
+
+	if(str != "") app->fonts->Blit(position.x, position.y, font, str.c_str());
+
+	position += amount;
+}
+
 
 Map::Map() : Module()
 {
@@ -121,34 +133,30 @@ void Map::DrawGravity(int x, int y) const
 
 	pos.x += 10;
 
-	if (gravity.x < 0)
-	{
-		app->fonts->Blit(pos.x, pos.y, fontOrange, "!");
-		pos.x += 5;
-	}
-	if (abs(gravity.x) > 9) pos.x += 5;
+	if (gravity.x < 0) app->fonts->Blit(pos.x, pos.y, fontOrange, "!");
 
 	app->fonts->Blit(pos.x, pos.y, fontOrange, gravX.c_str());
 
 
-	if (gravity.y < 0) pos.x += 10;
-	if (abs(gravity.y) > 9) pos.x += 10;
+	OffsetDrawPosition(pos, iPoint(15, 0), gravity.x, [](float n) { return n < 0; });
+	OffsetDrawPosition(pos, iPoint(15, 0), gravity.x, [](float n) { return abs(n) > 9; });
 
-/*	app->fonts->Blit(pos.x + 50, pos.y, fontWhite, ".");
+	pos.x += 45;
 
-	if (gravity.y < 0)
-	{
-		app->fonts->Blit(pos.x + pos.y, pos.y, fontOrange, "!");
-		pos.x += 5;
-	}
-	if (abs(gravity.y) > 9) pos.x += 5;
+	app->fonts->Blit(pos.x, pos.y, fontWhite, ".");
 
-	app->fonts->Blit(pos.x + pos.y, pos.y, fontOrange, gravY.c_str());
+	pos.x += 10;
 
-	if (gravity.y < 0) pos.x += 15;
-	if (abs(gravity.y) > 9) pos.x += 15;
+	if (gravity.y < 0) app->fonts->Blit(pos.x, pos.y, fontOrange, "!");
 
-	app->fonts->Blit(pos.x + 110, pos.y, fontWhite, "'"); */
+	app->fonts->Blit(pos.x, pos.y, fontOrange, gravY.c_str());
+
+	OffsetDrawPosition(pos, iPoint(15, 0), gravity.y, [](float n) { return n < 0; });
+	OffsetDrawPosition(pos, iPoint(15, 0), gravity.y, [](float n) { return abs(n) > 9; });
+
+	pos.x += 45;
+
+	app->fonts->Blit(pos.x, pos.y, fontWhite, "'"); 
 }
 
 void Map::DrawFPS(int x, int y) const
@@ -156,6 +164,7 @@ void Map::DrawFPS(int x, int y) const
 	std::string currentFPS = std::to_string(app->render->GetCurrentFPS());
 	app->fonts->Blit(5, 25, fontWhite, "CURRENT FPS ");
 	app->fonts->Blit(185, 25, fontWhite, currentFPS.c_str());
+
 	std::string targetFPS = std::to_string(app->render->GetTargetFPS());
 	app->fonts->Blit(5, 45, fontOrange, "TARGET  FPS ");
 	app->fonts->Blit(185, 45, fontOrange, targetFPS.c_str());
@@ -169,17 +178,19 @@ void Map::DrawScores(int x, int y) const
 	std::string prevScore = std::to_string(scoreList.second);
 	app->fonts->Blit(560, 95, fontWhite, "SC0RE ", 4);
 	app->fonts->Blit(560, 115, fontOrange, "HIGH", 4);
-	app->fonts->Blit(560, 135, fontOrange, "PREV", 4);
+	app->fonts->Blit(560, 135, fontOrange, "LAST", 4);
 	app->fonts->Blit(650, 115, fontWhite, score.c_str(), 4);
 	app->fonts->Blit(650, 135, fontOrange, highScore.c_str(), 4);
 	app->fonts->Blit(650, 155, fontOrange, prevScore.c_str(), 4);
 }
-
-void Map::OffsetDrawPosition(iPoint& position, iPoint amount, bool condition, std::string const& str)
+/*
+void Map::OffsetDrawPosition(iPoint &position, iPoint amount, bool condition, std::string const &str, uint font)
 {
 	if (!condition) return;
 
-	if(str != "")
-		//app->fonts->Blit(position + y, y + 20, fontOrange, "!");
+	if(str != "") app->fonts->Blit(position.x, position.y, font, str.c_str());
+
 	position += amount;
 }
+
+*/
