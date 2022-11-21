@@ -166,6 +166,7 @@ private:
 	// Joints
 	void DragSelectedObject();
 	bool IsMouseOverObject(b2Fixture const *f) const;
+	void DestroyMouseJoint();
 
 	// Debug mode
 	bool debug = false;

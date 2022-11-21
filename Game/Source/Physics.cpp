@@ -583,9 +583,7 @@ void Physics::DragSelectedObject()
 		}
 		case KeyState::KEY_UP:
 		{
-			world->DestroyJoint(mouseJoint);
-			mouseJoint = nullptr;
-			selected = nullptr;
+			DestroyMouseJoint();
 			break;
 		}
 		case KeyState::KEY_IDLE:
@@ -600,6 +598,13 @@ bool Physics::IsMouseOverObject(b2Fixture const *f) const
 	if(f->TestPoint(IPointToWorldVec(app->input->GetMousePosition())))
 		return true;
 	return false;
+}
+
+void Physics::DestroyMouseJoint()
+{
+	world->DestroyJoint(mouseJoint);
+	if(mouseJoint) mouseJoint = nullptr;
+	if(selected) selected = nullptr;
 }
 
 bool Physics::IsDebugActive() const

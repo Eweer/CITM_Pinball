@@ -44,6 +44,12 @@ bool Ball::Update()
 {
 	//Update ball position in pixels
 	
+	if(playerDeath)
+	{
+		SetStartingPosition();
+		playerDeath = false;
+	}
+
 	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
 	position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - BALL_SIZE/2;
 
@@ -84,7 +90,7 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 			switch(physB->sensorFunction)
 			{
 				case SensorFunction::DEATH:
-					//SetStartingPosition();
+					playerDeath = true;
 					break;
 
 				case SensorFunction::POWER:

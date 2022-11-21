@@ -39,6 +39,8 @@ private:
 
 	uint score = 0;
 	std::array<float, 3> scoreList;
+
+	bool playerDeath = false;
 };
 
 #endif // __BALL_H__
