@@ -26,8 +26,6 @@ struct LauncherInfo
 	PhysBody *anchor;
 	b2PrismaticJoint *joint;
 	float32 motorSpeed;
-	int h;
-	int w;
 };
 
 class InteractiveParts : public Entity

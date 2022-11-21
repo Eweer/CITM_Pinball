@@ -36,11 +36,11 @@ enum class ColliderType {
 
 enum class Layers
 {
-	LAUNCH = 0, 
-	BOARD, 
-	KICKERS, 
-	BALL, 
-	TOP
+	LAUNCH	= 0x0001, 
+	BOARD	= 0x0002,
+	KICKERS = 0x0004,
+	BALL	= 0x0008,
+	TOP		= 0x0010
 };
 
 enum class RevoluteJoinTypes
@@ -127,11 +127,11 @@ public:
 	bool CleanUp() final;
 
 	// Create basic physics objects
-	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type);
-	PhysBody* CreateCircle(int x, int y, int radius, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL);
-	PhysBody* CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL, int angle = 0);
+	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type, float32 gravityScale = 1.0f, float rest = 1.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL);
+	PhysBody* CreateCircle(int x, int y, int radius, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL);
+	PhysBody* CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL, int angle = 0);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
-	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, int cat = (int)Layers::BOARD, int mask = (int)Layers::BALL, int angle = 0);
+	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL, int angle = 0);
 
 	// Create joints
 	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);

@@ -207,7 +207,7 @@ void Physics::BeginContact(b2Contact* contact)
 
 //--------------- Create Shapes and Joints
 
-PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType type)
+PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType type, float32 gravityScale, float rest, uint16 cat, uint16 mask)
 {
 	b2BodyDef body;
 	switch(type)
@@ -225,7 +225,7 @@ PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 			LOG("CreateRectangle Received UNKNOWN BodyType");
 			return nullptr;
 	}
-
+	body.gravityScale = gravityScale;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	// Add BODY to the world
@@ -239,7 +239,9 @@ PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 	b2FixtureDef fixture;
 	fixture.shape = &box;
 	fixture.density = 1.0f;
-	b->ResetMassData();
+	fixture.restitution = rest;
+	fixture.filter.categoryBits = cat;
+	fixture.filter.maskBits = mask;
 
 	// Add fixture to the BODY
 	b->CreateFixture(&fixture);
@@ -255,7 +257,7 @@ PhysBody *Physics::CreateRectangle(int x, int y, int width, int height, BodyType
 	return pbody;
 }
 
-PhysBody *Physics::CreateCircle(int x, int y, int radius, BodyType type, float rest, int cat, int mask)
+PhysBody *Physics::CreateCircle(int x, int y, int radius, BodyType type, float rest, uint16 cat, uint16 mask)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -305,7 +307,7 @@ PhysBody *Physics::CreateCircle(int x, int y, int radius, BodyType type, float r
 	return pbody;
 }
 
-PhysBody *Physics::CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest, int cat, int mask, int angle)
+PhysBody *Physics::CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest, uint16 cat, uint16 mask, int angle)
 {
 	b2BodyDef body;
 	switch(type)
@@ -403,7 +405,7 @@ PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, Bo
 	return pbody;
 }
 
-PhysBody *Physics::CreateChain(int x, int y, const int *const points, int size, BodyType type, float rest, int cat, int mask, int angle)
+PhysBody *Physics::CreateChain(int x, int y, const int *const points, int size, BodyType type, float rest, uint16 cat, uint16 mask, int angle)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;

@@ -24,6 +24,11 @@
   <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
     <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
     <sensor_death renderable = "false"/>
+
+    <launcher_top x = "638" y = "978" renderable = "true">
+      <joint enable_limit = "true" max_angle = "-70" min_angle = "20" enable_motor = "true" motor_speed = "-10" max_torque = "5"/>
+      <anchor x = "638" y = "978" w = "5" h = "5"/>
+    </launcher_top>
     
     <anim_camera x = "166" y = "550" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_logo x = "198" y = "624" renderable = "true"/>
@@ -46,18 +51,6 @@
     
 
     <border x = "0" y = "0" renderable = "false"/>
-    <bridge_down x = "0" y = "0" renderable = "false"/>
-
-    <bridge_up x = "332" y = "320" renderable = "true" hasfx ="ogg"/>
-    <ping_up x = "438" y = "294" renderable = "true" hasfx ="ogg"/>
-    <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
-
-    <launcher_top x = "636" y = "915" renderable = "true">
-      <joint enable_limit = "true" max_angle = "1" min_angle = "-30" enable_motor = "true" motor_speed = "-10" max_torque = "5"/>
-      <anchor x = "636" y = "921" w = "5" h = "5"/>
-    </launcher_top>
-
-    <anim_launcher x = "565" y = "940" renderable = "true"/>
 
     <anim_battery x = "175" y = "170" renderable = "true" speed = "0.1" animstyle = "1"/>
     <anim_flower x = "350" y = "129" renderable = "true" speed = "0.1" animstyle = "1"/>
@@ -86,17 +79,26 @@
     <circle_medium x = "217" y = "405" renderable = "true" speed = "0.1" animstyle = "1"/>
     <circle_medium x = "380" y = "245" renderable = "true" speed = "0.1" animstyle = "1"/>
     <circle_small x = "479" y = "507" renderable = "true" speed = "0.1" animstyle = "1"/>
-    
-    <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
-    
-    <anim_billboard x = "535" y = "50" renderable = "true" speed = "0.1" animstyle = "1"/>
 
     <divider_one x = "245" y = "575" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     <divider_two x = "310" y = "559" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     <divider_three x = "366" y = "559" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     <divider_four x = "430" y = "575" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     
-    <ball x="647" y="672" renderable = "true" texturepath = "Assets/Textures/pinball.png"/>
+    <ball x="647" y="672" renderable = "true"/>
+
+    <anim_launcher x = "565" y = "942" renderable = "true"/>
+
+    <anim_billboard x = "535" y = "50" renderable = "true" speed = "0.3" animstyle = "1"/>
+
+    <road_top x = "58" y = "13" renderable = "true" speed = "0.25" animstyle = "3"/>
+
+    <bridge_up x = "332" y = "320" renderable = "true" hasfx ="ogg"/>
+    <bridge_down x = "0" y = "0" renderable = "false"/>
+
+    <ping_up x = "438" y = "294" renderable = "true" hasfx ="ogg"/>
+    <ping_down x = "314" y = "455" renderable = "true" hasfx ="ogg"/>
+
   </scene>
 
   <map>

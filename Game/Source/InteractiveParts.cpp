@@ -95,28 +95,25 @@ bool InteractiveParts::Update()
 
 	if(launcherJoint)
 	{
-		position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - launcherJoint->w/2;
-		position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - launcherJoint->h/2;
-
+		
 		switch(app->input->GetKey(SDL_SCANCODE_DOWN))
 		{
 			case KeyState::KEY_DOWN:
-				std::cout << "a" << std::endl;
 			case KeyState::KEY_REPEAT:
-				launcherJoint->joint->SetMotorSpeed(1);
-				launcherJoint->joint->SetMaxMotorForce(2);
-				std::cout << "b" << std::endl;
+				launcherJoint->joint->SetMotorSpeed(100);
+				launcherJoint->joint->SetMaxMotorForce(200);
 				break;
 
 			case KeyState::KEY_UP:
-				launcherJoint->joint->SetMotorSpeed(-15);
-				launcherJoint->joint->SetMaxMotorForce(20);
-				std::cout << "c" << std::endl;
+				launcherJoint->joint->SetMotorSpeed(-1500);
+				launcherJoint->joint->SetMaxMotorForce(2000);
 				break;
 
 			default:
 				break;
 		}
+		position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - pBody->width - 15;
+		position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - pBody->height;
 	}
 
 	return true;
@@ -217,7 +214,7 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 	{
 		const int width = colliderNode.attribute("w").as_int();
 		const int height = colliderNode.attribute("h").as_int();
-		pBody = app->physics->CreateRectangle(posX, posY, width, height, typeOfChildren);
+		pBody = app->physics->CreateRectangle(posX, posY, width, height, typeOfChildren, 0.0f, 0.1f, (int)Layers::BOARD, (int)Layers::BALL);
 	}
 	else
 	{
@@ -263,14 +260,16 @@ PhysBody *InteractiveParts::CreateChainColliders(const std::string &xyStr, BodyT
 	PhysBody *border;
 	if(shape == "chain")
 	{
-		border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+		if(name == "bridge") border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT, 0.0f, (uint)Layers::TOP, (uint)Layers::BALL);
+		else border = app->physics->CreateChain(0, 0, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
 	}
 	else
 	{
 		int posX = parameters.child("anchor").attribute("x").as_int();
 		int posY = parameters.child("anchor").attribute("y").as_int();
 
-		border = app->physics->CreatePolygon(posX, posY, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
+		if(name == "flipper") border = app->physics->CreatePolygon(posX, posY, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT, 5.0f, (uint)Layers::KICKERS, (uint)Layers::BALL);
+		else border = app->physics->CreatePolygon(posX, posY, points.data(), std::distance(xyStrBegin, xyStrEnd), bodyT);
 	}
 	
 	return border;
@@ -305,8 +304,6 @@ bool InteractiveParts::CreateFlipperInfo()
 			parameters.child("anchor").attribute("h").as_int(),
 			BodyType::STATIC
 		);
-		launcherHelper.h = parameters.child("anchor").attribute("h").as_int();
-		launcherHelper.w = parameters.child("anchor").attribute("w").as_int();
 	}
 
 	pugi::xml_node flipperNode = parameters.child("joint");
@@ -352,8 +349,13 @@ bool InteractiveParts::CreateFlipperInfo()
 	else if(std::string(this->parameters.name()) == "flipper_right")
 		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
 	else
-		launcherHelper.joint = app->physics->CreatePrismaticJoint(launcherHelper.anchor, this->pBody, {0,0}, {0,10}, revoluteProperties);
+	{
+		iPoint offset;
+		offset.x = pBody->width + 15;
+		offset.y = pBody->height;
+		launcherHelper.joint = app->physics->CreatePrismaticJoint(launcherHelper.anchor, this->pBody, offset, {0,0}, revoluteProperties);
 
+	}
 	if(this->name == "flipper") this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);
 	else this->launcherJoint = std::make_unique<LauncherInfo>(launcherHelper);
 	
