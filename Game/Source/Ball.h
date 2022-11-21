@@ -34,6 +34,8 @@ public:
 
 	void AddMultiplier(uint n) final;
 
+	int GetTimeUntilReset() const;
+
 	std::pair<uint, uint> GetScoreList() const final;
 
 private:

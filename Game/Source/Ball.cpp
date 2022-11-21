@@ -162,6 +162,11 @@ void Ball::AddMultiplier(uint n)
 	scoreMultiplier += n;
 }
 
+int Ball::GetTimeUntilReset() const
+{
+	return timeUntilReset;
+}
+
 std::pair<uint, uint> Ball::GetScoreList() const
 {
 	return scoreList;
