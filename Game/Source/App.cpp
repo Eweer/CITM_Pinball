@@ -173,6 +173,11 @@ bool App::PostUpdate()
 		if(!pModule->active) continue;
 		if(!pModule->PostUpdate()) return false;
 	}
+
+	if(input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	{
+		PauseGame();
+	}
 	return true;
 }
 
@@ -286,6 +291,22 @@ bool App::SaveToFile()
 	saveGameRequested = false;
 
 	return true;
+}
+
+void App::PauseGame() const
+{
+	physics->ToggleStep();
+	while(input->GetKey(SDL_SCANCODE_P) == KEY_DOWN || input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
+	{
+		input->PreUpdate();
+		if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) return false;
+	}
+	while(input->GetKey(SDL_SCANCODE_P) == KEY_IDLE || input->GetKey(SDL_SCANCODE_P) == KEY_UP)
+	{
+		input->PreUpdate();
+		if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) return false;
+	}
+	physics->ToggleStep();
 }
 
 bool App::SaveToConfig(std::string const &moduleName, std::string const &node, std::string const &attribute, std::string const &value) const

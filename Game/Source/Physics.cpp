@@ -93,7 +93,7 @@ bool Physics::PreUpdate()
 	if(stepActive || (!stepActive && app->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN))
 	   world->Step(1.0f / 60.0f, 6, 2);
 	
-	if(app->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN) stepActive = !stepActive;
+	if(app->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN) ToggleStep();
 
 	// Because Box2D does not automatically broadcast collisions/contacts with sensors, 
 	// we have to manually search for collisions and "call" the equivalent to the ModulePhysics::BeginContact() ourselves...
@@ -632,6 +632,11 @@ iPoint Physics::WorldVecToIPoint(const b2Vec2 &v) const
 b2Vec2 Physics::IPointToWorldVec(const iPoint &p) const
 {
 	return b2Vec2(PIXEL_TO_METERS(p.x), PIXEL_TO_METERS(p.y));
+}
+
+void Physics::ToggleStep()
+{
+	stepActive = !stepActive;
 }
 
 b2Vec2 Physics::GetWorldGravity() const
