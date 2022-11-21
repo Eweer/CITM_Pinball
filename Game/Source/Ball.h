@@ -32,15 +32,21 @@ public:
 
 	uint GetScore() const final;
 
+	std::pair<uint, uint> GetScoreList() const final;
+
 private:
 
 	void CreatePhysBody();
 	void SetStartingPosition();
 
-	uint score = 0;
-	std::array<float, 3> scoreList;
+	float score = 0;
+	std::pair<uint, uint> scoreList;
 
-	bool playerDeath = false;
+	uint hp = 3;
+
+	SDL_Texture *hpTexture = nullptr;
+
+	int timeUntilReset = -1;
 };
 
 #endif // __BALL_H__

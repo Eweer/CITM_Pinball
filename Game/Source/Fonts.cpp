@@ -105,6 +105,6 @@ void Fonts::Blit(int x, int y, int font_id, const char *text) const
 		rect.x = c_col*font->char_w;
 		rect.y = c_row*font->char_h;
 
-		app->render->DrawTexture(font->graphic, x + i*font->char_w, y, &rect);
+		app->render->DrawTexture(font->graphic, x + i*font->char_w, y + i*4, &rect, 1.0f, 5.0f);
 	}
 }

@@ -94,5 +94,13 @@ bool Map::Load()
 void Map::DrawUI() const
 {
 	std::string score = std::to_string(app->entityManager->GetScore());
-	app->fonts->Blit(600, 135, fontWhite, score.c_str());
+	std::pair<uint, uint> scoreList = app->entityManager->GetScoreList();
+	std::string highScore = std::to_string(scoreList.first);
+	std::string prevScore = std::to_string(scoreList.second);
+	app->fonts->Blit(560, 95, fontWhite, "Score: ");
+	app->fonts->Blit(560, 115, fontOrange, "High:");
+	app->fonts->Blit(560, 135, fontOrange, "Prev:");
+	app->fonts->Blit(650, 115, fontWhite, score.c_str());
+	app->fonts->Blit(650, 135, fontOrange, highScore.c_str());
+	app->fonts->Blit(650, 155, fontOrange, prevScore.c_str());
 }

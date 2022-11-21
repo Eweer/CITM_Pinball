@@ -21,6 +21,8 @@ bool Ball::Awake()
 {
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
+	scoreList.first = 0;
+	scoreList.second = 0;
 	SetPaths();
 
 	return true;
@@ -42,19 +44,37 @@ bool Ball::Start() {
 
 bool Ball::Update()
 {
-	//Update ball position in pixels
-	
-	if(playerDeath)
+	if(timeUntilReset > 120)
 	{
 		SetStartingPosition();
-		playerDeath = false;
+		timeUntilReset = -1;
+		if(hp <= 0)
+		{
+			if((uint)score > scoreList.first)
+			{
+				scoreList.first = (uint)score;
+			}
+			scoreList.second = (uint)score;
+			ResetScore();
+			hp = 3;
+		}
+	}
+	else if(timeUntilReset >= 0)
+	{
+		timeUntilReset++;
 	}
 
+	//Update ball position in pixels
 	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
 	position.y = METERS_TO_PIXELS(pBody->body->GetTransform().p.y) - BALL_SIZE/2;
 
 	app->render->DrawTexture(texture.image, position.x , position.y);
-	
+
+	for(int i = 0; i < hp; i++)
+	{
+		app->render->DrawTexture(texture.image, 710, 930 - i*(BALL_SIZE + 10));
+	}
+
 	return true;
 }
 
@@ -76,10 +96,11 @@ bool Ball::CleanUp()
 }
 
 void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
+	if(timeUntilReset >= 0) return;
 	switch (physB->ctype)
 	{
 		case ColliderType::ITEM:
-			score += 100;
+			if(score < 99999) score += 100;
 			LOG("Collision ITEM");
 			break;
 		case ColliderType::ANIM:
@@ -90,7 +111,8 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 			switch(physB->sensorFunction)
 			{
 				case SensorFunction::DEATH:
-					playerDeath = true;
+					timeUntilReset = 0;
+					hp--;
 					break;
 
 				case SensorFunction::POWER:
@@ -127,6 +149,11 @@ uint Ball::GetScore() const
 	return score;
 }
 
+std::pair<uint, uint> Ball::GetScoreList() const
+{
+	return scoreList;
+}
+
 void Ball::CreatePhysBody()
 {
 	//initialize physics body
@@ -141,8 +168,7 @@ void Ball::CreatePhysBody()
 
 void Ball::SetStartingPosition()
 {
-	if(pBody->body)
-		app->physics->DestroyBody(pBody->body);
+	if(pBody->body) app->physics->DestroyBody(pBody->body);
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
 	CreatePhysBody();

@@ -125,3 +125,8 @@ uint EntityManager::GetScore() const
 {
 	return ball->GetScore();
 }
+
+std::pair<uint, uint> EntityManager::GetScoreList() const
+{
+	return ball->GetScoreList();
+}

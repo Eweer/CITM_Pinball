@@ -199,6 +199,16 @@ public:
 		return 0;
 	};
 
+	virtual std::pair<uint, uint> GetScoreList() const
+	{
+		return std::pair<uint, uint>(0, 0);
+	};
+
+	virtual Texture GetTexture() const
+	{
+		return texture;
+	};
+
 	std::unordered_map<std::string, EntityType> CreateEnumMap() const
 	{
 		const std::unordered_map<std::string, EntityType> aux{

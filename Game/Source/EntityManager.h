@@ -35,6 +35,8 @@ public:
 
 	uint GetScore() const;
 
+	std::pair<uint, uint> GetScoreList() const;
+
 	List<Entity*> entities;
 	std::pair<Entity*, Entity*> flippers;
 	Entity *launcher = nullptr;
