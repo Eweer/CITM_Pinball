@@ -33,6 +33,10 @@ public:
 	uint GetScore() const final;
 
 private:
+
+	void CreatePhysBody();
+	void SetStartingPosition();
+
 	uint score = 0;
 	std::array<float, 3> scoreList;
 };

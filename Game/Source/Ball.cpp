@@ -21,7 +21,6 @@ bool Ball::Awake()
 {
 	position.x = parameters.attribute("x").as_int();
 	position.y = parameters.attribute("y").as_int();
-
 	SetPaths();
 
 	return true;
@@ -36,14 +35,7 @@ bool Ball::Start() {
 
 	texture.image = app->tex->Load(ballImage.c_str());
 
-	//initialize physics body
-	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, BodyType::DYNAMIC, 0.7f, (int)Layers::BALL, (int)Layers::BOARD);
-
-	//This makes the Physics module to call the OnCollision method
-	pBody->listener = this; 
-
-	//Assign collider type
-	pBody->ctype = ColliderType::BALL;
+	CreatePhysBody();
 
 	return true;
 }
@@ -75,8 +67,6 @@ bool Ball::CleanUp()
 
 	}
 	return true;
-
-	return true;
 }
 
 void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
@@ -89,6 +79,30 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 		case ColliderType::ANIM:
 			LOG("Collision ANIM");
 			break;
+		case ColliderType::SENSOR:
+			LOG("Collision SENSOR");
+			switch(physB->sensorFunction)
+			{
+				case SensorFunction::DEATH:
+					//SetStartingPosition();
+					break;
+
+				case SensorFunction::POWER:
+					break;
+
+				case SensorFunction::HP_UP:
+					break;
+
+				case SensorFunction::UNKNOWN:
+					break;
+
+				default:
+					break;
+			}
+			break; 
+		case ColliderType::BOARD:
+				LOG("Collision BOARD");
+				break;
 		case ColliderType::UNKNOWN:
 			LOG("Collision UNKNOWN");
 			break;
@@ -105,4 +119,25 @@ void Ball::ResetScore()
 uint Ball::GetScore() const
 {
 	return score;
+}
+
+void Ball::CreatePhysBody()
+{
+	//initialize physics body
+	pBody = app->physics->CreateCircle(position.x+BALL_SIZE/2, position.y+BALL_SIZE/2, BALL_SIZE/2, BodyType::DYNAMIC, 0.7f, (uint16)Layers::BALL, (uint16)Layers::BOARD | (uint16)Layers::SENSOR);
+
+	//This makes the Physics module to call the OnCollision method
+	pBody->listener = this;
+
+	//Assign collider type
+	pBody->ctype = ColliderType::BALL;
+}
+
+void Ball::SetStartingPosition()
+{
+	if(pBody->body)
+		app->physics->DestroyBody(pBody->body);
+	position.x = parameters.attribute("x").as_int();
+	position.y = parameters.attribute("y").as_int();
+	CreatePhysBody();
 }

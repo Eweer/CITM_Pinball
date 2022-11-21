@@ -56,6 +56,8 @@ bool InteractiveParts::Start()
 
 	CreateFlipperInfo();
 
+	if(type == EntityType::SENSOR) pBody->sensorFunction = (SensorFunction)parameters.attribute("function").as_int();
+
 	return true;
 }
 
@@ -100,8 +102,8 @@ bool InteractiveParts::Update()
 		{
 			case KeyState::KEY_DOWN:
 			case KeyState::KEY_REPEAT:
-				launcherJoint->joint->SetMotorSpeed(100);
-				launcherJoint->joint->SetMaxMotorForce(200);
+				launcherJoint->joint->SetMotorSpeed(5);
+				launcherJoint->joint->SetMaxMotorForce(10);
 				break;
 
 			case KeyState::KEY_UP:
@@ -145,6 +147,21 @@ void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
 		if(ballCollisionFx) app->audio->PlayFx(ballCollisionFx);
+		if(type == EntityType::SENSOR)
+		{
+			switch(pBody->sensorFunction)
+			{
+				case SensorFunction::DEATH:
+					break;
+
+				case SensorFunction::POWER:
+					break;
+				case SensorFunction::HP_UP:
+					break;
+				case SensorFunction::UNKNOWN:
+					break;
+			}
+		}
 	}
 		
 }
@@ -233,12 +250,16 @@ bool InteractiveParts::CreateCollidersBasedOnShape(const pugi::xml_node &collide
 			pBody->ctype = ColliderType::ITEM;
 			break;
 
+		case EntityType::SENSOR:
+			pBody->ctype = ColliderType::SENSOR;
+			break;
+
 		case EntityType::UNKNOWN:
 			pBody->ctype = ColliderType::UNKNOWN;
 			break;
 
 		default:
-			pBody->ctype = ColliderType::ANIM;
+			pBody->ctype = ColliderType::BOARD;
 	}
 	return true;
 }

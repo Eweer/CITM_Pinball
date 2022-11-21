@@ -30,6 +30,8 @@ enum class ColliderType {
 	BALL, 
 	ITEM,
 	ANIM, 
+	SENSOR,
+	BOARD,
 	UNKNOWN
 	// ..
 };
@@ -40,7 +42,8 @@ enum class Layers
 	BOARD	= 0x0002,
 	KICKERS = 0x0004,
 	BALL	= 0x0008,
-	TOP		= 0x0010
+	TOP		= 0x0010, 
+	SENSOR	= 0x0020
 };
 
 enum class RevoluteJoinTypes
@@ -109,6 +112,7 @@ public:
 	b2Body* body = nullptr;
 	Entity* listener = nullptr;
 	ColliderType ctype = ColliderType::UNKNOWN;
+	SensorFunction sensorFunction;
 };
 
 // Module --------------------------------------
@@ -130,7 +134,7 @@ public:
 	PhysBody* CreateRectangle(int x, int y, int width, int height, BodyType type, float32 gravityScale = 1.0f, float rest = 1.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL);
 	PhysBody* CreateCircle(int x, int y, int radius, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL);
 	PhysBody* CreatePolygon(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL, int angle = 0);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type);
+	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, BodyType type, uint16 cat = (uint16)Layers::SENSOR, uint16 mask = (uint16)Layers::BALL);
 	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL, int angle = 0);
 
 	// Create joints
@@ -145,6 +149,9 @@ public:
 	// Utils
 	iPoint WorldVecToIPoint(const b2Vec2 &v) const;
 	b2Vec2 IPointToWorldVec(const iPoint &p) const;
+
+	void DestroyBody(b2Body* b = nullptr);
+	void DestroyPhysBody(PhysBody* b = nullptr);
 
 	// Get Info
 	bool IsDebugActive() const;

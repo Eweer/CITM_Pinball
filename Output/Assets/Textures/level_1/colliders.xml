@@ -181,7 +181,7 @@
 		560,561
 		570,585
 	"/>
-  <sensor_death shape = "rectangle_sensor" bodytype = "static" x = "339" y = "975" w = "250" h = "40"/>
+  <sensor_death1 shape = "rectangle_sensor" bodytype = "static" x = "339" y = "975" w = "250" h = "40"/>
   <launcher_top shape = "rectangle" bodytype = "dynamic" x = "697" y = "980" w = "25" h = "76"/>
   <border shape = "chain" bodytype = "static" xy = "
 	338,45

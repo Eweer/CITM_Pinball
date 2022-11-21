@@ -357,7 +357,7 @@ PhysBody *Physics::CreatePolygon(int x, int y, const int* const points, int size
 	return pbody;
 }
 
-PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type)
+PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, BodyType type, uint16 cat, uint16 mask)
 {
 	// Create BODY at position x,y
 	b2BodyDef body;
@@ -390,7 +390,8 @@ PhysBody *Physics::CreateRectangleSensor(int x, int y, int width, int height, Bo
 	fixture.shape = &box;
 	fixture.density = 1.0f;
 	fixture.isSensor = true;
-
+	fixture.filter.categoryBits = cat;
+	fixture.filter.maskBits = mask;
 
 	b->CreateFixture(&fixture);
 
@@ -614,6 +615,18 @@ iPoint Physics::WorldVecToIPoint(const b2Vec2 &v) const
 b2Vec2 Physics::IPointToWorldVec(const iPoint &p) const
 {
 	return b2Vec2(PIXEL_TO_METERS(p.x), PIXEL_TO_METERS(p.y));
+}
+
+void Physics::DestroyBody(b2Body *b)
+{
+	if(b) world->DestroyBody(b);
+}
+
+void Physics::DestroyPhysBody(PhysBody *b)
+{
+	DestroyBody(b->body);
+	if(b) delete b;
+
 }
 
 BodyType Physics::GetEnumFromStr(const std::string &s) const

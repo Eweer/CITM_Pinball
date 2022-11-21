@@ -73,6 +73,14 @@ enum class EntityType
 	UNKNOWN
 };
 
+enum class SensorFunction
+{
+	DEATH = 0,
+	POWER,
+	HP_UP,
+	UNKNOWN
+};
+
 class Entity
 {
 public:

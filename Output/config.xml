@@ -23,7 +23,8 @@
 
   <scene assetpath = "Assets/" texturepath = "Assets/Textures/" audiopath = "Assets/Audio/" fxfolder = "Fx/">
     <!-- Animstyle: ONCE = 0 | LOOP_FROM_START = 1 | FORWARD_BACKWARD = 2 | LOOP_FORWARD_BACKWARD = 3 | NEVER = 4 -->
-    <sensor_death renderable = "false"/>
+    <!-- Sensor function: Player death  = 0 | Power = 1 | HP_UP = 2 | UNKNOWN = 3 -->
+    <sensor_death1 function = "0" renderable = "false"/>
 
     <launcher_top x = "638" y = "978" renderable = "true">
       <joint enable_limit = "true" max_angle = "-70" min_angle = "20" enable_motor = "true" motor_speed = "-10" max_torque = "5"/>
