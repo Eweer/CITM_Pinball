@@ -63,6 +63,10 @@ bool Ball::Update()
 	{
 		timeUntilReset++;
 	}
+	else
+	{
+		score += 0.002f * (float)scoreMultiplier;
+	}
 
 	//Update ball position in pixels
 	position.x = METERS_TO_PIXELS(pBody->body->GetTransform().p.x) - BALL_SIZE/2;
@@ -100,7 +104,11 @@ void Ball::OnCollision(PhysBody* physA, PhysBody* physB) {
 	switch (physB->ctype)
 	{
 		case ColliderType::ITEM:
-			if(score < 99999) score += 100;
+			if(score < 99999)
+			{
+				score += (float)(100 * scoreMultiplier);
+				if(score > 99999) score = 99999;
+			}
 			LOG("Collision ITEM");
 			break;
 		case ColliderType::ANIM:
@@ -147,6 +155,11 @@ void Ball::ResetScore()
 uint Ball::GetScore() const
 {
 	return score;
+}
+
+void Ball::AddMultiplier(uint n)
+{
+	scoreMultiplier += n;
 }
 
 std::pair<uint, uint> Ball::GetScoreList() const

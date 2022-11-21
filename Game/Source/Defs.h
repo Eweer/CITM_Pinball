@@ -15,6 +15,8 @@
 #endif
 #define NULL  0
 
+#define TICKS_FOR_NEXT_FRAME (1000 / 60)
+
 // Deletes a buffer
 #define RELEASE( x ) \
 	{						\

@@ -11,7 +11,6 @@
 #include <regex>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 
 #include <memory>
 
@@ -69,6 +68,7 @@ enum class EntityType
 	BRIDGE,
 	ROAD,
 	DIVIDER,
+	ROTATE,
 	SENSOR,
 	UNKNOWN
 };
@@ -107,7 +107,7 @@ public:
 			return;
 		}
 
-		if(static_cast<uint>(entityTypeStrToEnum.at(m[0])) >= static_cast<uint>(EntityType::UNKNOWN)) 
+		if(static_cast<uint>(entityTypeStrToEnum.at(m[0])) >= static_cast<uint>(EntityType::UNKNOWN))
 		{
 			LOG("%s does not have a valid EntityType", m[0]);
 			return;
@@ -141,19 +141,19 @@ public:
 		return true;
 	}
 
-	virtual bool LoadState(pugi::xml_node&)
+	virtual bool LoadState(pugi::xml_node &)
 	{
 		return true;
 	}
 
-	virtual bool SaveState(pugi::xml_node&)
+	virtual bool SaveState(pugi::xml_node &)
 	{
 		return true;
 	}
 
 	void Entity::Enable()
 	{
-		if (!active)
+		if(!active)
 		{
 			active = true;
 			Start();
@@ -162,7 +162,7 @@ public:
 
 	void Entity::Disable()
 	{
-		if (active)
+		if(active)
 		{
 			active = false;
 			CleanUp();
@@ -189,7 +189,7 @@ public:
 		fxLevelPath = fxPath + levelFolder;
 	}
 
-	virtual void OnCollision(PhysBody* physA, PhysBody* physB) 
+	virtual void OnCollision(PhysBody *physA, PhysBody *physB)
 	{
 		//To override
 	};
@@ -209,6 +209,21 @@ public:
 		return texture;
 	};
 
+	bool IsSpecialFunction() const
+	{
+		return bSpecialFunction;
+	};
+
+	void SetSpecialFunction(bool b)
+	{
+		bSpecialFunction = b;
+	};
+
+	virtual void AddMultiplier(uint n)
+	{
+		//To override
+	};
+
 	std::unordered_map<std::string, EntityType> CreateEnumMap() const
 	{
 		const std::unordered_map<std::string, EntityType> aux{
@@ -226,6 +241,7 @@ public:
 			{"bridge", EntityType::BRIDGE},
 			{"road", EntityType::ROAD},
 			{"divider", EntityType::DIVIDER},
+			{"rotate", EntityType::ROTATE},
 			{"sensor", EntityType::SENSOR},
 			{"unknown", EntityType::UNKNOWN}
 		};
@@ -248,6 +264,7 @@ public:
 	std::string fxPath;
 	std::string fxLevelPath;
 
+	bool bSpecialFunction = false;
 
 	PhysBody *pBody = nullptr;
 };

@@ -49,6 +49,8 @@ public:
 	SDL_Rect camera;
 	SDL_Rect viewport;
 	SDL_Color background;
+
+	int lastTime = 0;
 };
 
 #endif // __RENDER_H__

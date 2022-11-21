@@ -74,18 +74,49 @@ Entity *EntityManager::CreateEntity(pugi::xml_node const &itemNode = pugi::xml_n
 
 	std::string itemName(itemNode.name());
 
-	if(!ball && itemName == "ball") ball = entity;
+	if(itemName.substr(0, std::string("divider").size()) == "divider")
+	{
+		dividers.push_back(entity);
+		return entity;
+	}
 
-	if(!launcher && itemName == "launcher_top") launcher = entity;
+	if(!rotatePower && itemName == "rotate")
+	{
+		rotatePower = entity;
+		return entity;
+	}
+
+	std::string nameStart;
+
+	if(!pinkPower && itemName == "anim_pinkpower")
+	{
+		pinkPower = entity;
+		return entity;
+	}
+
+	if(!ball && itemName == "ball") 
+	{
+		ball = entity;
+		return entity;
+	}
+
+	if(!launcher && itemName == "launcher_top") {
+		launcher = entity;
+		return entity;
+	}
 
 	if(!flippers.first || !flippers.second)
 	{
-		std::string nameStart = itemName.substr(0, std::string("flipper").size());
+		nameStart = itemName.substr(0, std::string("flipper").size());
 		if(nameStart == "flipper")
 		{
+			//check name end == "left" or "right"
 			std::string nameEnd = itemName.substr(std::string("flipper").size() + 1);
+
 			if(nameEnd == "left") flippers.first = entity;
 			else flippers.second = entity;
+
+			return entity;
 		}
 	}
 	return entity;
@@ -110,6 +141,19 @@ void EntityManager::AddEntity(Entity* entity)
 
 bool EntityManager::Update(float dt)
 {
+	for(auto &elem : dividers)
+	{
+		if(elem->IsSpecialFunction())
+		{
+			rotatePower->texture.anim->AdvanceFrame();
+			if(rotatePower->texture.anim->IsLastFrame()) 
+				pinkPower->SetSpecialFunction(true);
+			elem->SetSpecialFunction(false);
+		}
+	}
+
+	if(pinkPower->IsSpecialFunction()) ball->AddMultiplier(1);
+
 	//Iterates over the entities and calls Update
 	for(ListItem<Entity *> *item = entities.start; item; item = item->next)
 	{

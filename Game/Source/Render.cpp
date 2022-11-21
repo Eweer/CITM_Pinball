@@ -73,6 +73,11 @@ bool Render::PostUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
+	while(lastTime - SDL_GetTicks() < TICKS_FOR_NEXT_FRAME)
+	{
+		SDL_Delay(1);
+	}
+	lastTime = SDL_GetTicks();
 	return true;
 }
 

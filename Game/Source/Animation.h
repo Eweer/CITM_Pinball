@@ -29,6 +29,9 @@ public:
 
 	SDL_Texture *GetCurrentFrame()
 	{
+		if(TimeSinceLastFunctionCall > 0) TimeSinceLastFunctionCall += 0.1f;
+		if(TimeSinceLastFunctionCall > FunctionCooldown) TimeSinceLastFunctionCall = 0;
+	
 		//if it's not active, we just return frame
 		if(!bActive)
 		{
@@ -72,6 +75,15 @@ public:
 					Stop();
 			}
 			bFinished = true;
+			if(loopsToDo > 0)
+			{
+				loopsToDo--;
+				if(loopsToDo == 0)
+				{
+					Stop();
+					SetAnimStyle(AnimIteration::NEVER);
+				}
+			}
 		}
 		if((int)currentFrame >= frames.size()) 
 			return frames[(int)frames.size() - 1];
@@ -109,9 +121,24 @@ public:
 		return bFinished;
 	}
 
+	void AdvanceFrame()
+	{
+		if(TimeSinceLastFunctionCall > FunctionCooldown || TimeSinceLastFunctionCall == 0)
+		{
+			if((int)currentFrame < frames.size() - 1) currentFrame++;
+			else currentFrame = 0;
+			TimeSinceLastFunctionCall += 0.1f;
+		}
+	}
+
 	void SetSpeed(float const &animSpeed)
 	{
 		speed = animSpeed;
+	}
+
+	uint GetSpeed() const
+	{
+		return speed;
 	}
 
 	void SetAnimStyle(int i)
@@ -151,12 +178,34 @@ public:
 		Reset();
 	}
 
+	bool IsAnimFinished() const
+	{
+		return bFinished;
+	}
+
+	bool IsLastFrame() const
+	{
+		return (uint)currentFrame == frames.size() - 1;
+	}
+
+	void DoLoopsOfAnimation(uint loops, AnimIteration style)
+	{
+		if(loops <= 0) return;
+		Reset();
+		SetAnimStyle(style);
+		loopsToDo = loops;
+		Start();
+	}
+
 private:
+	float FunctionCooldown = 1.1f;
+	float TimeSinceLastFunctionCall = 0;
 	float speed = 0;
 	float currentFrame = 0;
 	AnimIteration animStyle = AnimIteration::NEVER;
 	bool bActive = false;
 	bool bFinished = false;
+	uint loopsToDo = 0;
 	std::vector<SDL_Texture*> frames;
 	SDL_Texture *staticImage = nullptr;
 }; 

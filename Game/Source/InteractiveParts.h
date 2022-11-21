@@ -14,7 +14,6 @@
 
 struct SDL_Texture;
 
-
 struct FlipperInfo
 {
 	PhysBody *anchor;
@@ -61,6 +60,7 @@ private:
 
 	int scoreValue = 0;
 	uint ballCollisionFx = 0;
+
 
 	std::unique_ptr<FlipperInfo> flipperJoint;
 	std::unique_ptr<LauncherInfo> launcherJoint;

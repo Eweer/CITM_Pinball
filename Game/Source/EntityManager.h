@@ -41,6 +41,10 @@ public:
 	std::pair<Entity*, Entity*> flippers;
 	Entity *launcher = nullptr;
 	Entity *ball = nullptr;
+
+	std::vector<Entity *> dividers;
+	Entity *rotatePower = nullptr;
+	Entity *pinkPower = nullptr;
 };
 
 #endif // __ENTITYMANAGER_H__

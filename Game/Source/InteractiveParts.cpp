@@ -11,12 +11,11 @@
 #include "Point.h"
 #include "Animation.h"
 
-#include <iostream>
 #include <regex>
 #include <string>
 #include <vector>
 #include <array>
-#include <functional>
+#include <cmath>
 
 #include "PugiXml/src/pugixml.hpp"
 
@@ -56,7 +55,10 @@ bool InteractiveParts::Start()
 
 	CreateFlipperInfo();
 
-	if(type == EntityType::SENSOR) pBody->sensorFunction = (SensorFunction)parameters.attribute("function").as_int();
+	if(!pBody) return true;
+
+	if(parameters.attribute("function")) pBody->sensorFunction = (SensorFunction)parameters.attribute("function").as_int();
+	else pBody->sensorFunction = SensorFunction::UNKNOWN;
 
 	return true;
 }
@@ -75,6 +77,13 @@ bool InteractiveParts::Update()
 
 		default:
 			break;
+	}
+
+	if(std::string(parameters.name()) == "anim_pinkpower" && bSpecialFunction == true)
+	{
+		texture.anim->DoLoopsOfAnimation(10, AnimIteration::LOOP_FROM_START);
+		bSpecialFunction = false;
+		return true;
 	}
 
 	if(flipperJoint)
@@ -147,20 +156,21 @@ void InteractiveParts::OnCollision(PhysBody *physA, PhysBody *physB)
 	{
 		if(texture.type == RenderModes::ANIMATION && texture.anim) this->texture.anim->Start();
 		if(ballCollisionFx) app->audio->PlayFx(ballCollisionFx);
-		if(type == EntityType::SENSOR)
-		{
-			switch(pBody->sensorFunction)
-			{
-				case SensorFunction::DEATH:
-					break;
 
-				case SensorFunction::POWER:
-					break;
-				case SensorFunction::HP_UP:
-					break;
-				case SensorFunction::UNKNOWN:
-					break;
-			}
+		switch(pBody->sensorFunction)
+		{
+			case SensorFunction::DEATH:
+				break;
+
+			case SensorFunction::POWER:
+				bSpecialFunction = true;
+				break;
+
+			case SensorFunction::HP_UP:
+				break;
+
+			case SensorFunction::UNKNOWN:
+				break;
 		}
 	}
 		

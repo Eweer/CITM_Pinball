@@ -32,6 +32,8 @@ public:
 
 	uint GetScore() const final;
 
+	void AddMultiplier(uint n) final;
+
 	std::pair<uint, uint> GetScoreList() const final;
 
 private:
@@ -40,6 +42,7 @@ private:
 	void SetStartingPosition();
 
 	float score = 0;
+	uint scoreMultiplier = 1;
 	std::pair<uint, uint> scoreList;
 
 	uint hp = 3;

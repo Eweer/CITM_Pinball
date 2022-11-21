@@ -67,8 +67,8 @@
     <anim_circle x = "135" y = "718" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_zoom x = "653" y = "727" renderable = "true" speed = "0.1" animstyle = "1"/>    
     <anim_zoombar x = "573" y = "163" renderable = "true" speed = "0.1" animstyle = "1"/>    
-    <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "1"/>
-    <anim_rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "3"/>
+    <anim_pinkpower x = "170" y = "240" renderable = "true" speed = "0.1" animstyle = "4"/>
+    <rotate x = "150" y = "145" renderable = "true" speed = "0.1" animstyle = "4"/>
     <anim_ting x = "215" y = "613" renderable = "true" speed = "0.1" animstyle = "3"/>
     <anim_ring x = "148" y = "648" renderable = "true"/>
     <anim_ringdos x = "533" y = "352" renderable = "true"/>
@@ -81,10 +81,10 @@
     <circle_medium x = "380" y = "245" renderable = "true" speed = "0.1" animstyle = "1"/>
     <circle_small x = "479" y = "507" renderable = "true" speed = "0.1" animstyle = "1"/>
 
-    <divider_one x = "245" y = "575" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_two x = "310" y = "559" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_three x = "366" y = "559" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
-    <divider_four x = "430" y = "575" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
+    <divider_one x = "245" y = "575" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
+    <divider_two x = "310" y = "559" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
+    <divider_three x = "366" y = "559" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
+    <divider_four x = "430" y = "575" function = "1" renderable = "true" speed = "0.5" animstyle = "0" hasfx ="ogg"/>
     
     <ball x="647" y="672" renderable = "true"/>
 
