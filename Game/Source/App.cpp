@@ -257,10 +257,11 @@ bool App::LoadFromFile()
 
 	while (item && ret)
 	{
-		const char* itemName = item->data->name.GetString();
-		pugi::xml_node loadStateOnFile = gameStateFile.child("save_state");
-
-		if(!item->data->LoadState(loadStateOnFile.child(itemName))) return false;
+		if(pugi::xml_node const &aux = gameStateFile.child(item->data->name.GetString()).child("save_state"); 
+			!item->data->LoadState(aux))
+		{
+			return false;
+		}
 		item = item->next;
 	}
 
@@ -280,9 +281,11 @@ bool App::SaveToFile()
 
 	while (item)
 	{
-		const char *itemName = item->data->name.GetString();
-
-		if(!item->data->SaveState(saveStateNode.append_child(itemName))) return false;
+		if(pugi::xml_node const &aux = saveStateNode.child(item->data->name.GetString()).child("save_state");
+		   !item->data->SaveState(aux))
+		{
+			return false;
+		}
 		item = item->next;
 	}
 

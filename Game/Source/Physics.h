@@ -1,8 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Entity.h"
+#include "Point.h"
 
 #include <unordered_map>
+#include <any>
 
 #include "Box2D/Box2D/Box2D.h"
 
@@ -17,6 +19,8 @@
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
+
+using jointUnorderedMap = std::unordered_map<std::string, std::any, StringHash, std::equal_to<>>;
 
 // types of bodies
 enum class BodyType {
@@ -55,44 +59,8 @@ enum class RevoluteJoinTypes
 	 UNKNOWN
 };
 
-struct RevoluteJointSingleProperty
-{
-	RevoluteJoinTypes type;
-	union
-	{
-		iPoint p;
-		bool b;
-		float f;
-		int i;
-	};
 
-	RevoluteJointSingleProperty::RevoluteJointSingleProperty() {};
-	RevoluteJointSingleProperty::RevoluteJointSingleProperty(const RevoluteJointSingleProperty &r) : type(r.type)
-	{
-		switch(type)
-		{
-			case RevoluteJoinTypes::BOOL:
-				b = r.b;
-				break;
 
-			case RevoluteJoinTypes::FLOAT:
-				f = r.f;
-				break;
-
-			case RevoluteJoinTypes::INT:
-				i = r.i;
-				break;
-
-			case RevoluteJoinTypes::IPOINT:
-				p = r.p;
-				break;
-			case RevoluteJoinTypes::UNKNOWN:
-				LOG("Something went wrong in InteractiveParts doing the revolute joint");
-				break;
-		}
-	};
-	RevoluteJointSingleProperty::~RevoluteJointSingleProperty() {};
-};
 
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
@@ -138,8 +106,8 @@ public:
 	PhysBody* CreateChain(int x, int y, const int* const points, int size, BodyType type, float rest = 0.0f, uint16 cat = (uint16)Layers::BOARD, uint16 mask = (uint16)Layers::BALL, int angle = 0);
 
 	// Create joints
-	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
-	b2PrismaticJoint *CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties);
+	b2RevoluteJoint *CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset);
+	b2PrismaticJoint *CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset);
 	b2MouseJoint *CreateMouseJoint(PhysBody *ground, PhysBody *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
 	b2MouseJoint *CreateMouseJoint(b2Body *ground, b2Body *target, b2Vec2 position, float dampingRatio = 0.5f, float frequecyHz = 2.0f, float maxForce = 100.0f);
 	
@@ -149,6 +117,8 @@ public:
 	// Utils
 	iPoint WorldVecToIPoint(const b2Vec2 &v) const;
 	b2Vec2 IPointToWorldVec(const iPoint &p) const;
+
+	bool AddJointXMLPropertiesToMap(pugi::xml_node const &jointNode);
 
 	void ToggleStep();
 
@@ -160,7 +130,6 @@ public:
 	// Get Info
 	bool IsDebugActive() const;
 	BodyType GetEnumFromStr(const std::string &s) const;
-	RevoluteJoinTypes GetTypeFromProperty(const std::string &s) const;
 
 private:
 
@@ -185,6 +154,8 @@ private:
 	b2Body *selected = nullptr;
 	b2MouseJoint *mouseJoint = nullptr;
 
-	static const std::unordered_map<std::string, BodyType> bodyTypeStrToEnum;
-	static const std::unordered_map<std::string, RevoluteJoinTypes> propertyToType;
+	static const std::unordered_map<std::string, BodyType, StringHash, std::equal_to<>> bodyTypeStrToEnum;
+
+	std::any jointProperty;
+	jointUnorderedMap jointProperties;
 };

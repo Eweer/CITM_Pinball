@@ -43,8 +43,8 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 
-	bool LoadState(pugi::xml_node&) final;
-	bool SaveState(pugi::xml_node&) final;
+	bool LoadState(pugi::xml_node const &) override final;
+	bool SaveState(pugi::xml_node const &) override final;
 
 	uint GetCurrentFPS() const;
 	uint GetTargetFPS() const;

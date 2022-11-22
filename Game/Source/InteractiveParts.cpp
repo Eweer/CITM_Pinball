@@ -340,54 +340,18 @@ bool InteractiveParts::CreateFlipperInfo()
 		);
 	}
 
-	pugi::xml_node flipperNode = parameters.child("joint");
-	std::vector<RevoluteJointSingleProperty> revoluteProperties;
+	app->physics->AddJointXMLPropertiesToMap(parameters.child("joint"));
 
-	for(pugi::xml_attribute attr : flipperNode.attributes())
-	{
-		std::string attrName(attr.name());
-		if(attrName == "motor_speed")
-		{
-			if(name == "flipper") flipperHelper.motorSpeed = attr.as_float();
-			else launcherHelper.motorSpeed = attr.as_float();
-		}
-				
-
-		RevoluteJointSingleProperty propertyToAdd;
-
-		propertyToAdd.type = app->physics->GetTypeFromProperty(attrName);
-
-		switch(propertyToAdd.type)
-		{
-			case RevoluteJoinTypes::BOOL:
-				propertyToAdd.b = attr.as_bool();
-				break;
-
-			case RevoluteJoinTypes::FLOAT:
-				propertyToAdd.f = attr.as_float();
-				break;
-
-			case RevoluteJoinTypes::INT:
-				propertyToAdd.i = attr.as_int();
-				break;
-
-			case RevoluteJoinTypes::IPOINT:
-			case RevoluteJoinTypes::UNKNOWN:
-				LOG("Something went wrong in InteractiveParts doing the revolute joint");
-				break;
-		}
-		revoluteProperties.emplace_back(propertyToAdd);
-	}
 	if(std::string(this->parameters.name()) == "flipper_left")
-		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {50,13}, revoluteProperties);
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {50,13});
 	else if(std::string(this->parameters.name()) == "flipper_right")
-		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13}, revoluteProperties);
+		flipperHelper.joint = app->physics->CreateRevoluteJoint(flipperHelper.anchor, this->pBody, {0,0}, {8,13});
 	else
 	{
 		iPoint offset;
 		offset.x = pBody->width + 15;
 		offset.y = pBody->height;
-		launcherHelper.joint = app->physics->CreatePrismaticJoint(launcherHelper.anchor, this->pBody, offset, {0,0}, revoluteProperties);
+		launcherHelper.joint = app->physics->CreatePrismaticJoint(launcherHelper.anchor, this->pBody, offset, {0,0});
 
 	}
 	if(this->name == "flipper") this->flipperJoint = std::make_unique<FlipperInfo>(flipperHelper);

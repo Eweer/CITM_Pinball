@@ -256,7 +256,7 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 	return true;
 }
 
-bool Render::LoadState(pugi::xml_node& data)
+bool Render::LoadState(pugi::xml_node const &data)
 {
 	camera.x = data.child("camera").attribute("x").as_int();
 	camera.y = data.child("camera").attribute("y").as_int();
@@ -264,9 +264,11 @@ bool Render::LoadState(pugi::xml_node& data)
 	return true;
 }
 
-bool Render::SaveState(pugi::xml_node& data)
+bool Render::SaveState(pugi::xml_node const &data)
 {
-	pugi::xml_node cam = data.append_child("camera");
+	/*
+	pugi::xml_node cam = data.child
+		//data.append_child("camera");
 
 	cam.append_attribute("x") = camera.x;
 	cam.append_attribute("y") = camera.y;
@@ -274,7 +276,7 @@ bool Render::SaveState(pugi::xml_node& data)
 	pugi::xml_node vsyncNode = data.append_child("vsync");
 
 	vsyncNode.append_attribute("active") = vSyncOnRestart;
-
+	*/
 	return true;
 }
 

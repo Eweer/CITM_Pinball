@@ -35,8 +35,8 @@ struct Texture
 		SDL_Texture *image;
 	};
 
-	Texture::Texture() = default;
-	Texture::Texture(const Texture &t) : type(t.type)
+	Texture() = default;
+	Texture(const Texture &t) : type(t.type)
 	{
 		switch(type)
 		{
@@ -48,7 +48,7 @@ struct Texture
 		}
 
 	}
-	Texture::~Texture(){}
+	~Texture(){}
 };
 // YOU CAN START TYPING AGAIN AFTER THIS LINE
 
@@ -151,7 +151,7 @@ public:
 		return true;
 	}
 
-	void Entity::Enable()
+	void Enable()
 	{
 		if(!active)
 		{
@@ -160,7 +160,7 @@ public:
 		}
 	}
 
-	void Entity::Disable()
+	void Disable()
 	{
 		if(active)
 		{

@@ -10,6 +10,8 @@
 #include "Ball.h"
 #include "Window.h"
 #include "Box2D/Box2D/Box2D.h"
+#include "PugiXml/src/pugixml.hpp"
+#include <any>
 
 // Tell the compiler to reference the compiled Box2D libraries
 #ifdef _DEBUG
@@ -18,23 +20,13 @@
 #pragma comment( lib, "../Game/Source/External/Box2D/libx86/ReleaseLib/Box2D.lib" )
 #endif
 
-const std::unordered_map<std::string, BodyType> Physics::bodyTypeStrToEnum {
-	{"dynamic", BodyType::DYNAMIC},
-	{"static", BodyType::STATIC},
-	{"kinematic", BodyType::KINEMATIC},
-	{"unknown", BodyType::UNKNOWN}
-};
-
-const std::unordered_map<std::string, RevoluteJoinTypes> Physics::propertyToType{
-	{"anchor_offset", RevoluteJoinTypes::IPOINT},
-	{"body_offset", RevoluteJoinTypes::IPOINT},
-	{"enable_limit", RevoluteJoinTypes::BOOL},
-	{"max_angle", RevoluteJoinTypes::FLOAT},
-	{"min_angle", RevoluteJoinTypes::FLOAT},
-	{"enable_motor", RevoluteJoinTypes::BOOL},
-	{"motor_speed", RevoluteJoinTypes::INT},
-	{"max_torque", RevoluteJoinTypes::INT}
-};
+const std::unordered_map<std::string, BodyType, StringHash, std::equal_to<>> 
+	Physics::bodyTypeStrToEnum {
+		{"dynamic", BodyType::DYNAMIC},
+		{"static", BodyType::STATIC},
+		{"kinematic", BodyType::KINEMATIC},
+		{"unknown", BodyType::UNKNOWN}
+	};
 
 Physics::Physics() : Module()
 {
@@ -477,9 +469,9 @@ PhysBody *Physics::CreateChain(int x, int y, const int *const points, int size, 
 	return pbody;
 }
 
-b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties)
+b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset)
 {
-	b2RevoluteJointDef rJoint;
+	/*b2RevoluteJointDef rJoint;
 	rJoint.bodyA = anchor->body;
 	rJoint.bodyB = body->body;
 	rJoint.collideConnected = false;
@@ -499,12 +491,13 @@ b2RevoluteJoint *Physics::CreateRevoluteJoint(PhysBody *anchor, PhysBody *body, 
 	}
 
 	auto *returnJoint = ((b2RevoluteJoint *)world->CreateJoint(&rJoint));
-	return returnJoint;
+	return returnJoint;*/
+	return nullptr;
 }
 
-b2PrismaticJoint *Physics::CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset, std::vector<RevoluteJointSingleProperty> properties)
+b2PrismaticJoint *Physics::CreatePrismaticJoint(PhysBody *anchor, PhysBody *body, iPoint anchorOffset, iPoint bodyOffset)
 {
-	b2PrismaticJointDef pJoint;
+/*	b2PrismaticJointDef pJoint;
 	pJoint.bodyA = anchor->body;
 	pJoint.bodyB = body->body;
 	pJoint.collideConnected = false;
@@ -525,7 +518,8 @@ b2PrismaticJoint *Physics::CreatePrismaticJoint(PhysBody *anchor, PhysBody *body
 		pJoint.maxMotorForce = (float)properties[5].i;
 	}
 
-	return (b2PrismaticJoint *)world->CreateJoint(&pJoint);
+	return (b2PrismaticJoint *)world->CreateJoint(&pJoint);*/
+	return nullptr;
 }
 
 b2MouseJoint *Physics::CreateMouseJoint(PhysBody *origin, PhysBody *target, b2Vec2 position, float dampingRatio, float frequecyHz, float maxForce)
@@ -634,6 +628,33 @@ b2Vec2 Physics::IPointToWorldVec(const iPoint &p) const
 	return b2Vec2(PIXEL_TO_METERS(p.x), PIXEL_TO_METERS(p.y));
 }
 
+bool Physics::AddJointXMLPropertiesToMap(pugi::xml_node const &jointNode)
+{
+	for(pugi::xml_attribute const &elem : jointNode.attributes())
+	{
+		const char *firstLetter = &elem.name()[0];
+		std::any value;
+		switch(str2int(firstLetter))
+		{
+			case str2int("b"):
+				value = elem.as_bool();
+				break;
+			case str2int("i"):
+				value = elem.as_int();
+				break;
+			case str2int("f"):
+				value = elem.as_float();
+				break;
+			case str2int("p"):
+				break;
+			default:
+				break;
+		}
+		jointProperties.insert_or_assign(std::string(elem.name()).substr(2), elem.as_float());
+	}
+	return true;
+}
+
 void Physics::ToggleStep()
 {
 	stepActive = !stepActive;
@@ -664,16 +685,6 @@ BodyType Physics::GetEnumFromStr(const std::string &s) const
 		return BodyType::UNKNOWN;
 	}
 	return bodyTypeStrToEnum.at(s);
-}
-
-RevoluteJoinTypes Physics::GetTypeFromProperty(const std::string &s) const
-{
-	if(!propertyToType.count(s))
-	{
-		LOG("Physics::GetTypeFromProperty didn't find %s attribute.", s);
-		return RevoluteJoinTypes::UNKNOWN;
-	}
-	return propertyToType.at(s);
 }
 
 

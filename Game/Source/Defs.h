@@ -7,6 +7,8 @@
 #define __DEFS_H__
 
 #include <stdio.h>
+#include <string_view>
+#include <functional>
 
 //  NULL just in case ----------------------
 
@@ -15,8 +17,8 @@
 #endif
 #define NULL  0
 
-#define TICKS_FOR_NEXT_FRAME (1000 / 60)
-#define FPS_INTERVAL 1.0
+constexpr auto TICKS_FOR_NEXT_FRAME = (1000 / 60);
+constexpr auto FPS_INTERVAL = 1.0f;
 
 // Deletes a buffer
 #define RELEASE( x ) \
@@ -45,10 +47,15 @@
 #define TO_BOOL( a )  ( (a != 0) ? true : false )
 #define CAP(n) ((n <= 0.0f) ? n=0.0f : (n >= 1.0f) ? n=1.0f : n=n)
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
-typedef unsigned __int32 uint32;
-typedef unsigned __int64 uint64;
+using uint = unsigned int;
+using uchar = unsigned char;
+using uint32 = unsigned int;
+using uint64 = unsigned long long;
+
+constexpr unsigned int str2int(const char *str, int h = 0)
+{
+	return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
+}
 
 template <class VALUE_TYPE> void SWAP(VALUE_TYPE& a, VALUE_TYPE& b)
 {
@@ -75,6 +82,22 @@ inline int DescAlphasort(const struct dirent **c, const struct dirent **d)
 	return alphasort(d, c);
 }
 
+struct StringHash
+{
+	using is_transparent = void;
+	[[nodiscard]] size_t operator()(const char *txt) const
+	{
+		return std::hash<std::string_view>{}(txt);
+	}
+	[[nodiscard]] size_t operator()(std::string_view txt) const
+	{
+		return std::hash<std::string_view>{}(txt);
+	}
+	[[nodiscard]] size_t operator()(const std::string &txt) const
+	{
+		return std::hash<std::string>{}(txt);
+	}
+};
 
 // Performance macros
 #define PERF_START(timer) timer.Start()
