@@ -1,11 +1,13 @@
 #pragma once
-#include <assert.h>
-#include <memory>
 
 #include "App.h"
 
 #include "Defs.h"
 #include "Log.h"
+
+#include <memory>
+#include <assert.h>
+#include <stdlib.h>
 
 // NOTE: SDL redefines main function
 #include "SDL/include/SDL.h"
@@ -13,15 +15,6 @@
 // NOTE: Library linkage is configured in Linker Options
 //#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2.lib")
 //#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2main.lib")
-
-#define _CRTDBG_MAP_ALLOC
-#include <iostream>
-#include <stdlib.h>
-#include <crtdbg.h>
-#ifndef _DEBUG
-	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-	#define new DEBUG_NEW
-#endif
 
 
 
@@ -42,7 +35,6 @@ App* app = NULL;
 int main(int argc, char* args[])
 {
 	LOG("Engine starting ...");
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	MainState state = CREATE;
 	int result = EXIT_FAILURE;
 
@@ -123,6 +115,5 @@ int main(int argc, char* args[])
 
 	LOG("... Bye! :)\n");
 	// Dump memory leaks
-	_CrtDumpMemoryLeaks();
 	return result;
 }
