@@ -29,7 +29,8 @@
 *		str: Text to write before offsetting if condition true
 *		font: font to use
 */
-template<class UnaryPred> void OffsetDrawPosition(iPoint &position, iPoint amount, float lambdaValue = 1, UnaryPred predicate = true, std::string const &str = "", uint font = 0)
+template<class UnaryPred> 
+void OffsetDrawPosition(iPoint &position, iPoint amount, float lambdaValue = 1, UnaryPred predicate = true, std::string const &str = "", uint font = 0)
 {
 	if(!predicate(lambdaValue)) return;
 
